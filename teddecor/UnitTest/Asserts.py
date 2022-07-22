@@ -2,6 +2,11 @@ from typing import Any, Callable
 from inspect import getframeinfo, stack
 
 # TODO: Make all asserts yield when raising exceptions
+__all__ = [
+    "assert_equal",
+    "assert_raises",
+    "assert_contains"
+]
 
 def format_message(message: str, caller) -> str:
     """Takes an error message and formates it with color.

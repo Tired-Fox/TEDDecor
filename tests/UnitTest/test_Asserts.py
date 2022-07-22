@@ -8,26 +8,26 @@ class CustomObject():
     def index(self):
         return self._index
 
-class Assert_Equal(UnitTest):
+class Assert_Equal(Test):
     @test
     def assert_equal_fail_default_message(self):
         try:
-            asserts.assert_equal("dog", "cat")
+            Asserts.assert_equal("dog", "cat")
         except AssertionError as error:
             assert "Left operand not equal to right operand" in str(error)
         
         try:
-            asserts.assert_equal("dog", "cat", message="Dog is not equal to cat")
+            Asserts.assert_equal("dog", "cat", message="Dog is not equal to cat")
         except AssertionError as error:
             assert "Dog is not equal to cat" in str(error)
 
     @test
     def assert_equal_pass(self):
         co = CustomObject(10)
-        asserts.assert_equal(co.index, 10)
+        Asserts.assert_equal(co.index, 10)
 
 
-class Assert_Raises(UnitTest):
+class Assert_Raises(Test):
     def raises_lookup_error(self):
             raise LookupError()
 
@@ -36,17 +36,17 @@ class Assert_Raises(UnitTest):
         def raises_lookup_error():
             raise LookupError()
         
-        asserts.assert_raises(LookupError, self.raises_lookup_error)
+        Asserts.assert_raises(LookupError, self.raises_lookup_error)
 
     @test
     def assert_raise_unexpected_exception(self):
         try:
-            asserts.assert_raises(BufferError, self.raises_lookup_error)
+            Asserts.assert_raises(BufferError, self.raises_lookup_error)
         except AssertionError as error:
             assert "Unexpected exception LookupError" in str(error)
 
         try:
-            asserts.assert_raises(BufferError, self.raises_lookup_error, "Custom Message")
+            Asserts.assert_raises(BufferError, self.raises_lookup_error, "Custom Message")
         except AssertionError as error:
             assert "Custom Message" in str(error)
             
@@ -54,41 +54,41 @@ class Assert_Raises(UnitTest):
     @test
     def assert_raise_no_exception(self):
         try:
-            asserts.assert_raises(LookupError, lambda *_: None)
+            Asserts.assert_raises(LookupError, lambda *_: None)
         except AssertionError as error:
             assert "No exception raised" in str(error)
 
         try:
-            asserts.assert_raises(LookupError, lambda *_: None, "Custom Message")
+            Asserts.assert_raises(LookupError, lambda *_: None, "Custom Message")
         except AssertionError as error:
             assert "Custom Message" in str(error)
 
 
-class Assert_Contains(UnitTest):
+class Assert_Contains(Test):
     def __init__(self):
         super().__init__()
         self.content = "Hello World!"
 
     @test
     def assert_contains_pass(self):
-        asserts.assert_contains("Hello", self.content)
+        Asserts.assert_contains("Hello", self.content)
 
     @test
     def assert_contains_does_not_contain(self):
         try:
-            asserts.assert_contains("universe", self.content)
+            Asserts.assert_contains("universe", self.content)
         except AssertionError as error:
            assert "[Hello World!] does not contain [universe]" in str(error)
 
         try:
-            asserts.assert_contains("universe", self.content, "Custom Message")
+            Asserts.assert_contains("universe", self.content, "Custom Message")
         except AssertionError as error:
            assert "Custom Message" in str(error)
            
     @test
     def assert_custom_message(self):
         try:
-            asserts.assert_contains("universe", self.content, "Custom Message")
+            Asserts.assert_contains("universe", self.content, "Custom Message")
         except AssertionError as error:
             assert "Custom Message" in str(error)
 

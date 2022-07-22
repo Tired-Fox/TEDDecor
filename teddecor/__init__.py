@@ -5,4 +5,4 @@ This is a easy to use library with testing, documentation, and docstring example
 Dive in with minimal effort and get great results.
 """
 __version__ = "0.1.0"
-from .UnitTest import *
+from . import UnitTest
