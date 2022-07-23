@@ -10,7 +10,7 @@ class CustomObject():
 
 class Assert_Equal(Test):
     @test
-    def assert_equal_fail_default_message(self):
+    def assert_equal_fail(self):
         try:
             Asserts.assert_equal("dog", "cat")
         except AssertionError as error:
@@ -33,9 +33,6 @@ class Assert_Raises(Test):
 
     @test
     def assert_raise_pass(self):
-        def raises_lookup_error():
-            raise LookupError()
-        
         Asserts.assert_raises(LookupError, self.raises_lookup_error)
 
     @test
@@ -84,14 +81,6 @@ class Assert_Contains(Test):
             Asserts.assert_contains("universe", self.content, "Custom Message")
         except AssertionError as error:
            assert "Custom Message" in str(error)
-           
-    @test
-    def assert_custom_message(self):
-        try:
-            Asserts.assert_contains("universe", self.content, "Custom Message")
-        except AssertionError as error:
-            assert "Custom Message" in str(error)
-
 
 if __name__ == "__main__":
     classes = [Assert_Equal(), Assert_Raises(), Assert_Contains()]

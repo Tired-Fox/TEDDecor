@@ -1,28 +1,13 @@
 from typing import Any, Callable
 from inspect import getframeinfo, stack
 
-# TODO: Make all asserts yield when raising exceptions
 __all__ = [
     "assert_equal",
     "assert_raises",
     "assert_contains"
 ]
 
-def format_message(message: str, caller) -> str:
-    """Takes an error message and formates it with color.
-
-    Args:
-        message (str): Message to format
-
-    Returns:
-        str: Formatted message
-    """
-
-    out = f"\x1b[1m[\x1b[33m{caller.function}\x1b[37m:\x1b[34m{caller.lineno}\x1b[37m]\x1b[0m \x1b[31m"
-    out += message + "\x1b[0m"
-    return out
-
-# PERF: Replace errors with lested/grouped errors if python 10
+# PERF: Replace errors with lested/grouped errors if python 3.11
 def assert_equal(left: Any, right: Any, message: str = "Left operand not equal to right operand"):
     """Assert that the left operand (First parameter) is equal to the right operand (Second Parameter).
 
@@ -38,9 +23,12 @@ def assert_equal(left: Any, right: Any, message: str = "Left operand not equal t
     """
     caller = getframeinfo(stack()[1][0])
     if left != right:
-        raise AssertionError(format_message(message, caller))
+        raise AssertionError(message)
 
-def assert_raises(exception: Exception, function: Callable, message: str = None):
+    return True
+
+
+def assert_raises(exception, function: Callable, message: str = ""):
     """Assert that a exceptions is raised within a callable piece of code
 
     Args:
@@ -53,22 +41,21 @@ def assert_raises(exception: Exception, function: Callable, message: str = None)
         AssertionError: No Exceptions
     """
 
-    caller = getframeinfo(stack()[1][0])
-        
     try:
-        value = function()
-        
-    except exception as expected:
-        return
+        function()
+    except exception:
+        return True
     except Exception as error:
-        raise AssertionError(format_message(
-                                f"Unexpected exception {type(error).__name__}" if message is None else message, 
-                                caller
-                            )
-        )
-    raise AssertionError(format_message("No exception raised" if message is None else message, caller))
+        if message == "":
+           message = f"Unexpected exception {type(error).__name__}" 
+        raise AssertionError(message)
 
-def assert_contains(search: str, content: str, message: str = None):
+    if message == "":
+        message = "No exception raised"
+    raise AssertionError(message)
+
+
+def assert_contains(search: str, content: str, message: str = ""):
     """Assert that a search value is contained within a certain string.
 
     Args:
@@ -80,10 +67,10 @@ def assert_contains(search: str, content: str, message: str = None):
         AssertionError: When the search is not contained within the content
     """
 
-    caller = getframeinfo(stack()[1][0])
-
-    if message is None:
+    if message == "":
         message = f"[{content}] does not contain [{search}]"
 
     if search not in content:
-        raise AssertionError(format_message(message, caller))
+        raise AssertionError(message)
+
+    return True

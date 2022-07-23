@@ -4,22 +4,51 @@ __all__ = [
 ]
 
 
-def __get_tracestack():
-    pass
+def __slash() -> str:
+    from platform import platform
+    return "\\" if "win" in platform() else "/" 
 
-# PERF: Make failure report stack trace
+
+def __get_tracback(error: Exception) -> list:
+    """Generate a fromatted traceback from an error.
+
+    Args:
+        error (Exception): Raised exception to extract the traceback from
+
+    Returns:
+        list: The formatted traceback
+    """
+    import traceback
+
+    stack = []
+    for frame in (traceback.extract_tb(error.__traceback__)):
+        if "wrapper" not in frame.name:
+            stack.append(f"[{frame.filename.split(__slash())[-1]}:{frame.lineno}] {frame.name}")
+
+    if str(error) == "":
+        if isinstance(error, AssertionError):
+            message = "Assertion Failed"
+        else:
+            message = f"Unkown exception <{error.__class__.__name__}>"
+    else:
+        message = str(error)
+
+    stack.append(f"[Error Message] {message}")
+
+    return stack
+
+
 def test(func):
     def wrapper(*args, **kwargs):
         try:
             func(*args, **kwargs)
         except AssertionError as error:
-            return (func.__name__, "\x1b[1;31mFailed\x1b[0m", error)
+            return (func.__name__, "Failed", __get_tracback(error))
 
-        return (func.__name__, "\x1b[1;32mPassed\x1b[0m", "")
+        return (func.__name__, "Passed", "")
 
     return wrapper
 
-from typing import Callable
 
 class Test():
     """Class used to indentify and run test results. It will also print the results to the screen."""
@@ -83,7 +112,6 @@ class Test():
 
         def visit_FunctionDef(node):
             """Checks given ast.FunctionDef node for a decorator `test` and adds it to the result."""
-            valid_paths = ['teddecor', 'UnitTest']
             for decorator in node.decorator_list:
                 if self.get_node_val(decorator):
                     result.append(node.name)
@@ -116,12 +144,22 @@ class Test():
             failed: int = self.get_failed()
 
             for result in self.results:
+                if isinstance(result[2], list):
+                    stack = "\n     ".join(result[2])
+                else:
+                    stack = ""
+
+                if result[1] == "Passed":
+                    success = f"\x1b[1;32m{result[1]}\x1b[0m"
+                else:
+                    success = f"\x1b[1;31m{result[1]}\x1b[0m"
+                    
                 print(
                     "   ",
                     result[0],
                     "...",
-                    result[1],
-                    f"\n        {result[2]}" if result[2] else "",
+                    success,
+                    f"\n     {stack}",
                 )
             print(
                 f"\n\x1b[1mTotal\x1b[0m: {len(self.results)} \
@@ -131,9 +169,21 @@ class Test():
         else:
             print(f"    \x1b[1;33mNo Tests Found for {self.__class__.__name__}\x1b[0m")
 
-    # TODO: Make main return the results in a standard way 
-    def main(self) -> None:
+    
+    def asdict(self) -> dict:
+        out = { f"{self.__class__.__name__}" : {}}
+
+        for result in self.results:
+            out[self.__class__.__name__][result[0]] = { "result": result[1], "stack": result[2]}
+
+        return out
+
+    def main(self, display: bool = True) -> dict:
         """Will find and execute all tests in class. Prints results when done."""
 
         self.execute_tests()
-        self.print_results()
+
+        if display:
+            self.print_results()
+
+        return self.asdict()
