@@ -1,7 +1,7 @@
 # TEDDecor
 This is a easy to use library with testing, documentation, and docstring example tools. Dive in with minimal effort and get great resutls. 
 
-## testing
+## Testing
 
 With testing it is as simple as importing the `UnitTest` module, `from teddecor.UnitTest import *` or `from teddecor import UnitTest`, then building a test class with test cases (functions).
 
