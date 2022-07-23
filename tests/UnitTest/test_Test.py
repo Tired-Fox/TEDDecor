@@ -11,6 +11,10 @@ class TestTesting(Test):
     def test_fail(self):
         assert False
 
+    @test
+    def test_notimplemented(self):
+        raise NotImplementedError
+
 
 class TestResults(Test):
     def __init__(self):
@@ -25,13 +29,18 @@ class TestResults(Test):
     def result_content(self):
         Asserts.assert_equal(self.result, {
             "TestTesting" : {
+                "totals": (1, 1, 1),
                 "test_pass": {
                     "result": "Passed",
-                    "stack": ""
+                    "info": ""
                     },
                 "test_fail": {
                     "result": "Failed",
-                    "stack": ["[test_Test.py:12] test_fail", "[Error Message] Assertion Failed"]
+                    "info": ["[test_Test.py:12] test_fail", "[Error Message] Assertion Failed"]
+                    },
+                "test_notimplemented": {
+                    "result": "Skipped",
+                    "info": "Not Implemented"
                     }
                 }
             })
