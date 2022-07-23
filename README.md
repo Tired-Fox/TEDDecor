@@ -32,5 +32,5 @@ you get the results printed out. The `main()` function will run any method in th
 </p>
 
 <p align="center" style="bold">
-  Check out the documentation for more testing features!!!
+  Check out the <a href="https://tired-fox.github.io/TEDDecor/teddecor.html" title="Docs" target="_blank">documentation</a> for more testing features!!!
 <p>

@@ -1,3 +1,9 @@
+"""Testing
+
+This module contains the base class and decorator for running tests.
+In a sense, this module is the brains of teddecor's unit testing.
+"""
+
 from dataclasses import dataclass
 
 __all__ = [
@@ -7,6 +13,11 @@ __all__ = [
 
 
 def __slash() -> str:
+    """Get the type of slash based on the os.
+
+    Returns:
+        str: OS filesystem specific slash character
+    """
     from platform import platform
     return "\\" if "win" in platform() else "/" 
 
@@ -41,7 +52,16 @@ def __get_tracback(error: Exception) -> list:
 
 
 def test(func):
+    """Decorator for test case (function)."""
     def wrapper(*args, **kwargs):
+        """Executes the function this decorator is on and collect the run results.
+
+        Returns:
+            tuple: The test run results. Formatted in the order of function name, type of result, and addition info.
+            
+        Note:
+            In the case of a skip and failed result the info portion is filled it with the type of skip and the traceback respectivily.
+        """
         try:
             func(*args, **kwargs)
         except AssertionError as error:
@@ -55,13 +75,20 @@ def test(func):
 
 @dataclass
 class TestResult():
+    """Enum/Dataclass that describes the test run result.
+    
+    Attributes:
+        SUCCESS (tuple[str, str]): Message and color for a successful test run
+        FAILED (tuple[str, str]): Message and color for a failed test run
+        SKIPPED (tuple[str, str]): Message and color for a skipped test run
+    """
     SUCCESS: tuple[str, str] = ("Passed", "\x1b[1;32m")
     FAILED: tuple[str, str] = ("Failed", "\x1b[1;31m")
     SKIPPED: tuple[str, str] = ("Skipped", "\x1b[1;33m")
 
 
 class Test():
-    """Class used to indentify and run test results. It will also print the results to the screen."""
+    """Class used to indentify and run tests. It will also print the results to the screen."""
 
     def __init__(self):
         self._results = []
@@ -77,7 +104,7 @@ class Test():
         self._results = new_results
 
     def get_count(self) -> tuple:
-        """Count the number of passed, failed, and unimplemented.
+        """Count the number of passed, failed, and unimplemented tests.
 
         Returns:
             int: Total failed tests
@@ -176,17 +203,20 @@ class Test():
                     success,
                     stack,
                 )
-#             print(
-#                 f"\n\x1b[1mTotal\x1b[22m: {len(self.results)} \
-# {TestResult.SUCCESS[1]}{TestResult.SUCCESS[0]}\x1b[0m: {passed} \
-# {TestResult.FAILED[1]}{TestResult.FAILED[0]}\x1b[0m: {failed} \
-# {TestResult.SKIPPED[1]}{TestResult.SKIPPED[0]}\x1b[0m: {skipped}"
-#             )
         else:
             print(f"    \x1b[1;33mNo Tests Found for {self.__class__.__name__}\x1b[0m")
 
     
     def asdict(self) -> dict:
+        """Converts the test classes results into a dictionary
+
+        Returns:
+            dict: Results organized by test case (function)
+
+        Note:
+            The dictionary will have a single key which is the class name that is another dictionary. Inside that dictionary is where the totals for passed, skipped, and failed are stored in a tuple respectivily.
+            This is also where the result and information for each test case.
+        """
         totals = self.get_count()
         out = { f"{self.__class__.__name__}" : { "totals": totals } }
 
