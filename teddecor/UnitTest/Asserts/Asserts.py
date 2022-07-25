@@ -1,4 +1,3 @@
-```python
 """Assert that something is true or false
 
 This module provides more descriptive and usefull asserts for things like equal, not null, contains, etc.
