@@ -255,9 +255,16 @@ class Assert_That(Test):
         except AssertionError as error:
             Asserts.assertWithin("Custom Message", str(error))
 
+
 @test
 def is_true():
     return True
+
+
+@test
+def is_fail():
+    raise AssertionError("Testing")
+
 
 if __name__ == "__main__":
     TestSuite(
@@ -271,5 +278,6 @@ if __name__ == "__main__":
             is_true,
         ],
     ).run()
-    
-    print(runTest(is_true))
+
+    result = runTest(is_fail)
+    result.csv()

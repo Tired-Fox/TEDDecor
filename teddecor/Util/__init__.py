@@ -17,6 +17,17 @@ def slash() -> str:
     return "\\" if "win" in platform else "/"
 
 
+def CR() -> str:
+    """Get platform specific CR
+
+    Returns:
+        str: CR character
+    """
+    from sys import platform
+
+    return "\r\n" if "win" in platform else "\n"
+
+
 def import_scope(rel_path: str = "../"):
     """Imports a directory to your pythons env path. This allows you to use a module or package that is in a local directory but out of scope."""
     path = rel_path.replace("\\/", slash())

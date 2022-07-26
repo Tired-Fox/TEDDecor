@@ -9,7 +9,9 @@ from .Testing import ResultType, Test, TestResult, test, runTest
 
 __all__ = ["TestSuite"]
 
-
+# TODO: Change manual formatting to TED formatter
+# PERF: Add Graph SVG output
+# PERF: Add CSV Output
 class TestSuite:
     """Run the given test classes or filter with regex."""
 
@@ -108,7 +110,7 @@ class TestSuite:
 
             for result in self.results[self.name]:
                 if case_results and isinstance(result, TestResult):
-                    print(result.str(indent=4))
+                    print(result.write(indent=4))
                 elif class_results:
                     print(result.str(indent=4))
 
@@ -121,30 +123,9 @@ class TestSuite:
         totals = [0, 0, 0]
 
         for result in self.results[self.name]:
-            if isclass(result):
-                passed, failed, skipped = result.getCount()
-                totals[0] += passed
-                totals[1] += failed
-                totals[2] += skipped
-            elif isinstance(result, TestResult):
-                if result.result == ResultType.SUCCESS[0]:
-                    totals[0] += 1
-                elif result.result == ResultType.FAILED[0]:
-                    totals[1] += 1
-                elif result.result == ResultType.SKIPPED[0]:
-                    totals[2] += 1
+            passed, failed, skipped = result.getCounts()
+            totals[0] += passed
+            totals[1] += failed
+            totals[2] += skipped
 
         return tuple(totals)
-
-    def __str__(self):
-        out = "TestSuite(tests=["
-        out += (
-            ",".join(test.__name__ for test in self.tests)
-            if self.tests is not None
-            else ""
-        )
-        out += f"], regex=r'{self.regex if self.regex is not None else ''}', resulst="
-        out += str(self.results)
-        out += ")"
-
-        return out

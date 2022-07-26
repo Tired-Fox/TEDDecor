@@ -9,3 +9,4 @@ test classes, test cases(functions), asserts, mocks, and much more.
 from .Asserts import *
 from .Testing import *
 from .TestSuite import *
+from .Results import *

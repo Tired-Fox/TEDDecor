@@ -5,12 +5,12 @@ In a sense, this module is the brains of teddecor's unit testing.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Callable, Pattern, Union
+from typing import Callable, Pattern
 
+from .Results import TestResult, ResultType
 from ..Util import *
 
-__all__ = ["test", "Test", "runTest", "TestResult", "ResultType"]
+__all__ = ["test", "Test", "runTest", "TestResult"]
 
 
 def runTest(test: Callable) -> TestResult:
@@ -88,95 +88,12 @@ def test(func):
     return test_wrapper
 
 
-@dataclass
-class ResultType:
-    """Enum/Dataclass that describes the test run result.
-
-    Attributes:
-        SUCCESS (tuple[str, str]): Message and color for a successful test run
-        FAILED (tuple[str, str]): Message and color for a failed test run
-        SKIPPED (tuple[str, str]): Message and color for a skipped test run
-    """
-
-    SUCCESS: tuple[str, str] = ("Passed", "\x1b[1;32m")
-    FAILED: tuple[str, str] = ("Failed", "\x1b[1;31m")
-    SKIPPED: tuple[str, str] = ("Skipped", "\x1b[1;33m")
-
-
-class TestResult:
-    def __init__(self, result: tuple[str, ResultType, Union[str, list]] = None):
-        if result is not None:
-            self._name = result[0]
-            self._result = result[1]
-            self._info = result[2]
-        else:
-            self._name = "Unknown"
-            self._result = ResultType.SKIPPED
-            self._info = "Unkown test"
-
-    @property
-    def fname(self) -> str:
-        return self._name
-
-    @property
-    def result(self) -> str:
-        return self._result[0]
-
-    @property
-    def color(self) -> str:
-        return self._result[1]
-
-    @property
-    def info(self) -> Union[str, list]:
-        return self._info
-
-    def str(self, indent: int = 0) -> str:
-        """Used to convert result into a string. Allows for additional indentationto be added.
-
-        Args:
-            indent (int, optional): Amount of indent to add in spaces. Defaults to 0.
-
-        Returns:
-            str: The formatted result as a string with indent
-
-        Note:
-            If you don't plan to add additional indent use the implement __str__ method.
-            str(TestResult) or print(TestResult).
-        """
-        out = " " * indent
-        out += f"{self.fname} (Case) ... {self.color}{self.result}\x1b[0m"
-        if isinstance(self.info, list):
-            for trace in self.info:
-                out += "\n" + " " * (indent + 4) + trace
-        else:
-            out += self.info
-
-        return out
-
-    def dict(self) -> dict:
-        """Convert the test result into a dictionary
-
-        Returns:
-            dict: Dictionary format of the test result
-        """
-        return {self.fname: {"result": self._result, "info": self.info}}
-
-    def __str__(self):
-        out = f"{self.fname} (Case) ... {self.color}{self.result}\x1b[0m"
-        if isinstance(self.info, list):
-            for trace in self.info:
-                out += "\n" + trace
-        else:
-            out += self.info
-
-        return out
-
-
 class Test:
     """Class used to indentify and run tests. It will also print the results to the screen."""
 
     def __init__(self):
         self._results = []
+        self._counts = [0, 0, 0]
 
     @property
     def results(self) -> dict:
@@ -188,22 +105,14 @@ class Test:
         """Set list of test results"""
         self._results = new_results
 
-    def getCount(self) -> tuple:
-        """Count the number of passed, failed, and unimplemented tests.
+    def getCounts(self) -> tuple:
+        """The number of passed, failed, and unimplemented tests.
 
         Returns:
             int: Total failed tests
         """
 
-        totals = [0, 0, 0]
-        for test_result in self.results:
-            if test_result.result == ResultType.SUCCESS[0]:
-                totals[0] += 1
-            elif test_result.result == ResultType.FAILED[0]:
-                totals[1] += 1
-            elif test_result.result == ResultType.SKIPPED[0]:
-                totals[2] += 1
-        return tuple(totals)
+        return tuple(self._counts)
 
     def getNodeValue(self, node) -> bool:
         """Gets the decorator value from node
@@ -264,11 +173,13 @@ class Test:
         fnames: list = self.getTests(regex)
         """Function names decorated with `@test`"""
 
-        klass = self.__class__.__name__
-
         for name in fnames:
             result = runTest(getattr(self, name))
             self.results.append(result)
+            passed, failed, skipped = result.getCounts()
+            self._counts[0] += passed
+            self._counts[1] += failed
+            self._counts[2] += skipped
 
         if display:
             print(self.str(tests=False))
@@ -284,7 +195,7 @@ class Test:
             This is also where the result and information for each test case.
         """
         klass = self.__class__.__name__
-        totals = self.getCount()
+        totals = self.getCounts()
         out = {f"{klass}": {"totals": totals}}
 
         for result in self.results:
@@ -294,17 +205,17 @@ class Test:
 
     def str(self, indent: int = 0, case_results: bool = True) -> str:
         klass = self.__class__.__name__
-        passed, failed, skipped = self.getCount()
+        passed, failed, skipped = self.getCounts()
 
         totals = f"\x1b[1m[{ResultType.SUCCESS[1]}{passed}\x1b[37m:{ResultType.SKIPPED[1]}{skipped}\x1b[37m\
 :{ResultType.FAILED[1]}{failed}\x1b[37m]\x1b[0m"
 
-        out = " " * indent + f"\x1b[1m{klass} (Class)\x1b[0m " + totals
+        out = " " * indent + f"\x1b[1m{klass} (Class)\x1b[0m " + totals + "\n"
 
         if case_results:
             if len(self.results) > 0:
                 for test_result in self.results:
-                    out += "\n" + test_result.str(indent=(4 + indent))
+                    out += "\n".join(test_result.pretty(indent=(4 + indent)))
             else:
                 out += (
                     " " * (indent + 4)
