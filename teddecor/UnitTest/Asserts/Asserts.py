@@ -8,16 +8,16 @@ from shutil import ExecError
 from typing import Any, Callable, Union
 
 __all__ = [
-    "assert_equal",
-    "assert_not_equal",
-    "assert_raises",
-    "assert_within",
-    "assert_none",
-    "assert_not_none",
+    "assertEqual",
+    "assertNotEqual",
+    "assertRaises",
+    "assertWithin",
+    "assertNone",
+    "assertNotNone",
 ]
 
 # PERF: Replace errors with lested/grouped errors if python 3.11
-def assert_equal(left: Any, right: Any, message: str = "") -> Union[bool, None]:
+def assertEqual(left: Any, right: Any, message: str = "") -> Union[bool, None]:
     """Assert that the left operand (First parameter) is equal to the right operand (Second Parameter).
 
     Args:
@@ -39,7 +39,7 @@ def assert_equal(left: Any, right: Any, message: str = "") -> Union[bool, None]:
     return True
 
 
-def assert_not_equal(left: Any, right: Any, message: str = "") -> Union[bool, None]:
+def assertNotEqual(left: Any, right: Any, message: str = "") -> Union[bool, None]:
     """Assert that the left operand (First parameter) is not equal to the right operand (Second Parameter).
 
     Args:
@@ -61,7 +61,7 @@ def assert_not_equal(left: Any, right: Any, message: str = "") -> Union[bool, No
     return True
 
 
-def assert_raises(
+def assertRaises(
     function: Callable, exception: Exception = None, message: str = ""
 ) -> Union[bool, None]:
     """Assert that a exceptions is raised within a callable piece of code
@@ -100,7 +100,7 @@ def assert_raises(
     raise AssertionError(message)
 
 
-def assert_within(search: Any, obj: Any, message: str = "") -> Union[bool, None]:
+def assertWithin(search: Any, obj: Any, message: str = "") -> Union[bool, None]:
     """Assert that a search value is contained within a certain string.
 
     Args:
@@ -128,7 +128,7 @@ def assert_within(search: Any, obj: Any, message: str = "") -> Union[bool, None]
     return True
 
 
-def assert_none(value: Any, message: str = "") -> Union[bool, None]:
+def assertNone(value: Any, message: str = "") -> Union[bool, None]:
     """Assert that a value is None.
 
     Args:
@@ -148,7 +148,7 @@ def assert_none(value: Any, message: str = "") -> Union[bool, None]:
     return True
 
 
-def assert_not_none(value: Any, message: str = "") -> Union[bool, None]:
+def assertNotNone(value: Any, message: str = "") -> Union[bool, None]:
     """Assert that a value is not None.
 
     Args:
@@ -166,11 +166,3 @@ def assert_not_none(value: Any, message: str = "") -> Union[bool, None]:
         raise AssertionError(message)
 
     return True
-
-
-def raise_nothing():
-    return True
-
-
-if __name__ == "__main__":
-    assert_raises(raise_nothing, None, "Custom Message")

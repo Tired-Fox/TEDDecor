@@ -4,20 +4,19 @@ from .Asserts import *
 
 
 __all__ = [
-    "assert_that",
+    "assertThat",
     "eq",
     "neq",
     "none",
-    "not_none",
+    "notNone",
     "has",
     "raises",
-    "haskey",
-    "hasvalue",
-    "haspair",
+    "within",
+    "has",
 ]
 
 
-def assert_that(value: Any, compare: Callable, message: str = "") -> Union[bool, None]:
+def assertThat(value: Any, compare: Callable, message: str = "") -> Union[bool, None]:
     """A general assert that takes logical value, callable pairs that make the testing more readable.
 
     Args:
@@ -46,7 +45,7 @@ def eq(value: Any) -> Callable:
     Note:
         Used in `assert_that` and can be thought of, assert that value1 equals value2.
     """
-    return lambda x, message: assert_equal(x, value, message)
+    return lambda x, message: assertEqual(x, value, message)
 
 
 def neq(value: Any) -> Callable:
@@ -61,7 +60,7 @@ def neq(value: Any) -> Callable:
     Note:
         Used in `assert_that` and can be thought of, assert that value1 does not equals value2.
     """
-    return lambda x, message: assert_not_equal(x, value, message)
+    return lambda x, message: assertNotEqual(x, value, message)
 
 
 def none() -> Callable:
@@ -73,10 +72,10 @@ def none() -> Callable:
     Note:
         Used in `assert_that` and can be thought of, assert that value is None.
     """
-    return lambda x, message: assert_none(x, message)
+    return lambda x, message: assertNone(x, message)
 
 
-def not_none() -> Callable:
+def notNone() -> Callable:
     """Return a function that takes a value and asserts that it is not None.
 
     Returns:
@@ -85,7 +84,7 @@ def not_none() -> Callable:
     Note:
         Used in `assert_that` and can be thought of, assert that value is not None
     """
-    return lambda x, message: assert_not_none(x, message)
+    return lambda x, message: assertNotNone(x, message)
 
 
 def raises(exception: Exception = None) -> Callable:
@@ -97,7 +96,7 @@ def raises(exception: Exception = None) -> Callable:
     Returns:
         Callable: Function that takes a callable
     """
-    return lambda x, message: assert_raises(x, exception, message)
+    return lambda x, message: assertRaises(x, exception, message)
 
 
 def within(obj: Any) -> Callable:
@@ -109,7 +108,7 @@ def within(obj: Any) -> Callable:
     Returns:
         Callable: Function that takes any value
     """
-    return lambda x, message: assert_within(x, obj, message)
+    return lambda x, message: assertWithin(x, obj, message)
 
 
 def has(value: Any) -> Callable:
@@ -121,4 +120,4 @@ def has(value: Any) -> Callable:
     Returns:
         Callable: Function that takes an object that implements __iter__
     """
-    return lambda x, message: assert_within(value, x, message)
+    return lambda x, message: assertWithin(value, x, message)
