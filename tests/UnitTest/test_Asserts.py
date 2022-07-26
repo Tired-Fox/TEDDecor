@@ -15,33 +15,33 @@ class CustomObject:
 class Assert_Equal(Test):
     @test
     def assert_equal_pass(self):
-        assert Asserts.assert_equal("dog", "dog")
+        assert Asserts.assertEqual("dog", "dog")
 
     @test
     def assert_equal_fail(self):
         try:
-            Asserts.assert_equal("dog", "cat")
+            Asserts.assertEqual("dog", "cat")
         except AssertionError as error:
             assert "Values are not equal" in str(error)
 
         try:
-            Asserts.assert_equal("dog", "cat", message="Dog is not equal to cat")
+            Asserts.assertEqual("dog", "cat", message="Dog is not equal to cat")
         except AssertionError as error:
             assert "Dog is not equal to cat" in str(error)
 
     @test
     def assert_not_equal_pass(self):
-        assert Asserts.assert_not_equal("dog", "cat")
+        assert Asserts.assertNotEqual("dog", "cat")
 
     @test
     def assert_not_equal_fail(self):
         try:
-            Asserts.assert_not_equal("dog", "dog")
+            Asserts.assertNotEqual("dog", "dog")
         except AssertionError as error:
             assert "Values are equal" in str(error)
 
         try:
-            Asserts.assert_not_equal("dog", "dog", "Not Equal")
+            Asserts.assertNotEqual("dog", "dog", "Not Equal")
         except AssertionError as error:
             assert "Not Equal" in str(error)
 
@@ -52,21 +52,21 @@ class Assert_Raises(Test):
 
     @test
     def assert_raise_pass(self):
-        assert Asserts.assert_raises(self.raises_lookup_error, LookupError)
+        assert Asserts.assertRaises(self.raises_lookup_error, LookupError)
 
     @test
     def assert_raise_pass_any(self):
-        assert Asserts.assert_raises(self.raises_lookup_error)
+        assert Asserts.assertRaises(self.raises_lookup_error)
 
     @test
     def assert_raise_unexpected_exception(self):
         try:
-            Asserts.assert_raises(self.raises_lookup_error, BufferError)
+            Asserts.assertRaises(self.raises_lookup_error, BufferError)
         except AssertionError as error:
             assert "Unexpected exception LookupError" in str(error)
 
         try:
-            Asserts.assert_raises(
+            Asserts.assertRaises(
                 BufferError, self.raises_lookup_error, "Custom Message"
             )
         except AssertionError as error:
@@ -75,19 +75,19 @@ class Assert_Raises(Test):
     @test
     def assert_raise_no_exception(self):
         try:
-            Asserts.assert_raises(LookupError, lambda *_: None)
+            Asserts.assertRaises(LookupError, lambda *_: None)
         except AssertionError as error:
             assert "No exception raised" in str(error)
 
         try:
-            Asserts.assert_raises(LookupError, lambda *_: None, "Custom Message")
+            Asserts.assertRaises(LookupError, lambda *_: None, "Custom Message")
         except AssertionError as error:
             assert "Custom Message" in str(error)
 
     @test
     def assert_raise_fail_any(self):
         try:
-            Asserts.assert_raises(self.raises_lookup_error)
+            Asserts.assertRaises(self.raises_lookup_error)
         except AssertionError as error:
             assert "No exception raised" in str(error)
 
@@ -99,17 +99,17 @@ class Assert_Within(Test):
 
     @test
     def assert_within_pass(self):
-        Asserts.assert_within("Hello", self.content)
+        Asserts.assertWithin("Hello", self.content)
 
     @test
     def assert_within_fail(self):
         try:
-            Asserts.assert_within("universe", self.content)
+            Asserts.assertWithin("universe", self.content)
         except AssertionError as error:
             assert "'universe' is not within the given object" in str(error)
 
         try:
-            Asserts.assert_within("universe", self.content, "Custom Message")
+            Asserts.assertWithin("universe", self.content, "Custom Message")
         except AssertionError as error:
             assert "Custom Message" in str(error)
 
@@ -117,35 +117,35 @@ class Assert_Within(Test):
 class Assert_None(Test):
     @test
     def assert_none_pass(self):
-        assert Asserts.assert_none(None)
+        assert Asserts.assertNone(None)
 
     @test
     def assert_none_fail(self):
         try:
-            Asserts.assert_none("dog")
+            Asserts.assertNone("dog")
         except AssertionError as error:
             assert "<class 'str'> is not NoneType" in str(error)
 
         try:
-            Asserts.assert_none("universe", "Custom Message")
+            Asserts.assertNone("universe", "Custom Message")
         except AssertionError as error:
-            Asserts.assert_within("Custom Message", str(error))
+            Asserts.assertWithin("Custom Message", str(error))
 
     @test
     def assert_not_none_pass(self):
-        assert Asserts.assert_not_none("dog")
+        assert Asserts.assertNotNone("dog")
 
     @test
     def assert_not_none_fail(self):
         try:
-            Asserts.assert_not_none(None)
+            Asserts.assertNotNone(None)
         except AssertionError as error:
             assert "None is NoneType" in str(error)
 
         try:
-            Asserts.assert_not_none("universe", "Custom Message")
+            Asserts.assertNotNone("universe", "Custom Message")
         except AssertionError as error:
-            Asserts.assert_within("Custom Message", str(error))
+            Asserts.assertWithin("Custom Message", str(error))
 
 
 from typing import Callable
@@ -161,110 +161,115 @@ class Assert_That(Test):
     @test
     def assert_eq_pass(self):
         assert isinstance(eq(12), Callable)
-        assert assert_that(12, eq(12))
+        assert assertThat(12, eq(12))
 
     @test
     def assert_eq_fail(self):
         try:
-            assert_that(12, eq(10))
+            assertThat(12, eq(10))
         except AssertionError as error:
-            print(error)
-            Asserts.assert_within("Values are not equal", str(error))
+            Asserts.assertWithin("Values are not equal", str(error))
 
         try:
-            assert_that(12, eq(10), "Numbers are not equal")
+            assertThat(12, eq(10), "Numbers are not equal")
         except AssertionError as error:
-            Asserts.assert_within("Numbers are not equal", str(error))
+            Asserts.assertWithin("Numbers are not equal", str(error))
 
     @test
     def assert_neq_pass(self):
         assert isinstance(neq(12), Callable)
-        assert assert_that(12, neq(10))
+        assert assertThat(12, neq(10))
 
     @test
     def assert_neq_fail(self):
         try:
-            assert_that(12, eq(12), "Numbers are equal")
+            assertThat(12, eq(12), "Numbers are equal")
         except AssertionError as error:
-            Asserts.assert_within("Numbers are equal", str(error))
+            Asserts.assertWithin("Numbers are equal", str(error))
 
     @test
     def assert_none_pass(self):
         assert isinstance(none(), Callable)
-        assert assert_that(None, none())
+        assert assertThat(None, none())
 
     @test
     def assert_none_fail(self):
         try:
-            assert_that(12, none(), "Custom Message")
+            assertThat(12, none(), "Custom Message")
         except AssertionError as error:
-            Asserts.assert_within("Custom Message", str(error))
+            Asserts.assertWithin("Custom Message", str(error))
 
     @test
     def assert_not_none_pass(self):
-        assert isinstance(not_none(), Callable)
-        assert assert_that(12, not_none())
+        assert isinstance(notNone(), Callable)
+        assert assertThat(12, notNone())
 
     @test
     def assert_not_none_fail(self):
         try:
-            assert_that(12, not_none(), "Custom Message")
+            assertThat(12, notNone(), "Custom Message")
         except AssertionError as error:
-            Asserts.assert_within("Custom Message", str(error))
+            Asserts.assertWithin("Custom Message", str(error))
 
     @test
     def assert_raises_plass(self):
         assert isinstance(raises(), Callable)
-        assert assert_that(self.raises_lookup, raises(LookupError))
-        assert assert_that(self.raises_lookup, raises())
+        assert assertThat(self.raises_lookup, raises(LookupError))
+        assert assertThat(self.raises_lookup, raises())
 
     @test
     def assert_raises_fail(self):
         try:
-            assert_that(self.raises_lookup, raises(AssertionError), "Custom Message")
+            assertThat(self.raises_lookup, raises(AssertionError), "Custom Message")
         except AssertionError as error:
-            Asserts.assert_within("Custom Message", str(error))
+            Asserts.assertWithin("Custom Message", str(error))
 
         try:
-            assert_that(self.raises_nothing, raises(), "Custom Message")
+            assertThat(self.raises_nothing, raises(), "Custom Message")
         except AssertionError as error:
-            Asserts.assert_within("Custom Message", str(error))
+            Asserts.assertWithin("Custom Message", str(error))
 
     @test
     def assert_within_pass(self):
         assert isinstance(within(None), Callable)
-        assert assert_that("dog", within(["dog", "cat"]))
-        assert assert_that("dog", within("Can you play with the dog?"))
+        assert assertThat("dog", within(["dog", "cat"]))
+        assert assertThat("dog", within("Can you play with the dog?"))
 
     @test
     def assert_within_fail(self):
         try:
-            assert_that("dog", within(None), "Custom Message")
+            assertThat("dog", within(None), "Custom Message")
         except AssertionError as error:
-            Asserts.assert_within("Custom Message", str(error))
+            Asserts.assertWithin("Custom Message", str(error))
 
     @test
     def assert_within_pass(self):
         assert isinstance(has(None), Callable)
-        assert assert_that(["dog", "cat"], has("dog"))
-        assert assert_that("Can you play with the dog?", has("dog"))
+        assert assertThat(["dog", "cat"], has("dog"))
+        assert assertThat("Can you play with the dog?", has("dog"))
 
     @test
     def assert_within_fail(self):
         try:
-            assert_that([], has("dog"), "Custom Message")
+            assertThat([], has("dog"), "Custom Message")
         except AssertionError as error:
-            Asserts.assert_within("Custom Message", str(error))
+            Asserts.assertWithin("Custom Message", str(error))
 
+@test
+def is_true():
+    return True
 
 if __name__ == "__main__":
-    classes = [
-        Assert_Equal(),
-        Assert_Raises(),
-        Assert_Within(),
-        Assert_None(),
-        Assert_That(),
-    ]
-    for klass in classes:
-        klass.main()
-        print("\n······························\n")
+    TestSuite(
+        name="Asserts",
+        tests=[
+            Assert_Equal,
+            Assert_Raises,
+            Assert_Within,
+            Assert_None,
+            Assert_That,
+            is_true,
+        ],
+    ).run()
+    
+    print(runTest(is_true))

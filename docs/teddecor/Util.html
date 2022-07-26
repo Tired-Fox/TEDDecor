@@ -33,6 +33,9 @@
             <li>
                     <a class="function" href="#import_scope">import_scope</a>
             </li>
+            <li>
+                    <a class="function" href="#slash">slash</a>
+            </li>
     </ul>
 
 
@@ -63,31 +66,32 @@
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">A collection of modules and helpful features that that are commonly used.</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">def</span> <span class="nf">__slash</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="sd">&quot;&quot;&quot;Get the operating system specific slash character for the filesystem.</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    Returns:</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">        str: The oppropriate slash character</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">platform</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">if</span> <span class="s2">&quot;win&quot;</span> <span class="ow">in</span> <span class="n">platform</span><span class="p">:</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">return</span> <span class="s2">&quot;/&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;import_scope&quot;</span><span class="p">,</span> <span class="s2">&quot;slash&quot;</span><span class="p">]</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">def</span> <span class="nf">slash</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="sd">&quot;&quot;&quot;Get the type of slash based on the os.</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="sd">    Returns:</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">        str: OS filesystem specific slash character</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">platform</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="s2">&quot;win&quot;</span> <span class="ow">in</span> <span class="n">platform</span> <span class="k">else</span> <span class="s2">&quot;/&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="k">def</span> <span class="nf">import_scope</span><span class="p">(</span><span class="n">rel_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;../&quot;</span><span class="p">):</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="sd">&quot;&quot;&quot;Imports a directory to your pythons env path. This allows you to use a module or package that is in a local directory but out of scope.&quot;&quot;&quot;</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">rel_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="n">__slash</span><span class="p">())</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;~&quot;</span><span class="p">:</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()))</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="k">def</span> <span class="nf">import_scope</span><span class="p">(</span><span class="n">rel_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;../&quot;</span><span class="p">):</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="sd">&quot;&quot;&quot;Imports a directory to your pythons env path. This allows you to use a module or package that is in a local directory but out of scope.&quot;&quot;&quot;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">rel_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="n">slash</span><span class="p">())</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">):</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()))</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="kn">import</span> <span class="nn">sys</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">path</span> <span class="k">as</span> <span class="n">envpath</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="n">envpath</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -103,20 +107,53 @@
 
     </div>
     <a class="headerlink" href="#import_scope"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="import_scope-22"><a href="#import_scope-22"><span class="linenos">22</span></a><span class="k">def</span> <span class="nf">import_scope</span><span class="p">(</span><span class="n">rel_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;../&quot;</span><span class="p">):</span>
-</span><span id="import_scope-23"><a href="#import_scope-23"><span class="linenos">23</span></a>    <span class="sd">&quot;&quot;&quot;Imports a directory to your pythons env path. This allows you to use a module or package that is in a local directory but out of scope.&quot;&quot;&quot;</span>
-</span><span id="import_scope-24"><a href="#import_scope-24"><span class="linenos">24</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">rel_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">/&#39;</span><span class="p">,</span> <span class="n">__slash</span><span class="p">())</span>
-</span><span id="import_scope-25"><a href="#import_scope-25"><span class="linenos">25</span></a>    
-</span><span id="import_scope-26"><a href="#import_scope-26"><span class="linenos">26</span></a>    <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;~&quot;</span><span class="p">:</span>
-</span><span id="import_scope-27"><a href="#import_scope-27"><span class="linenos">27</span></a>        <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-</span><span id="import_scope-28"><a href="#import_scope-28"><span class="linenos">28</span></a>        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="import_scope-21"><a href="#import_scope-21"><span class="linenos">21</span></a><span class="k">def</span> <span class="nf">import_scope</span><span class="p">(</span><span class="n">rel_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;../&quot;</span><span class="p">):</span>
+</span><span id="import_scope-22"><a href="#import_scope-22"><span class="linenos">22</span></a>    <span class="sd">&quot;&quot;&quot;Imports a directory to your pythons env path. This allows you to use a module or package that is in a local directory but out of scope.&quot;&quot;&quot;</span>
+</span><span id="import_scope-23"><a href="#import_scope-23"><span class="linenos">23</span></a>    <span class="n">path</span> <span class="o">=</span> <span class="n">rel_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">/&quot;</span><span class="p">,</span> <span class="n">slash</span><span class="p">())</span>
+</span><span id="import_scope-24"><a href="#import_scope-24"><span class="linenos">24</span></a>
+</span><span id="import_scope-25"><a href="#import_scope-25"><span class="linenos">25</span></a>    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">):</span>
+</span><span id="import_scope-26"><a href="#import_scope-26"><span class="linenos">26</span></a>        <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</span><span id="import_scope-27"><a href="#import_scope-27"><span class="linenos">27</span></a>
+</span><span id="import_scope-28"><a href="#import_scope-28"><span class="linenos">28</span></a>        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()))</span>
 </span><span id="import_scope-29"><a href="#import_scope-29"><span class="linenos">29</span></a>
-</span><span id="import_scope-30"><a href="#import_scope-30"><span class="linenos">30</span></a>    <span class="kn">import</span> <span class="nn">sys</span>
-</span><span id="import_scope-31"><a href="#import_scope-31"><span class="linenos">31</span></a>    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</span><span id="import_scope-30"><a href="#import_scope-30"><span class="linenos">30</span></a>    <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">path</span> <span class="k">as</span> <span class="n">envpath</span>
+</span><span id="import_scope-31"><a href="#import_scope-31"><span class="linenos">31</span></a>
+</span><span id="import_scope-32"><a href="#import_scope-32"><span class="linenos">32</span></a>    <span class="n">envpath</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Imports a directory to your pythons env path. This allows you to use a module or package that is in a local directory but out of scope.</p>
+</div>
+
+
+                </section>
+                <section id="slash">
+                            <input id="slash-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">slash</span><span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="nb">str</span>:</span></span>
+
+                <label class="view-source-button" for="slash-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#slash"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="slash-10"><a href="#slash-10"><span class="linenos">10</span></a><span class="k">def</span> <span class="nf">slash</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="slash-11"><a href="#slash-11"><span class="linenos">11</span></a>    <span class="sd">&quot;&quot;&quot;Get the type of slash based on the os.</span>
+</span><span id="slash-12"><a href="#slash-12"><span class="linenos">12</span></a>
+</span><span id="slash-13"><a href="#slash-13"><span class="linenos">13</span></a><span class="sd">    Returns:</span>
+</span><span id="slash-14"><a href="#slash-14"><span class="linenos">14</span></a><span class="sd">        str: OS filesystem specific slash character</span>
+</span><span id="slash-15"><a href="#slash-15"><span class="linenos">15</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="slash-16"><a href="#slash-16"><span class="linenos">16</span></a>    <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">platform</span>
+</span><span id="slash-17"><a href="#slash-17"><span class="linenos">17</span></a>
+</span><span id="slash-18"><a href="#slash-18"><span class="linenos">18</span></a>    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="s2">&quot;win&quot;</span> <span class="ow">in</span> <span class="n">platform</span> <span class="k">else</span> <span class="s2">&quot;/&quot;</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Get the type of slash based on the os.</p>
+
+<p>Returns:
+    str: OS filesystem specific slash character</p>
 </div>
 
 
