@@ -46,16 +46,7 @@
                                 <a class="variable" href="#TestSuite.regex">regex</a>
                         </li>
                         <li>
-                                <a class="variable" href="#TestSuite.results">results</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#TestSuite.run">run</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#TestSuite.prettify">prettify</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#TestSuite.getCount">getCount</a>
                         </li>
                 </ul>
 
@@ -86,156 +77,95 @@ Can be either test classes or individual test cases.</p>
 
                         <label class="view-source-button" for="TestSuite-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;Test Suite</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">A collection of tests that are to be run.</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">Can be either test classes or individual test cases.</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isclass</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Pattern</span><span class="p">,</span> <span class="n">Union</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span> <span class="nn">.Testing</span> <span class="kn">import</span> <span class="n">ResultType</span><span class="p">,</span> <span class="n">Test</span><span class="p">,</span> <span class="n">TestResult</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">runTest</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TestSuite&quot;</span><span class="p">]</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="k">class</span> <span class="nc">TestSuite</span><span class="p">:</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="sd">&quot;&quot;&quot;Run the given test classes or filter with regex.&quot;&quot;&quot;</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>        <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Test</span><span class="p">,</span> <span class="n">test</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>        <span class="n">regex</span><span class="p">:</span> <span class="n">Pattern</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>    <span class="p">):</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>        <span class="sd">&quot;&quot;&quot;Start with a list of Test classes or test functions. The function name patter can also be specified.</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">            Lastly you can specify whether a Test class outputs the result</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        Args:</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">            tests (list[Union[Test, test]], optional): _description_. Defaults to None.</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">            regex (Pattern, optional): _description_. Defaults to None.</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">            output (bool, optional): _description_. Defaults to True.</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]}</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>    <span class="nd">@property</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="nd">@property</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>    <span class="nd">@tests</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Test</span><span class="p">]):</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>    <span class="nd">@property</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="k">def</span> <span class="nf">regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="nd">@regex</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>    <span class="k">def</span> <span class="nf">regex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="nd">@property</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>    <span class="k">def</span> <span class="nf">results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>        <span class="n">class_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="n">case_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="sd">&quot;&quot;&quot;Run all the provided test classes and cases.q</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">        Args:</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">        Returns:</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">            dict: Dictionary of results</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>                    <span class="n">test</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>                <span class="p">)</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">runTest</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">prettify</span><span class="p">(</span><span class="n">display</span><span class="p">,</span> <span class="n">class_results</span><span class="p">,</span> <span class="n">case_results</span><span class="p">)</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">def</span> <span class="nf">prettify</span><span class="p">(</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">class_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">case_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="p">):</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="sd">&quot;&quot;&quot;Will print the results of the classes and cases in a formatted way</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">        Args:</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="k">if</span> <span class="n">display</span><span class="p">:</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>            <span class="n">passed</span><span class="p">,</span> <span class="n">failed</span><span class="p">,</span> <span class="n">skipped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCount</span><span class="p">()</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>            <span class="n">totals</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[1m[</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">passed</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m:</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">SKIPPED</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">skipped</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m</span><span class="se">\</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="s2">:</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">FAILED</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">failed</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m]</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[1m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (Suite)</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span><span class="p">,</span> <span class="n">totals</span><span class="p">)</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>                <span class="k">if</span> <span class="n">case_results</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">TestResult</span><span class="p">):</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>                    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>                <span class="k">elif</span> <span class="n">class_results</span><span class="p">:</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>                    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="k">def</span> <span class="nf">getCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="sd">&quot;&quot;&quot;Count the number of passed, failed, and skipped tests respectively</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">        Returns:</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">            tuple: The amount of passed, failed, and skipped tests</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>        <span class="n">totals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>                <span class="n">passed</span><span class="p">,</span> <span class="n">failed</span><span class="p">,</span> <span class="n">skipped</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">getCount</span><span class="p">()</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">passed</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">failed</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">skipped</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">TestResult</span><span class="p">):</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>                <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">FAILED</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>                <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">SKIPPED</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">totals</span><span class="p">)</span>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;TestSuite(tests=[&quot;</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>        <span class="n">out</span> <span class="o">+=</span> <span class="p">(</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>            <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>            <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>        <span class="p">)</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;], regex=r&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&#39;, resulst=&quot;</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="n">out</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>        <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;)&quot;</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>        <span class="k">return</span> <span class="n">out</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Test Suite</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">A collection of tests that are to be run.</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">Can be either test classes or individual test cases.</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isclass</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Pattern</span><span class="p">,</span> <span class="n">Union</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span> <span class="nn">.Results</span> <span class="kn">import</span> <span class="n">SuiteResult</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span> <span class="nn">.Testing</span> <span class="kn">import</span> <span class="n">Test</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">runTest</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TestSuite&quot;</span><span class="p">]</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="c1"># TODO: Change manual formatting to TED formatter</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="c1"># PERF: Add Graph SVG output</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="k">class</span> <span class="nc">TestSuite</span><span class="p">:</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="sd">&quot;&quot;&quot;Run the given test classes or filter with regex.&quot;&quot;&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Test</span><span class="p">,</span> <span class="n">test</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="n">regex</span><span class="p">:</span> <span class="n">Pattern</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="p">):</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="sd">&quot;&quot;&quot;Start with a list of Test classes or test functions. The function name patter can also be specified.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">            Lastly you can specify whether a Test class outputs the result</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">        Args:</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">            tests (list[Union[Test, test]], optional): _description_. Defaults to None.</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="sd">            regex (Pattern, optional): _description_. Defaults to None.</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="sd">            output (bool, optional): _description_. Defaults to True.</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="nd">@property</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="nd">@property</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="nd">@tests</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Test</span><span class="p">]):</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="nd">@property</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>    <span class="k">def</span> <span class="nf">regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="nd">@regex</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="k">def</span> <span class="nf">regex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TestSuite</span><span class="p">:</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="sd">&quot;&quot;&quot;Run all the provided test classes and cases.q</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="sd">        Args:</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="sd">        Returns:</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a><span class="sd">            dict: Dictionary of results</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">match</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>        <span class="n">_results</span> <span class="o">=</span> <span class="n">SuiteResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>                <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">runTest</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>                    <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>                    <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>        <span class="k">if</span> <span class="n">display</span><span class="p">:</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>            <span class="n">_results</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>
+</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="n">_results</span>
 </span></pre></div>
 
 
@@ -251,144 +181,79 @@ Can be either test classes or individual test cases.</p>
 
     </div>
     <a class="headerlink" href="#TestSuite"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TestSuite-14"><a href="#TestSuite-14"><span class="linenos"> 14</span></a><span class="k">class</span> <span class="nc">TestSuite</span><span class="p">:</span>
-</span><span id="TestSuite-15"><a href="#TestSuite-15"><span class="linenos"> 15</span></a>    <span class="sd">&quot;&quot;&quot;Run the given test classes or filter with regex.&quot;&quot;&quot;</span>
-</span><span id="TestSuite-16"><a href="#TestSuite-16"><span class="linenos"> 16</span></a>
-</span><span id="TestSuite-17"><a href="#TestSuite-17"><span class="linenos"> 17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span id="TestSuite-18"><a href="#TestSuite-18"><span class="linenos"> 18</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="TestSuite-19"><a href="#TestSuite-19"><span class="linenos"> 19</span></a>        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="TestSuite-20"><a href="#TestSuite-20"><span class="linenos"> 20</span></a>        <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Test</span><span class="p">,</span> <span class="n">test</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="TestSuite-21"><a href="#TestSuite-21"><span class="linenos"> 21</span></a>        <span class="n">regex</span><span class="p">:</span> <span class="n">Pattern</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="TestSuite-22"><a href="#TestSuite-22"><span class="linenos"> 22</span></a>    <span class="p">):</span>
-</span><span id="TestSuite-23"><a href="#TestSuite-23"><span class="linenos"> 23</span></a>        <span class="sd">&quot;&quot;&quot;Start with a list of Test classes or test functions. The function name patter can also be specified.</span>
-</span><span id="TestSuite-24"><a href="#TestSuite-24"><span class="linenos"> 24</span></a><span class="sd">            Lastly you can specify whether a Test class outputs the result</span>
-</span><span id="TestSuite-25"><a href="#TestSuite-25"><span class="linenos"> 25</span></a>
-</span><span id="TestSuite-26"><a href="#TestSuite-26"><span class="linenos"> 26</span></a><span class="sd">        Args:</span>
-</span><span id="TestSuite-27"><a href="#TestSuite-27"><span class="linenos"> 27</span></a><span class="sd">            tests (list[Union[Test, test]], optional): _description_. Defaults to None.</span>
-</span><span id="TestSuite-28"><a href="#TestSuite-28"><span class="linenos"> 28</span></a><span class="sd">            regex (Pattern, optional): _description_. Defaults to None.</span>
-</span><span id="TestSuite-29"><a href="#TestSuite-29"><span class="linenos"> 29</span></a><span class="sd">            output (bool, optional): _description_. Defaults to True.</span>
-</span><span id="TestSuite-30"><a href="#TestSuite-30"><span class="linenos"> 30</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TestSuite-31"><a href="#TestSuite-31"><span class="linenos"> 31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span id="TestSuite-32"><a href="#TestSuite-32"><span class="linenos"> 32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
-</span><span id="TestSuite-33"><a href="#TestSuite-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
-</span><span id="TestSuite-34"><a href="#TestSuite-34"><span class="linenos"> 34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]}</span>
-</span><span id="TestSuite-35"><a href="#TestSuite-35"><span class="linenos"> 35</span></a>
-</span><span id="TestSuite-36"><a href="#TestSuite-36"><span class="linenos"> 36</span></a>    <span class="nd">@property</span>
-</span><span id="TestSuite-37"><a href="#TestSuite-37"><span class="linenos"> 37</span></a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="TestSuite-38"><a href="#TestSuite-38"><span class="linenos"> 38</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
-</span><span id="TestSuite-39"><a href="#TestSuite-39"><span class="linenos"> 39</span></a>
-</span><span id="TestSuite-40"><a href="#TestSuite-40"><span class="linenos"> 40</span></a>    <span class="nd">@property</span>
-</span><span id="TestSuite-41"><a href="#TestSuite-41"><span class="linenos"> 41</span></a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="TestSuite-42"><a href="#TestSuite-42"><span class="linenos"> 42</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span>
-</span><span id="TestSuite-43"><a href="#TestSuite-43"><span class="linenos"> 43</span></a>
-</span><span id="TestSuite-44"><a href="#TestSuite-44"><span class="linenos"> 44</span></a>    <span class="nd">@tests</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="TestSuite-45"><a href="#TestSuite-45"><span class="linenos"> 45</span></a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Test</span><span class="p">]):</span>
-</span><span id="TestSuite-46"><a href="#TestSuite-46"><span class="linenos"> 46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
-</span><span id="TestSuite-47"><a href="#TestSuite-47"><span class="linenos"> 47</span></a>
-</span><span id="TestSuite-48"><a href="#TestSuite-48"><span class="linenos"> 48</span></a>    <span class="nd">@property</span>
-</span><span id="TestSuite-49"><a href="#TestSuite-49"><span class="linenos"> 49</span></a>    <span class="k">def</span> <span class="nf">regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="TestSuite-50"><a href="#TestSuite-50"><span class="linenos"> 50</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span>
-</span><span id="TestSuite-51"><a href="#TestSuite-51"><span class="linenos"> 51</span></a>
-</span><span id="TestSuite-52"><a href="#TestSuite-52"><span class="linenos"> 52</span></a>    <span class="nd">@regex</span><span class="o">.</span><span class="n">setter</span>
-</span><span id="TestSuite-53"><a href="#TestSuite-53"><span class="linenos"> 53</span></a>    <span class="k">def</span> <span class="nf">regex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-</span><span id="TestSuite-54"><a href="#TestSuite-54"><span class="linenos"> 54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
-</span><span id="TestSuite-55"><a href="#TestSuite-55"><span class="linenos"> 55</span></a>
-</span><span id="TestSuite-56"><a href="#TestSuite-56"><span class="linenos"> 56</span></a>    <span class="nd">@property</span>
-</span><span id="TestSuite-57"><a href="#TestSuite-57"><span class="linenos"> 57</span></a>    <span class="k">def</span> <span class="nf">results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="TestSuite-58"><a href="#TestSuite-58"><span class="linenos"> 58</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span>
-</span><span id="TestSuite-59"><a href="#TestSuite-59"><span class="linenos"> 59</span></a>
-</span><span id="TestSuite-60"><a href="#TestSuite-60"><span class="linenos"> 60</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="TestSuite-61"><a href="#TestSuite-61"><span class="linenos"> 61</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="TestSuite-62"><a href="#TestSuite-62"><span class="linenos"> 62</span></a>        <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="TestSuite-63"><a href="#TestSuite-63"><span class="linenos"> 63</span></a>        <span class="n">class_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="TestSuite-64"><a href="#TestSuite-64"><span class="linenos"> 64</span></a>        <span class="n">case_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="TestSuite-65"><a href="#TestSuite-65"><span class="linenos"> 65</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="TestSuite-66"><a href="#TestSuite-66"><span class="linenos"> 66</span></a>        <span class="sd">&quot;&quot;&quot;Run all the provided test classes and cases.q</span>
-</span><span id="TestSuite-67"><a href="#TestSuite-67"><span class="linenos"> 67</span></a>
-</span><span id="TestSuite-68"><a href="#TestSuite-68"><span class="linenos"> 68</span></a><span class="sd">        Args:</span>
-</span><span id="TestSuite-69"><a href="#TestSuite-69"><span class="linenos"> 69</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
-</span><span id="TestSuite-70"><a href="#TestSuite-70"><span class="linenos"> 70</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
-</span><span id="TestSuite-71"><a href="#TestSuite-71"><span class="linenos"> 71</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
-</span><span id="TestSuite-72"><a href="#TestSuite-72"><span class="linenos"> 72</span></a>
-</span><span id="TestSuite-73"><a href="#TestSuite-73"><span class="linenos"> 73</span></a><span class="sd">        Returns:</span>
-</span><span id="TestSuite-74"><a href="#TestSuite-74"><span class="linenos"> 74</span></a><span class="sd">            dict: Dictionary of results</span>
-</span><span id="TestSuite-75"><a href="#TestSuite-75"><span class="linenos"> 75</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TestSuite-76"><a href="#TestSuite-76"><span class="linenos"> 76</span></a>
-</span><span id="TestSuite-77"><a href="#TestSuite-77"><span class="linenos"> 77</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="TestSuite-78"><a href="#TestSuite-78"><span class="linenos"> 78</span></a>
-</span><span id="TestSuite-79"><a href="#TestSuite-79"><span class="linenos"> 79</span></a>        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
-</span><span id="TestSuite-80"><a href="#TestSuite-80"><span class="linenos"> 80</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
-</span><span id="TestSuite-81"><a href="#TestSuite-81"><span class="linenos"> 81</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="TestSuite-82"><a href="#TestSuite-82"><span class="linenos"> 82</span></a>                    <span class="n">test</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="TestSuite-83"><a href="#TestSuite-83"><span class="linenos"> 83</span></a>                <span class="p">)</span>
-</span><span id="TestSuite-84"><a href="#TestSuite-84"><span class="linenos"> 84</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="TestSuite-85"><a href="#TestSuite-85"><span class="linenos"> 85</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">runTest</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
-</span><span id="TestSuite-86"><a href="#TestSuite-86"><span class="linenos"> 86</span></a>
-</span><span id="TestSuite-87"><a href="#TestSuite-87"><span class="linenos"> 87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">prettify</span><span class="p">(</span><span class="n">display</span><span class="p">,</span> <span class="n">class_results</span><span class="p">,</span> <span class="n">case_results</span><span class="p">)</span>
-</span><span id="TestSuite-88"><a href="#TestSuite-88"><span class="linenos"> 88</span></a>
-</span><span id="TestSuite-89"><a href="#TestSuite-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span>
-</span><span id="TestSuite-90"><a href="#TestSuite-90"><span class="linenos"> 90</span></a>
-</span><span id="TestSuite-91"><a href="#TestSuite-91"><span class="linenos"> 91</span></a>    <span class="k">def</span> <span class="nf">prettify</span><span class="p">(</span>
-</span><span id="TestSuite-92"><a href="#TestSuite-92"><span class="linenos"> 92</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">class_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">case_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="TestSuite-93"><a href="#TestSuite-93"><span class="linenos"> 93</span></a>    <span class="p">):</span>
-</span><span id="TestSuite-94"><a href="#TestSuite-94"><span class="linenos"> 94</span></a>        <span class="sd">&quot;&quot;&quot;Will print the results of the classes and cases in a formatted way</span>
-</span><span id="TestSuite-95"><a href="#TestSuite-95"><span class="linenos"> 95</span></a>
-</span><span id="TestSuite-96"><a href="#TestSuite-96"><span class="linenos"> 96</span></a><span class="sd">        Args:</span>
-</span><span id="TestSuite-97"><a href="#TestSuite-97"><span class="linenos"> 97</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
-</span><span id="TestSuite-98"><a href="#TestSuite-98"><span class="linenos"> 98</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
-</span><span id="TestSuite-99"><a href="#TestSuite-99"><span class="linenos"> 99</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
-</span><span id="TestSuite-100"><a href="#TestSuite-100"><span class="linenos">100</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TestSuite-101"><a href="#TestSuite-101"><span class="linenos">101</span></a>
-</span><span id="TestSuite-102"><a href="#TestSuite-102"><span class="linenos">102</span></a>        <span class="k">if</span> <span class="n">display</span><span class="p">:</span>
-</span><span id="TestSuite-103"><a href="#TestSuite-103"><span class="linenos">103</span></a>            <span class="n">passed</span><span class="p">,</span> <span class="n">failed</span><span class="p">,</span> <span class="n">skipped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCount</span><span class="p">()</span>
-</span><span id="TestSuite-104"><a href="#TestSuite-104"><span class="linenos">104</span></a>
-</span><span id="TestSuite-105"><a href="#TestSuite-105"><span class="linenos">105</span></a>            <span class="n">totals</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[1m[</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">passed</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m:</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">SKIPPED</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">skipped</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m</span><span class="se">\</span>
-</span><span id="TestSuite-106"><a href="#TestSuite-106"><span class="linenos">106</span></a><span class="s2">:</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">FAILED</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">failed</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m]</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span>
-</span><span id="TestSuite-107"><a href="#TestSuite-107"><span class="linenos">107</span></a>
-</span><span id="TestSuite-108"><a href="#TestSuite-108"><span class="linenos">108</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[1m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (Suite)</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span><span class="p">,</span> <span class="n">totals</span><span class="p">)</span>
-</span><span id="TestSuite-109"><a href="#TestSuite-109"><span class="linenos">109</span></a>
-</span><span id="TestSuite-110"><a href="#TestSuite-110"><span class="linenos">110</span></a>            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
-</span><span id="TestSuite-111"><a href="#TestSuite-111"><span class="linenos">111</span></a>                <span class="k">if</span> <span class="n">case_results</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">TestResult</span><span class="p">):</span>
-</span><span id="TestSuite-112"><a href="#TestSuite-112"><span class="linenos">112</span></a>                    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
-</span><span id="TestSuite-113"><a href="#TestSuite-113"><span class="linenos">113</span></a>                <span class="k">elif</span> <span class="n">class_results</span><span class="p">:</span>
-</span><span id="TestSuite-114"><a href="#TestSuite-114"><span class="linenos">114</span></a>                    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
-</span><span id="TestSuite-115"><a href="#TestSuite-115"><span class="linenos">115</span></a>
-</span><span id="TestSuite-116"><a href="#TestSuite-116"><span class="linenos">116</span></a>    <span class="k">def</span> <span class="nf">getCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="TestSuite-117"><a href="#TestSuite-117"><span class="linenos">117</span></a>        <span class="sd">&quot;&quot;&quot;Count the number of passed, failed, and skipped tests respectively</span>
-</span><span id="TestSuite-118"><a href="#TestSuite-118"><span class="linenos">118</span></a>
-</span><span id="TestSuite-119"><a href="#TestSuite-119"><span class="linenos">119</span></a><span class="sd">        Returns:</span>
-</span><span id="TestSuite-120"><a href="#TestSuite-120"><span class="linenos">120</span></a><span class="sd">            tuple: The amount of passed, failed, and skipped tests</span>
-</span><span id="TestSuite-121"><a href="#TestSuite-121"><span class="linenos">121</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TestSuite-122"><a href="#TestSuite-122"><span class="linenos">122</span></a>        <span class="n">totals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-</span><span id="TestSuite-123"><a href="#TestSuite-123"><span class="linenos">123</span></a>
-</span><span id="TestSuite-124"><a href="#TestSuite-124"><span class="linenos">124</span></a>        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
-</span><span id="TestSuite-125"><a href="#TestSuite-125"><span class="linenos">125</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
-</span><span id="TestSuite-126"><a href="#TestSuite-126"><span class="linenos">126</span></a>                <span class="n">passed</span><span class="p">,</span> <span class="n">failed</span><span class="p">,</span> <span class="n">skipped</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">getCount</span><span class="p">()</span>
-</span><span id="TestSuite-127"><a href="#TestSuite-127"><span class="linenos">127</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">passed</span>
-</span><span id="TestSuite-128"><a href="#TestSuite-128"><span class="linenos">128</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">failed</span>
-</span><span id="TestSuite-129"><a href="#TestSuite-129"><span class="linenos">129</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">skipped</span>
-</span><span id="TestSuite-130"><a href="#TestSuite-130"><span class="linenos">130</span></a>            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">TestResult</span><span class="p">):</span>
-</span><span id="TestSuite-131"><a href="#TestSuite-131"><span class="linenos">131</span></a>                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="TestSuite-132"><a href="#TestSuite-132"><span class="linenos">132</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="TestSuite-133"><a href="#TestSuite-133"><span class="linenos">133</span></a>                <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">FAILED</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="TestSuite-134"><a href="#TestSuite-134"><span class="linenos">134</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="TestSuite-135"><a href="#TestSuite-135"><span class="linenos">135</span></a>                <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">SKIPPED</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="TestSuite-136"><a href="#TestSuite-136"><span class="linenos">136</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="TestSuite-137"><a href="#TestSuite-137"><span class="linenos">137</span></a>
-</span><span id="TestSuite-138"><a href="#TestSuite-138"><span class="linenos">138</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">totals</span><span class="p">)</span>
-</span><span id="TestSuite-139"><a href="#TestSuite-139"><span class="linenos">139</span></a>
-</span><span id="TestSuite-140"><a href="#TestSuite-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="TestSuite-141"><a href="#TestSuite-141"><span class="linenos">141</span></a>        <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;TestSuite(tests=[&quot;</span>
-</span><span id="TestSuite-142"><a href="#TestSuite-142"><span class="linenos">142</span></a>        <span class="n">out</span> <span class="o">+=</span> <span class="p">(</span>
-</span><span id="TestSuite-143"><a href="#TestSuite-143"><span class="linenos">143</span></a>            <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">)</span>
-</span><span id="TestSuite-144"><a href="#TestSuite-144"><span class="linenos">144</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</span><span id="TestSuite-145"><a href="#TestSuite-145"><span class="linenos">145</span></a>            <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-</span><span id="TestSuite-146"><a href="#TestSuite-146"><span class="linenos">146</span></a>        <span class="p">)</span>
-</span><span id="TestSuite-147"><a href="#TestSuite-147"><span class="linenos">147</span></a>        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;], regex=r&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&#39;, resulst=&quot;</span>
-</span><span id="TestSuite-148"><a href="#TestSuite-148"><span class="linenos">148</span></a>        <span class="n">out</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
-</span><span id="TestSuite-149"><a href="#TestSuite-149"><span class="linenos">149</span></a>        <span class="n">out</span> <span class="o">+=</span> <span class="s2">&quot;)&quot;</span>
-</span><span id="TestSuite-150"><a href="#TestSuite-150"><span class="linenos">150</span></a>
-</span><span id="TestSuite-151"><a href="#TestSuite-151"><span class="linenos">151</span></a>        <span class="k">return</span> <span class="n">out</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TestSuite-18"><a href="#TestSuite-18"><span class="linenos">18</span></a><span class="k">class</span> <span class="nc">TestSuite</span><span class="p">:</span>
+</span><span id="TestSuite-19"><a href="#TestSuite-19"><span class="linenos">19</span></a>    <span class="sd">&quot;&quot;&quot;Run the given test classes or filter with regex.&quot;&quot;&quot;</span>
+</span><span id="TestSuite-20"><a href="#TestSuite-20"><span class="linenos">20</span></a>
+</span><span id="TestSuite-21"><a href="#TestSuite-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="TestSuite-22"><a href="#TestSuite-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="TestSuite-23"><a href="#TestSuite-23"><span class="linenos">23</span></a>        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="TestSuite-24"><a href="#TestSuite-24"><span class="linenos">24</span></a>        <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Test</span><span class="p">,</span> <span class="n">test</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="TestSuite-25"><a href="#TestSuite-25"><span class="linenos">25</span></a>        <span class="n">regex</span><span class="p">:</span> <span class="n">Pattern</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="TestSuite-26"><a href="#TestSuite-26"><span class="linenos">26</span></a>    <span class="p">):</span>
+</span><span id="TestSuite-27"><a href="#TestSuite-27"><span class="linenos">27</span></a>        <span class="sd">&quot;&quot;&quot;Start with a list of Test classes or test functions. The function name patter can also be specified.</span>
+</span><span id="TestSuite-28"><a href="#TestSuite-28"><span class="linenos">28</span></a><span class="sd">            Lastly you can specify whether a Test class outputs the result</span>
+</span><span id="TestSuite-29"><a href="#TestSuite-29"><span class="linenos">29</span></a>
+</span><span id="TestSuite-30"><a href="#TestSuite-30"><span class="linenos">30</span></a><span class="sd">        Args:</span>
+</span><span id="TestSuite-31"><a href="#TestSuite-31"><span class="linenos">31</span></a><span class="sd">            tests (list[Union[Test, test]], optional): _description_. Defaults to None.</span>
+</span><span id="TestSuite-32"><a href="#TestSuite-32"><span class="linenos">32</span></a><span class="sd">            regex (Pattern, optional): _description_. Defaults to None.</span>
+</span><span id="TestSuite-33"><a href="#TestSuite-33"><span class="linenos">33</span></a><span class="sd">            output (bool, optional): _description_. Defaults to True.</span>
+</span><span id="TestSuite-34"><a href="#TestSuite-34"><span class="linenos">34</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TestSuite-35"><a href="#TestSuite-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="TestSuite-36"><a href="#TestSuite-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
+</span><span id="TestSuite-37"><a href="#TestSuite-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
+</span><span id="TestSuite-38"><a href="#TestSuite-38"><span class="linenos">38</span></a>
+</span><span id="TestSuite-39"><a href="#TestSuite-39"><span class="linenos">39</span></a>    <span class="nd">@property</span>
+</span><span id="TestSuite-40"><a href="#TestSuite-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="TestSuite-41"><a href="#TestSuite-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+</span><span id="TestSuite-42"><a href="#TestSuite-42"><span class="linenos">42</span></a>
+</span><span id="TestSuite-43"><a href="#TestSuite-43"><span class="linenos">43</span></a>    <span class="nd">@property</span>
+</span><span id="TestSuite-44"><a href="#TestSuite-44"><span class="linenos">44</span></a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="TestSuite-45"><a href="#TestSuite-45"><span class="linenos">45</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span>
+</span><span id="TestSuite-46"><a href="#TestSuite-46"><span class="linenos">46</span></a>
+</span><span id="TestSuite-47"><a href="#TestSuite-47"><span class="linenos">47</span></a>    <span class="nd">@tests</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="TestSuite-48"><a href="#TestSuite-48"><span class="linenos">48</span></a>    <span class="k">def</span> <span class="nf">tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Test</span><span class="p">]):</span>
+</span><span id="TestSuite-49"><a href="#TestSuite-49"><span class="linenos">49</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
+</span><span id="TestSuite-50"><a href="#TestSuite-50"><span class="linenos">50</span></a>
+</span><span id="TestSuite-51"><a href="#TestSuite-51"><span class="linenos">51</span></a>    <span class="nd">@property</span>
+</span><span id="TestSuite-52"><a href="#TestSuite-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">regex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="TestSuite-53"><a href="#TestSuite-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span>
+</span><span id="TestSuite-54"><a href="#TestSuite-54"><span class="linenos">54</span></a>
+</span><span id="TestSuite-55"><a href="#TestSuite-55"><span class="linenos">55</span></a>    <span class="nd">@regex</span><span class="o">.</span><span class="n">setter</span>
+</span><span id="TestSuite-56"><a href="#TestSuite-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">regex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regex</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="TestSuite-57"><a href="#TestSuite-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
+</span><span id="TestSuite-58"><a href="#TestSuite-58"><span class="linenos">58</span></a>
+</span><span id="TestSuite-59"><a href="#TestSuite-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="TestSuite-60"><a href="#TestSuite-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="TestSuite-61"><a href="#TestSuite-61"><span class="linenos">61</span></a>        <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="TestSuite-62"><a href="#TestSuite-62"><span class="linenos">62</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TestSuite</span><span class="p">:</span>
+</span><span id="TestSuite-63"><a href="#TestSuite-63"><span class="linenos">63</span></a>        <span class="sd">&quot;&quot;&quot;Run all the provided test classes and cases.q</span>
+</span><span id="TestSuite-64"><a href="#TestSuite-64"><span class="linenos">64</span></a>
+</span><span id="TestSuite-65"><a href="#TestSuite-65"><span class="linenos">65</span></a><span class="sd">        Args:</span>
+</span><span id="TestSuite-66"><a href="#TestSuite-66"><span class="linenos">66</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
+</span><span id="TestSuite-67"><a href="#TestSuite-67"><span class="linenos">67</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
+</span><span id="TestSuite-68"><a href="#TestSuite-68"><span class="linenos">68</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
+</span><span id="TestSuite-69"><a href="#TestSuite-69"><span class="linenos">69</span></a>
+</span><span id="TestSuite-70"><a href="#TestSuite-70"><span class="linenos">70</span></a><span class="sd">        Returns:</span>
+</span><span id="TestSuite-71"><a href="#TestSuite-71"><span class="linenos">71</span></a><span class="sd">            dict: Dictionary of results</span>
+</span><span id="TestSuite-72"><a href="#TestSuite-72"><span class="linenos">72</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TestSuite-73"><a href="#TestSuite-73"><span class="linenos">73</span></a>        <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">match</span>
+</span><span id="TestSuite-74"><a href="#TestSuite-74"><span class="linenos">74</span></a>
+</span><span id="TestSuite-75"><a href="#TestSuite-75"><span class="linenos">75</span></a>        <span class="n">_results</span> <span class="o">=</span> <span class="n">SuiteResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</span><span id="TestSuite-76"><a href="#TestSuite-76"><span class="linenos">76</span></a>
+</span><span id="TestSuite-77"><a href="#TestSuite-77"><span class="linenos">77</span></a>        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
+</span><span id="TestSuite-78"><a href="#TestSuite-78"><span class="linenos">78</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+</span><span id="TestSuite-79"><a href="#TestSuite-79"><span class="linenos">79</span></a>                <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</span><span id="TestSuite-80"><a href="#TestSuite-80"><span class="linenos">80</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="TestSuite-81"><a href="#TestSuite-81"><span class="linenos">81</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">runTest</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="TestSuite-82"><a href="#TestSuite-82"><span class="linenos">82</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+</span><span id="TestSuite-83"><a href="#TestSuite-83"><span class="linenos">83</span></a>                    <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="TestSuite-84"><a href="#TestSuite-84"><span class="linenos">84</span></a>                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TestSuite-85"><a href="#TestSuite-85"><span class="linenos">85</span></a>                    <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="TestSuite-86"><a href="#TestSuite-86"><span class="linenos">86</span></a>
+</span><span id="TestSuite-87"><a href="#TestSuite-87"><span class="linenos">87</span></a>        <span class="k">if</span> <span class="n">display</span><span class="p">:</span>
+</span><span id="TestSuite-88"><a href="#TestSuite-88"><span class="linenos">88</span></a>            <span class="n">_results</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</span><span id="TestSuite-89"><a href="#TestSuite-89"><span class="linenos">89</span></a>
+</span><span id="TestSuite-90"><a href="#TestSuite-90"><span class="linenos">90</span></a>        <span class="k">return</span> <span class="n">_results</span>
 </span></pre></div>
 
 
@@ -406,24 +271,23 @@ Can be either test classes or individual test cases.</p>
 
     </div>
     <a class="headerlink" href="#TestSuite.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TestSuite.__init__-17"><a href="#TestSuite.__init__-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-</span><span id="TestSuite.__init__-18"><a href="#TestSuite.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="TestSuite.__init__-19"><a href="#TestSuite.__init__-19"><span class="linenos">19</span></a>        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="TestSuite.__init__-20"><a href="#TestSuite.__init__-20"><span class="linenos">20</span></a>        <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Test</span><span class="p">,</span> <span class="n">test</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="TestSuite.__init__-21"><a href="#TestSuite.__init__-21"><span class="linenos">21</span></a>        <span class="n">regex</span><span class="p">:</span> <span class="n">Pattern</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="TestSuite.__init__-22"><a href="#TestSuite.__init__-22"><span class="linenos">22</span></a>    <span class="p">):</span>
-</span><span id="TestSuite.__init__-23"><a href="#TestSuite.__init__-23"><span class="linenos">23</span></a>        <span class="sd">&quot;&quot;&quot;Start with a list of Test classes or test functions. The function name patter can also be specified.</span>
-</span><span id="TestSuite.__init__-24"><a href="#TestSuite.__init__-24"><span class="linenos">24</span></a><span class="sd">            Lastly you can specify whether a Test class outputs the result</span>
-</span><span id="TestSuite.__init__-25"><a href="#TestSuite.__init__-25"><span class="linenos">25</span></a>
-</span><span id="TestSuite.__init__-26"><a href="#TestSuite.__init__-26"><span class="linenos">26</span></a><span class="sd">        Args:</span>
-</span><span id="TestSuite.__init__-27"><a href="#TestSuite.__init__-27"><span class="linenos">27</span></a><span class="sd">            tests (list[Union[Test, test]], optional): _description_. Defaults to None.</span>
-</span><span id="TestSuite.__init__-28"><a href="#TestSuite.__init__-28"><span class="linenos">28</span></a><span class="sd">            regex (Pattern, optional): _description_. Defaults to None.</span>
-</span><span id="TestSuite.__init__-29"><a href="#TestSuite.__init__-29"><span class="linenos">29</span></a><span class="sd">            output (bool, optional): _description_. Defaults to True.</span>
-</span><span id="TestSuite.__init__-30"><a href="#TestSuite.__init__-30"><span class="linenos">30</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TestSuite.__init__-31"><a href="#TestSuite.__init__-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-</span><span id="TestSuite.__init__-32"><a href="#TestSuite.__init__-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
-</span><span id="TestSuite.__init__-33"><a href="#TestSuite.__init__-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
-</span><span id="TestSuite.__init__-34"><a href="#TestSuite.__init__-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]}</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TestSuite.__init__-21"><a href="#TestSuite.__init__-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="TestSuite.__init__-22"><a href="#TestSuite.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="TestSuite.__init__-23"><a href="#TestSuite.__init__-23"><span class="linenos">23</span></a>        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="TestSuite.__init__-24"><a href="#TestSuite.__init__-24"><span class="linenos">24</span></a>        <span class="n">tests</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Test</span><span class="p">,</span> <span class="n">test</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="TestSuite.__init__-25"><a href="#TestSuite.__init__-25"><span class="linenos">25</span></a>        <span class="n">regex</span><span class="p">:</span> <span class="n">Pattern</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="TestSuite.__init__-26"><a href="#TestSuite.__init__-26"><span class="linenos">26</span></a>    <span class="p">):</span>
+</span><span id="TestSuite.__init__-27"><a href="#TestSuite.__init__-27"><span class="linenos">27</span></a>        <span class="sd">&quot;&quot;&quot;Start with a list of Test classes or test functions. The function name patter can also be specified.</span>
+</span><span id="TestSuite.__init__-28"><a href="#TestSuite.__init__-28"><span class="linenos">28</span></a><span class="sd">            Lastly you can specify whether a Test class outputs the result</span>
+</span><span id="TestSuite.__init__-29"><a href="#TestSuite.__init__-29"><span class="linenos">29</span></a>
+</span><span id="TestSuite.__init__-30"><a href="#TestSuite.__init__-30"><span class="linenos">30</span></a><span class="sd">        Args:</span>
+</span><span id="TestSuite.__init__-31"><a href="#TestSuite.__init__-31"><span class="linenos">31</span></a><span class="sd">            tests (list[Union[Test, test]], optional): _description_. Defaults to None.</span>
+</span><span id="TestSuite.__init__-32"><a href="#TestSuite.__init__-32"><span class="linenos">32</span></a><span class="sd">            regex (Pattern, optional): _description_. Defaults to None.</span>
+</span><span id="TestSuite.__init__-33"><a href="#TestSuite.__init__-33"><span class="linenos">33</span></a><span class="sd">            output (bool, optional): _description_. Defaults to True.</span>
+</span><span id="TestSuite.__init__-34"><a href="#TestSuite.__init__-34"><span class="linenos">34</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TestSuite.__init__-35"><a href="#TestSuite.__init__-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+</span><span id="TestSuite.__init__-36"><a href="#TestSuite.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_tests</span> <span class="o">=</span> <span class="n">tests</span>
+</span><span id="TestSuite.__init__-37"><a href="#TestSuite.__init__-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_regex</span> <span class="o">=</span> <span class="n">regex</span>
 </span></pre></div>
 
 
@@ -471,58 +335,49 @@ Can be either test classes or individual test cases.</p>
     
 
                             </div>
-                            <div id="TestSuite.results" class="classattr">
-                                <div class="attr variable">
-            <span class="name">results</span><span class="annotation">: Optional[dict]</span>
-
-        
-    </div>
-    <a class="headerlink" href="#TestSuite.results"></a>
-    
-    
-
-                            </div>
                             <div id="TestSuite.run" class="classattr">
                                         <input id="TestSuite.run-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">run</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">class_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">case_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
+        <span class="name">run</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">) -> <span class="n"><a href="#TestSuite">teddecor.UnitTest.TestSuite.TestSuite</a></span>:</span></span>
 
                 <label class="view-source-button" for="TestSuite.run-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#TestSuite.run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TestSuite.run-60"><a href="#TestSuite.run-60"><span class="linenos">60</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="TestSuite.run-61"><a href="#TestSuite.run-61"><span class="linenos">61</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="TestSuite.run-62"><a href="#TestSuite.run-62"><span class="linenos">62</span></a>        <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="TestSuite.run-63"><a href="#TestSuite.run-63"><span class="linenos">63</span></a>        <span class="n">class_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="TestSuite.run-64"><a href="#TestSuite.run-64"><span class="linenos">64</span></a>        <span class="n">case_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="TestSuite.run-65"><a href="#TestSuite.run-65"><span class="linenos">65</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="TestSuite.run-66"><a href="#TestSuite.run-66"><span class="linenos">66</span></a>        <span class="sd">&quot;&quot;&quot;Run all the provided test classes and cases.q</span>
-</span><span id="TestSuite.run-67"><a href="#TestSuite.run-67"><span class="linenos">67</span></a>
-</span><span id="TestSuite.run-68"><a href="#TestSuite.run-68"><span class="linenos">68</span></a><span class="sd">        Args:</span>
-</span><span id="TestSuite.run-69"><a href="#TestSuite.run-69"><span class="linenos">69</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
-</span><span id="TestSuite.run-70"><a href="#TestSuite.run-70"><span class="linenos">70</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
-</span><span id="TestSuite.run-71"><a href="#TestSuite.run-71"><span class="linenos">71</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
-</span><span id="TestSuite.run-72"><a href="#TestSuite.run-72"><span class="linenos">72</span></a>
-</span><span id="TestSuite.run-73"><a href="#TestSuite.run-73"><span class="linenos">73</span></a><span class="sd">        Returns:</span>
-</span><span id="TestSuite.run-74"><a href="#TestSuite.run-74"><span class="linenos">74</span></a><span class="sd">            dict: Dictionary of results</span>
-</span><span id="TestSuite.run-75"><a href="#TestSuite.run-75"><span class="linenos">75</span></a><span class="sd">        &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TestSuite.run-59"><a href="#TestSuite.run-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="TestSuite.run-60"><a href="#TestSuite.run-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="TestSuite.run-61"><a href="#TestSuite.run-61"><span class="linenos">61</span></a>        <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="TestSuite.run-62"><a href="#TestSuite.run-62"><span class="linenos">62</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TestSuite</span><span class="p">:</span>
+</span><span id="TestSuite.run-63"><a href="#TestSuite.run-63"><span class="linenos">63</span></a>        <span class="sd">&quot;&quot;&quot;Run all the provided test classes and cases.q</span>
+</span><span id="TestSuite.run-64"><a href="#TestSuite.run-64"><span class="linenos">64</span></a>
+</span><span id="TestSuite.run-65"><a href="#TestSuite.run-65"><span class="linenos">65</span></a><span class="sd">        Args:</span>
+</span><span id="TestSuite.run-66"><a href="#TestSuite.run-66"><span class="linenos">66</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
+</span><span id="TestSuite.run-67"><a href="#TestSuite.run-67"><span class="linenos">67</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
+</span><span id="TestSuite.run-68"><a href="#TestSuite.run-68"><span class="linenos">68</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
+</span><span id="TestSuite.run-69"><a href="#TestSuite.run-69"><span class="linenos">69</span></a>
+</span><span id="TestSuite.run-70"><a href="#TestSuite.run-70"><span class="linenos">70</span></a><span class="sd">        Returns:</span>
+</span><span id="TestSuite.run-71"><a href="#TestSuite.run-71"><span class="linenos">71</span></a><span class="sd">            dict: Dictionary of results</span>
+</span><span id="TestSuite.run-72"><a href="#TestSuite.run-72"><span class="linenos">72</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="TestSuite.run-73"><a href="#TestSuite.run-73"><span class="linenos">73</span></a>        <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">match</span>
+</span><span id="TestSuite.run-74"><a href="#TestSuite.run-74"><span class="linenos">74</span></a>
+</span><span id="TestSuite.run-75"><a href="#TestSuite.run-75"><span class="linenos">75</span></a>        <span class="n">_results</span> <span class="o">=</span> <span class="n">SuiteResult</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </span><span id="TestSuite.run-76"><a href="#TestSuite.run-76"><span class="linenos">76</span></a>
-</span><span id="TestSuite.run-77"><a href="#TestSuite.run-77"><span class="linenos">77</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="TestSuite.run-78"><a href="#TestSuite.run-78"><span class="linenos">78</span></a>
-</span><span id="TestSuite.run-79"><a href="#TestSuite.run-79"><span class="linenos">79</span></a>        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
-</span><span id="TestSuite.run-80"><a href="#TestSuite.run-80"><span class="linenos">80</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
-</span><span id="TestSuite.run-81"><a href="#TestSuite.run-81"><span class="linenos">81</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="TestSuite.run-82"><a href="#TestSuite.run-82"><span class="linenos">82</span></a>                    <span class="n">test</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="TestSuite.run-83"><a href="#TestSuite.run-83"><span class="linenos">83</span></a>                <span class="p">)</span>
-</span><span id="TestSuite.run-84"><a href="#TestSuite.run-84"><span class="linenos">84</span></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="TestSuite.run-85"><a href="#TestSuite.run-85"><span class="linenos">85</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">runTest</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+</span><span id="TestSuite.run-77"><a href="#TestSuite.run-77"><span class="linenos">77</span></a>        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tests</span><span class="p">:</span>
+</span><span id="TestSuite.run-78"><a href="#TestSuite.run-78"><span class="linenos">78</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">test</span><span class="p">):</span>
+</span><span id="TestSuite.run-79"><a href="#TestSuite.run-79"><span class="linenos">79</span></a>                <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">test</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</span><span id="TestSuite.run-80"><a href="#TestSuite.run-80"><span class="linenos">80</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="TestSuite.run-81"><a href="#TestSuite.run-81"><span class="linenos">81</span></a>                <span class="n">result</span> <span class="o">=</span> <span class="n">runTest</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="TestSuite.run-82"><a href="#TestSuite.run-82"><span class="linenos">82</span></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regex</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+</span><span id="TestSuite.run-83"><a href="#TestSuite.run-83"><span class="linenos">83</span></a>                    <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="TestSuite.run-84"><a href="#TestSuite.run-84"><span class="linenos">84</span></a>                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">regex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="TestSuite.run-85"><a href="#TestSuite.run-85"><span class="linenos">85</span></a>                    <span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </span><span id="TestSuite.run-86"><a href="#TestSuite.run-86"><span class="linenos">86</span></a>
-</span><span id="TestSuite.run-87"><a href="#TestSuite.run-87"><span class="linenos">87</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">prettify</span><span class="p">(</span><span class="n">display</span><span class="p">,</span> <span class="n">class_results</span><span class="p">,</span> <span class="n">case_results</span><span class="p">)</span>
-</span><span id="TestSuite.run-88"><a href="#TestSuite.run-88"><span class="linenos">88</span></a>
-</span><span id="TestSuite.run-89"><a href="#TestSuite.run-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span>
+</span><span id="TestSuite.run-87"><a href="#TestSuite.run-87"><span class="linenos">87</span></a>        <span class="k">if</span> <span class="n">display</span><span class="p">:</span>
+</span><span id="TestSuite.run-88"><a href="#TestSuite.run-88"><span class="linenos">88</span></a>            <span class="n">_results</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</span><span id="TestSuite.run-89"><a href="#TestSuite.run-89"><span class="linenos">89</span></a>
+</span><span id="TestSuite.run-90"><a href="#TestSuite.run-90"><span class="linenos">90</span></a>        <span class="k">return</span> <span class="n">_results</span>
 </span></pre></div>
 
 
@@ -535,99 +390,6 @@ Can be either test classes or individual test cases.</p>
 
 <p>Returns:
     dict: Dictionary of results</p>
-</div>
-
-
-                            </div>
-                            <div id="TestSuite.prettify" class="classattr">
-                                        <input id="TestSuite.prettify-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">prettify</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">display</span><span class="p">:</span> <span class="nb">bool</span>,</span><span class="param">	<span class="n">class_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">case_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span>)</span>
-
-                <label class="view-source-button" for="TestSuite.prettify-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#TestSuite.prettify"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TestSuite.prettify-91"><a href="#TestSuite.prettify-91"><span class="linenos"> 91</span></a>    <span class="k">def</span> <span class="nf">prettify</span><span class="p">(</span>
-</span><span id="TestSuite.prettify-92"><a href="#TestSuite.prettify-92"><span class="linenos"> 92</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">display</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">class_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">case_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="TestSuite.prettify-93"><a href="#TestSuite.prettify-93"><span class="linenos"> 93</span></a>    <span class="p">):</span>
-</span><span id="TestSuite.prettify-94"><a href="#TestSuite.prettify-94"><span class="linenos"> 94</span></a>        <span class="sd">&quot;&quot;&quot;Will print the results of the classes and cases in a formatted way</span>
-</span><span id="TestSuite.prettify-95"><a href="#TestSuite.prettify-95"><span class="linenos"> 95</span></a>
-</span><span id="TestSuite.prettify-96"><a href="#TestSuite.prettify-96"><span class="linenos"> 96</span></a><span class="sd">        Args:</span>
-</span><span id="TestSuite.prettify-97"><a href="#TestSuite.prettify-97"><span class="linenos"> 97</span></a><span class="sd">            display (bool, optional): Whether to display anything. Defaults to True.</span>
-</span><span id="TestSuite.prettify-98"><a href="#TestSuite.prettify-98"><span class="linenos"> 98</span></a><span class="sd">            class_results (bool, optional): Whether to show individul class results. Defaults to True.</span>
-</span><span id="TestSuite.prettify-99"><a href="#TestSuite.prettify-99"><span class="linenos"> 99</span></a><span class="sd">            case_results (bool, optional): Whether to show individual case results. Defaults to True.</span>
-</span><span id="TestSuite.prettify-100"><a href="#TestSuite.prettify-100"><span class="linenos">100</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TestSuite.prettify-101"><a href="#TestSuite.prettify-101"><span class="linenos">101</span></a>
-</span><span id="TestSuite.prettify-102"><a href="#TestSuite.prettify-102"><span class="linenos">102</span></a>        <span class="k">if</span> <span class="n">display</span><span class="p">:</span>
-</span><span id="TestSuite.prettify-103"><a href="#TestSuite.prettify-103"><span class="linenos">103</span></a>            <span class="n">passed</span><span class="p">,</span> <span class="n">failed</span><span class="p">,</span> <span class="n">skipped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCount</span><span class="p">()</span>
-</span><span id="TestSuite.prettify-104"><a href="#TestSuite.prettify-104"><span class="linenos">104</span></a>
-</span><span id="TestSuite.prettify-105"><a href="#TestSuite.prettify-105"><span class="linenos">105</span></a>            <span class="n">totals</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[1m[</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">passed</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m:</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">SKIPPED</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">skipped</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m</span><span class="se">\</span>
-</span><span id="TestSuite.prettify-106"><a href="#TestSuite.prettify-106"><span class="linenos">106</span></a><span class="s2">:</span><span class="si">{</span><span class="n">ResultType</span><span class="o">.</span><span class="n">FAILED</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="n">failed</span><span class="si">}</span><span class="se">\x1b</span><span class="s2">[37m]</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span>
-</span><span id="TestSuite.prettify-107"><a href="#TestSuite.prettify-107"><span class="linenos">107</span></a>
-</span><span id="TestSuite.prettify-108"><a href="#TestSuite.prettify-108"><span class="linenos">108</span></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[1m</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (Suite)</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span><span class="p">,</span> <span class="n">totals</span><span class="p">)</span>
-</span><span id="TestSuite.prettify-109"><a href="#TestSuite.prettify-109"><span class="linenos">109</span></a>
-</span><span id="TestSuite.prettify-110"><a href="#TestSuite.prettify-110"><span class="linenos">110</span></a>            <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
-</span><span id="TestSuite.prettify-111"><a href="#TestSuite.prettify-111"><span class="linenos">111</span></a>                <span class="k">if</span> <span class="n">case_results</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">TestResult</span><span class="p">):</span>
-</span><span id="TestSuite.prettify-112"><a href="#TestSuite.prettify-112"><span class="linenos">112</span></a>                    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
-</span><span id="TestSuite.prettify-113"><a href="#TestSuite.prettify-113"><span class="linenos">113</span></a>                <span class="k">elif</span> <span class="n">class_results</span><span class="p">:</span>
-</span><span id="TestSuite.prettify-114"><a href="#TestSuite.prettify-114"><span class="linenos">114</span></a>                    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">str</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Will print the results of the classes and cases in a formatted way</p>
-
-<p>Args:
-    display (bool, optional): Whether to display anything. Defaults to True.
-    class_results (bool, optional): Whether to show individul class results. Defaults to True.
-    case_results (bool, optional): Whether to show individual case results. Defaults to True.</p>
-</div>
-
-
-                            </div>
-                            <div id="TestSuite.getCount" class="classattr">
-                                        <input id="TestSuite.getCount-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">getCount</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">tuple</span>:</span></span>
-
-                <label class="view-source-button" for="TestSuite.getCount-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#TestSuite.getCount"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TestSuite.getCount-116"><a href="#TestSuite.getCount-116"><span class="linenos">116</span></a>    <span class="k">def</span> <span class="nf">getCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-</span><span id="TestSuite.getCount-117"><a href="#TestSuite.getCount-117"><span class="linenos">117</span></a>        <span class="sd">&quot;&quot;&quot;Count the number of passed, failed, and skipped tests respectively</span>
-</span><span id="TestSuite.getCount-118"><a href="#TestSuite.getCount-118"><span class="linenos">118</span></a>
-</span><span id="TestSuite.getCount-119"><a href="#TestSuite.getCount-119"><span class="linenos">119</span></a><span class="sd">        Returns:</span>
-</span><span id="TestSuite.getCount-120"><a href="#TestSuite.getCount-120"><span class="linenos">120</span></a><span class="sd">            tuple: The amount of passed, failed, and skipped tests</span>
-</span><span id="TestSuite.getCount-121"><a href="#TestSuite.getCount-121"><span class="linenos">121</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="TestSuite.getCount-122"><a href="#TestSuite.getCount-122"><span class="linenos">122</span></a>        <span class="n">totals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-</span><span id="TestSuite.getCount-123"><a href="#TestSuite.getCount-123"><span class="linenos">123</span></a>
-</span><span id="TestSuite.getCount-124"><a href="#TestSuite.getCount-124"><span class="linenos">124</span></a>        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
-</span><span id="TestSuite.getCount-125"><a href="#TestSuite.getCount-125"><span class="linenos">125</span></a>            <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
-</span><span id="TestSuite.getCount-126"><a href="#TestSuite.getCount-126"><span class="linenos">126</span></a>                <span class="n">passed</span><span class="p">,</span> <span class="n">failed</span><span class="p">,</span> <span class="n">skipped</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">getCount</span><span class="p">()</span>
-</span><span id="TestSuite.getCount-127"><a href="#TestSuite.getCount-127"><span class="linenos">127</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">passed</span>
-</span><span id="TestSuite.getCount-128"><a href="#TestSuite.getCount-128"><span class="linenos">128</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">failed</span>
-</span><span id="TestSuite.getCount-129"><a href="#TestSuite.getCount-129"><span class="linenos">129</span></a>                <span class="n">totals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">skipped</span>
-</span><span id="TestSuite.getCount-130"><a href="#TestSuite.getCount-130"><span class="linenos">130</span></a>            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">TestResult</span><span class="p">):</span>
-</span><span id="TestSuite.getCount-131"><a href="#TestSuite.getCount-131"><span class="linenos">131</span></a>                <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="TestSuite.getCount-132"><a href="#TestSuite.getCount-132"><span class="linenos">132</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="TestSuite.getCount-133"><a href="#TestSuite.getCount-133"><span class="linenos">133</span></a>                <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">FAILED</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="TestSuite.getCount-134"><a href="#TestSuite.getCount-134"><span class="linenos">134</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="TestSuite.getCount-135"><a href="#TestSuite.getCount-135"><span class="linenos">135</span></a>                <span class="k">elif</span> <span class="n">result</span><span class="o">.</span><span class="n">result</span> <span class="o">==</span> <span class="n">ResultType</span><span class="o">.</span><span class="n">SKIPPED</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-</span><span id="TestSuite.getCount-136"><a href="#TestSuite.getCount-136"><span class="linenos">136</span></a>                    <span class="n">totals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="TestSuite.getCount-137"><a href="#TestSuite.getCount-137"><span class="linenos">137</span></a>
-</span><span id="TestSuite.getCount-138"><a href="#TestSuite.getCount-138"><span class="linenos">138</span></a>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">totals</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Count the number of passed, failed, and skipped tests respectively</p>
-
-<p>Returns:
-    tuple: The amount of passed, failed, and skipped tests</p>
 </div>
 
 
