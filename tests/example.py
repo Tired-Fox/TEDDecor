@@ -1,9 +1,10 @@
 from teddecor.UnitTest import *
 
+
 class Testing(UnitTest):
     def __init__(self):
         test = UnitTest()
-        
+
     @test
     def example_1(self):
         assert True

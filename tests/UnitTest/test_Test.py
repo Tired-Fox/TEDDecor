@@ -58,14 +58,19 @@ def is_fail():
     assert False
 
 
+@test
+def is_skip():
+    raise NotImplementedError
+
+
 if __name__ == "__main__":
     TestSuite(
         name="TestSuite",
         tests=[TestTesting, TestResults, is_true, is_fail],
-        regex=r"result",
-    ).run()
+    ).run(regex=r"result").save(location="./Outputs", type=SaveType.TXT)
 
-    TestResults().run(regex=".*format")
+    TestResults().run(regex=".*format").save(location="./Outputs", type=SaveType.TXT)
 
-    runTest(is_true)
-    runTest(is_fail)
+    runTest(is_true).save(location="./Outputs", type=SaveType.TXT)
+    runTest(is_fail).save(location="./Outputs", type=SaveType.TXT)
+    runTest(is_skip).save(location="./Outputs", type=SaveType.TXT)

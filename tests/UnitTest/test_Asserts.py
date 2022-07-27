@@ -267,7 +267,7 @@ def is_fail():
 
 
 if __name__ == "__main__":
-    suite = TestSuite(
+    TestSuite(
         name="Asserts",
         tests=[
             Assert_Equal,
@@ -277,4 +277,4 @@ if __name__ == "__main__":
             Assert_That,
             is_true,
         ],
-    ).run()
+    ).run().save(location="./Outputs", type=SaveType.TXT)
