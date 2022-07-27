@@ -21,7 +21,6 @@ class TestSuite:
         self,
         name: str,
         tests: list[Union[Test, test]] = None,
-        regex: Pattern = None,
     ):
         """Start with a list of Test classes or test functions. The function name patter can also be specified.
             Lastly you can specify whether a Test class outputs the result
@@ -33,7 +32,6 @@ class TestSuite:
         """
         self._name = name
         self._tests = tests
-        self._regex = regex
 
     @property
     def name(self) -> str:
@@ -58,16 +56,16 @@ class TestSuite:
     def run(
         self,
         display: bool = True,
-    ) -> TestSuite:
+        regex: Pattern = None,
+    ) -> SuiteResult:
         """Run all the provided test classes and cases.q
 
         Args:
-            display (bool, optional): Whether to display anything. Defaults to True.
-            class_results (bool, optional): Whether to show individul class results. Defaults to True.
-            case_results (bool, optional): Whether to show individual case results. Defaults to True.
+            display (bool, optional): Whether to display anything. Defaults to True
+            regex (Pattern, optional): Pattern of which tests should be run
 
         Returns:
-            dict: Dictionary of results
+            SuiteResult: Results object that can save and print the results
         """
         from re import match
 
@@ -75,12 +73,12 @@ class TestSuite:
 
         for test in self.tests:
             if isclass(test):
-                _results.append(test().run(regex=self.regex, display=False))
+                _results.append(test().run(regex=regex, display=False))
             else:
                 result = runTest(test, display=False)
-                if self.regex is not None and match(self.regex, result.name):
+                if regex is not None and match(regex, result.name):
                     _results.append(result)
-                elif self.regex is None:
+                elif regex is None:
                     _results.append(result)
 
         if display:

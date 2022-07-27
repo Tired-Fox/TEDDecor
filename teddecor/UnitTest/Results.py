@@ -5,7 +5,9 @@ into a structure that is easy to use and has mutliple outputs.
 """
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Union, Callable
+from typing import Union
+
+from ..Util import slash
 
 
 __all__ = ["TestResult", "ClassResult", "SuiteResult", "SaveType", "ResultType"]
@@ -28,6 +30,14 @@ class ResultType:
 
 @dataclass
 class SaveType:
+    """Enum/Dataclass that describes the save file extension/type.
+
+    Attributes:
+        CSV (str): `.csv` Save results as a CSV file
+        JSON (str): `.json` Save results as a JSON file
+        TXT (str):  `.txt` Save results as a TXT file
+    """
+
     CSV: str = ".csv"
     JSON: str = ".json"
     TXT: str = ".txt"
@@ -70,16 +80,21 @@ class Result:
         return []
 
     def dict(self) -> dict:
+        """Generate the dictionary varient of the results
+
+        Returns:
+            dict: The results formatted as a dictionary
+        """
         return {}
 
-    def isdir(self, location: str) -> bool:
+    def isdir(self, location: str) -> Union[str, None]:
         """Takes the location that the file is to be saved then changes directory.
 
         Args:
             location (str, optional): The location where the file will be saved. Defaults to None.
 
         Returns:
-            bool: Whether the directory exists
+            str, None: The absolute path or None if path doesn't exist
 
         Note:
             This is to be used with an inherited class and will auto convert `~` to it's absolute path
@@ -94,11 +109,12 @@ class Result:
                 location = str(Path.home()) + location[1:]
 
             if not path.isdir(location):
-                return False
-            else:
-                return True
+                return None
 
-        return True
+            if not location.endswith(slash()):
+                location += slash()
+
+        return location
 
 
 class TestResult(Result):
@@ -161,13 +177,22 @@ class TestResult(Result):
         return out
 
     def str(self, indent: int = 0) -> list:
+        """Results formatted into lines without colors
+
+        Args:
+            indent (int, optional): The amount to indent the lines. Defaults to 0.
+
+        Returns:
+            list: The results as lines
+        """
         out = []
         out.append(" " * indent + f"[{self.icon}] <case> {self.name}")
         if isinstance(self.info, list):
             for trace in self.info:
                 out.append(" " * (indent + 4) + trace)
         else:
-            out.append(self.info)
+            if self.info != "":
+                out.append(" " * (indent + 4) + self.info)
 
         return out
 
@@ -180,6 +205,11 @@ class TestResult(Result):
         return {self.name: {"result": self._result[0], "info": self.info}}
 
     def csv(self) -> str:
+        """The results formatted as CSV
+
+        Returns:
+            str: CSV format of the result
+        """
         info = "\n".join(self.info) if isinstance(self.info, list) else self.info
         return f"{self.name},{self.result},'{info}'"
 
@@ -194,7 +224,9 @@ class TestResult(Result):
         """
         ext = type
 
-        if super().isdir(location):
+        location = super().isdir(location)
+
+        if location is not None:
             with open(location + self.name + ext, "+w", encoding="utf-8") as file:
                 if type == SaveType.CSV:
                     file.write("Test Case,result,info\n")
@@ -233,6 +265,11 @@ class ClassResult(Result):
         return self._results
 
     def append(self, result: TestResult):
+        """Add a result to the list of results. This will also increment the counts.
+
+        Args:
+            result (Union[TestResult, ClassResult]): The result to add to the colleciton of results
+        """
         passed, failed, skipped = result.counts
         self._counts[0] += passed
         self._counts[1] += failed
@@ -268,6 +305,14 @@ class ClassResult(Result):
         return out
 
     def str(self, indent: int = 0) -> list:
+        """Results formatted into lines without colors
+
+        Args:
+            indent (int, optional): The amount to indent the lines. Defaults to 0.
+
+        Returns:
+            list: The results as lines
+        """
         out = []
 
         passed, failed, skipped = self.counts
@@ -275,7 +320,7 @@ class ClassResult(Result):
 
         if len(self.results):
             for result in self.results:
-                out.append("".join(result.str(indent + 4)))
+                out.extend(result.str(indent + 4))
         else:
             out.append(" " * (indent + 4) + f"No Tests Found for {self.name}")
 
@@ -320,7 +365,9 @@ class ClassResult(Result):
         """
         ext = type
 
-        if super().isdir(location):
+        location = super().isdir(location)
+
+        if location is not None:
             with open(location + self.name + ext, "+w", encoding="utf-8") as file:
                 if type == SaveType.CSV:
                     file.write("Test Class,Test Case,Result,Info\n")
@@ -356,6 +403,11 @@ class SuiteResult(Result):
         return self._results
 
     def append(self, result: Union[TestResult, ClassResult]):
+        """Add a result to the list of results. This will also increment the counts.
+
+        Args:
+            result (Union[TestResult, ClassResult]): The result to add to the colleciton of results
+        """
         passed, failed, skipped = result.counts
         self._counts[0] += passed
         self._counts[1] += failed
@@ -391,6 +443,14 @@ class SuiteResult(Result):
         return out
 
     def str(self, indent: int = 0) -> list:
+        """Results formatted into lines without colors
+
+        Args:
+            indent (int, optional): The amount to indent the lines. Defaults to 0.
+
+        Returns:
+            list: The results as lines
+        """
         out = []
 
         passed, failed, skipped = self.counts
@@ -398,7 +458,7 @@ class SuiteResult(Result):
 
         if len(self.results):
             for result in self.results:
-                out.append("".join(result.str(indent + 4)))
+                out.extend(result.str(indent + 4))
         else:
             out.append(" " * (indent + 4) + f"No Tests Found for {self.name}")
 
@@ -447,7 +507,9 @@ class SuiteResult(Result):
         """
         ext = type
 
-        if super().isdir(location):
+        location = super().isdir(location)
+
+        if location is not None:
             with open(location + self.name + ext, "+w", encoding="utf-8") as file:
                 if type == SaveType.CSV:
                     file.write("Test Class,Test Case,Result,Info\n")

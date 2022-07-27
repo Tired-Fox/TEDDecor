@@ -160,7 +160,16 @@ class Test:
         return results
 
     def run(self, display: bool = True, regex: Pattern = None) -> ClassResult:
-        """Will find and execute all tests in class. Prints results when done."""
+
+        """Will find and execute all tests in class. Prints results when done.
+
+        Args:
+            display (bool, optional): Whether to display the results
+            regex (Pattern, optional): Pattern of which tests should be run
+
+        Returns:
+            ClassResult: Results object that can save and print the results
+        """
 
         results = self.executeTests(regex=regex)
 
