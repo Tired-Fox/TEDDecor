@@ -9,6 +9,8 @@ Below are a few generic levels of testing which can be mixed together however yo
 
 1. Use the provided `runTest` function to run a single method with the `@test` decorator
     ```python
+    from teddecor.UnitTest import *
+    
     @test
     def test_case():
         assert True
@@ -20,6 +22,8 @@ Below are a few generic levels of testing which can be mixed together however yo
 2. Use the provided `Test` class to group test cases (functions) with the `@test` decorator.
    * This meant to group test that are focuses on a specific functionality
     ```python
+    from teddecor.UnitTest import *
+    
     class TestClass(Test):
         @test
         def test_case(self):
@@ -32,6 +36,8 @@ Below are a few generic levels of testing which can be mixed together however yo
 3. Use the provided `TestSuite` class to group test classes and test cases together
    * This is meant to group a more general idea. Like the tests for a app can be split into backend and front end. Where both backend and frontend are their own test suite. Then inside the suites you get more focuses.
     ```python
+    from teddecor.UnitTest import *
+    
     class BackendInput(Test):
         @test
         def user_input(self):
@@ -56,7 +62,26 @@ Below are a few generic levels of testing which can be mixed together however yo
     ```
 
    *  As you can see in the above example, you can use `raise NotImplementedError` to skip a test which also gives the message of `Not Implemented`
-  
+
+4. Use provided `Asserts` and `AssertThat` modules to add readable, easy to use, testing assertions.
+   ```python
+    from teddecor.UnitTest import *
+
+    @test
+    def assert_that():
+        assertThat(12, eq(12))
+        # Reads as, assert that 12 is equal to 12
+        assertThat("the", within(["the", "moon"]))
+        # Reads as, assert that "the" is within ["the", "moon"]
+        assertThat("the moon", has("moon"))
+        # Reads as, assert that "the moon" has "moon"
+
+    @test
+    def base_asserts():
+        Asserts.assert_equals(12, 12)
+   ```
+   * Read the documentation for the `Asserts` and `AssertThat` modules for more information along with how you can create your own functions for assertThat
+   
 Below is an example test (`example.py`)
 
 ```python
