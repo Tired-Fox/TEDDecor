@@ -7,13 +7,13 @@ from __future__ import annotations
 
 from typing import Callable, Pattern
 
-from .Results import TestResult, ResultType
+from .Results import TestResult, ClassResult, ResultType
 from ..Util import *
 
 __all__ = ["test", "Test", "runTest", "TestResult"]
 
 
-def runTest(test: Callable) -> TestResult:
+def runTest(test: Callable, display: bool = True) -> TestResult:
     """Runs a function decorated with `@test` and constructs it's results.
 
     Args:
@@ -28,6 +28,8 @@ def runTest(test: Callable) -> TestResult:
 
     if test.__name__ == "test_wrapper":
         _result = TestResult(test())
+        if display:
+            _result.write()
         return _result
     else:
         raise TypeError("Test function must have @test decorator")
@@ -91,29 +93,6 @@ def test(func):
 class Test:
     """Class used to indentify and run tests. It will also print the results to the screen."""
 
-    def __init__(self):
-        self._results = []
-        self._counts = [0, 0, 0]
-
-    @property
-    def results(self) -> dict:
-        """List of test results"""
-        return self._results
-
-    @results.setter
-    def results(self, new_results: dict):
-        """Set list of test results"""
-        self._results = new_results
-
-    def getCounts(self) -> tuple:
-        """The number of passed, failed, and unimplemented tests.
-
-        Returns:
-            int: Total failed tests
-        """
-
-        return tuple(self._counts)
-
     def getNodeValue(self, node) -> bool:
         """Gets the decorator value from node
 
@@ -167,65 +146,25 @@ class Test:
 
         return result
 
-    def executeTests(self, regex: Pattern, display: bool = True) -> None:
+    def executeTests(self, regex: Pattern) -> ClassResult:
         """Will execute all functions decorated with `@test`"""
 
         fnames: list = self.getTests(regex)
         """Function names decorated with `@test`"""
 
+        results = ClassResult(name=self.__class__.__name__)
+
         for name in fnames:
-            result = runTest(getattr(self, name))
-            self.results.append(result)
-            passed, failed, skipped = result.getCounts()
-            self._counts[0] += passed
-            self._counts[1] += failed
-            self._counts[2] += skipped
+            results.append(runTest(getattr(self, name), display=False))
 
-        if display:
-            print(self.str(tests=False))
+        return results
 
-    def dict(self) -> dict:
-        """Converts the test classes results into a dictionary
-
-        Returns:
-            dict: Results organized by test case (function)
-
-        Note:
-            The dictionary will have a single key which is the class name that is another dictionary. Inside that dictionary is where the totals for passed, skipped, and failed are stored in a tuple respectivily.
-            This is also where the result and information for each test case.
-        """
-        klass = self.__class__.__name__
-        totals = self.getCounts()
-        out = {f"{klass}": {"totals": totals}}
-
-        for result in self.results:
-            out[klass].update(result.dict())
-
-        return out
-
-    def str(self, indent: int = 0, case_results: bool = True) -> str:
-        klass = self.__class__.__name__
-        passed, failed, skipped = self.getCounts()
-
-        totals = f"\x1b[1m[{ResultType.SUCCESS[1]}{passed}\x1b[37m:{ResultType.SKIPPED[1]}{skipped}\x1b[37m\
-:{ResultType.FAILED[1]}{failed}\x1b[37m]\x1b[0m"
-
-        out = " " * indent + f"\x1b[1m{klass} (Class)\x1b[0m " + totals + "\n"
-
-        if case_results:
-            if len(self.results) > 0:
-                for test_result in self.results:
-                    out += "\n".join(test_result.pretty(indent=(4 + indent)))
-            else:
-                out += (
-                    " " * (indent + 4)
-                    + f"\x1b[1;33mNo Tests Found for {self.__class__.__name__}\x1b[0m"
-                )
-
-        return out
-
-    def run(self, display: bool = True, regex: Pattern = None) -> Test:
+    def run(self, display: bool = True, regex: Pattern = None) -> ClassResult:
         """Will find and execute all tests in class. Prints results when done."""
 
-        self.executeTests(regex=regex, display=display)
-        return self
+        results = self.executeTests(regex=regex)
+
+        if display:
+            results.write()
+
+        return results

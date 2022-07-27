@@ -1,0 +1,126 @@
+{
+  "Asserts": {
+    "Assert_Equal": {
+      "assert_equal_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_equal_fail": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_not_equal_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_not_equal_fail": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "Assert_Raises": {
+      "assert_raise_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_raise_pass_any": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_raise_unexpected_exception": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_raise_no_exception": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_raise_fail_any": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "Assert_Within": {
+      "assert_within_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_within_fail": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "Assert_None": {
+      "assert_none_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_none_fail": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_not_none_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_not_none_fail": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "Assert_That": {
+      "assert_eq_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_eq_fail": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_neq_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_neq_fail": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_none_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_none_fail": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_not_none_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_not_none_fail": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_raises_plass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_raises_fail": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_within_pass": {
+        "result": "Passed",
+        "info": ""
+      },
+      "assert_within_fail": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "is_true": {
+      "result": "Passed",
+      "info": ""
+    }
+  }
+}

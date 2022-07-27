@@ -48,5 +48,24 @@ class TestResults(Test):
         )
 
 
+@test
+def is_true():
+    assert True
+
+
+@test
+def is_fail():
+    assert False
+
+
 if __name__ == "__main__":
-    TestResults().run()
+    TestSuite(
+        name="TestSuite",
+        tests=[TestTesting, TestResults, is_true, is_fail],
+        regex=r"result",
+    ).run()
+
+    TestResults().run(regex=".*format")
+
+    runTest(is_true)
+    runTest(is_fail)
