@@ -1,5 +1,9 @@
 # TEDDecor
-This is a easy to use library with testing, documentation, and docstring example tools. Dive in with minimal effort and get great resutls. 
+This is a easy to use library with testing, documentation, and docstring example code tools. Dive in with minimal effort and get great results. 
+
+
+[TEDDecor](#teddecor)
+  - [Testing](#testing)
 
 ## Testing
 
