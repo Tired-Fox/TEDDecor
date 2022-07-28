@@ -117,3 +117,7 @@ Since this package is used to test itself, feel free to look through the files i
 <p align="center" style="bold">
   To see more testing features like, mocking, setup, result save file types, etc... see the <a href="https://tired-fox.github.io/TEDDecor/teddecor.html" title="Docs" target="_blank">documentation</a>.
 <p>
+
+## TED markup
+
+TED is currently in prototyping faze. However, if you install the library and run the `examples/TED/example.py` you can see a working version along with how to use it.
