@@ -29,9 +29,9 @@
 
         <h2>Submodules</h2>
         <ul>
-                <li><a href="TED/TED.html">TED</a></li>
                 <li><a href="TED/colors.html">colors</a></li>
                 <li><a href="TED/exception.html">exception</a></li>
+                <li><a href="TED/markup.html">markup</a></li>
         </ul>
 
 
@@ -75,7 +75,7 @@ Following the <code>@</code> and the specifier you can then enter the color.
 <li>This can be a predifined color such as; black, red, green, yellow, blue, magenta, cyan, white. <code>[@F black]</code>.</li>
 <li>It can be a hex code <code>#ead1a8</code>. <code>[@F #ead1a8]</code>.</li>
 <li>It can be a XTerm code 0-256. <code>[@F 9]</code>.</li>
-<li>Lastely, it can be an rgb color where the 3 numbers can be seperated by a <code>,</code> or a <code>;</code>. `[@F 114;12,212].</li>
+<li>Lastely, it can be an rgb color where the 3 numbers can be seperated by a <code>,</code> or a <code>;</code>. <code>[@F 114;12,212]</code>.</li>
 </ul></li>
 <li>Colors can be reset with <code>[@F]</code> or <code>[@B]</code> to reset foreground or background respectively or <code>[@]</code> can be use to reset both.</li>
 <li>Foreground and background can be specified in the same macro <code>[@F 1 @B 2], but they can not be reset in the same macro</code>[@F @B]<code>, use</code>[@]` instead.</li>
@@ -142,7 +142,7 @@ To reset all attributes, color and formatting, use the empty brackets <code>[]</
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">        * This can be a predifined color such as; black, red, green, yellow, blue, magenta, cyan, white. `[@F black]`.</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">        * It can be a hex code `#ead1a8`. `[@F #ead1a8]`.</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        * It can be a XTerm code 0-256. `[@F 9]`.</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">        * Lastely, it can be an rgb color where the 3 numbers can be seperated by a `,` or a `;`. `[@F 114;12,212].</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">        * Lastely, it can be an rgb color where the 3 numbers can be seperated by a `,` or a `;`. `[@F 114;12,212]`.</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">    * Colors can be reset with `[@F]` or `[@B]` to reset foreground or background respectively or `[@]` can be use to reset both.</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">    * Foreground and background can be specified in the same macro `[@F 1 @B 2], but they can not be reset in the same macro `[@F @B]`, use `[@]` instead.</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">    * While the macro will ignore white space and you can do something like `[@F#ead1a8@B3]` it is preferred to use whitespace for readability `[@F #ead1a8 @B 3]`.</span>
@@ -168,7 +168,7 @@ To reset all attributes, color and formatting, use the empty brackets <code>[]</
 </span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">TED also follows some inspiration from markdown where `*` means toggle bold and `_` means to toggle underline.</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="sd">To reset all attributes, color and formatting, use the empty brackets `[]`.</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="kn">from</span> <span class="nn">.TED</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="kn">from</span> <span class="nn">.markup</span> <span class="kn">import</span> <span class="o">*</span>
 </span></pre></div>
 
 
