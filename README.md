@@ -193,5 +193,5 @@ To reset all attributes, color and formatting, use the empty brackets `[]`.
 </p>
 
 <p align="center" style="bold">
-  <a href="./examples/TED/" title="Docs" target="_blank">See `examples > basics.py` to see how TED could be used along with seeing theoutputs</a>.
+  See <a href="./examples/TED/" title="Docs" target="_blank">examples/TED/basics.py</a> to see how TED could be used along with seeing theoutputs.
 <p>
