@@ -118,6 +118,80 @@ Since this package is used to test itself, feel free to look through the files i
   To see more testing features like, mocking, setup, result save file types, etc... see the <a href="https://tired-fox.github.io/TEDDecor/teddecor.html" title="Docs" target="_blank">documentation</a>.
 <p>
 
+___
+
 ## TED markup
 
-TED is currently in prototyping faze. However, if you install the library and run the `examples/TED/example.py` you can see a working version along with how to use it.
+TED is the name for the inline markup language for this library. This allows the user to customize strings and prettyprint different information to stdout.
+
+Includes:
+
+* parse -> returns formatted strings
+* pprint -> parse TED markup strings and display them to stdout
+* More to come...
+
+Syntax:
+
+Brackets `[]` indicate a macro. Macros can do 1 of three things; Assign a foreground/background color,
+create a hyperlink, and call a builtin function. All macros will ignore extra whitespace and focus on the identifiers; `@`, `~`, and `^`.
+
+1. Colors
+    * Colors start with a leading identifier `@`. To indicate foreground or background use the specifier `F` and `B` respectively.
+    Following the `@` and the specifier you can then enter the color. 
+        * This can be a predifined color such as; black, red, green, yellow, blue, magenta, cyan, white. `[@F black]`.
+        * It can be a hex code `#ead1a8`. `[@F #ead1a8]`.
+        * It can be a XTerm code 0-256. `[@F 9]`.
+        * Lastely, it can be an rgb color where the 3 numbers can be seperated by a `,` or a `;`. `[@F 114;12,212]`.
+    * Colors can be reset with `[@F]` or `[@B]` to reset foreground or background respectively or `[@]` can be use to reset both.
+    * Foreground and background can be specified in the same macro `[@F 1 @B 2], but they can not be reset in the same macro `[@F @B]`, use `[@]` instead.
+    * While the macro will ignore white space and you can do something like `[@F#005f00@B7]` it is preferred to use whitespace for readability `[@F #005f00 @B 7]`.
+  
+<p align="center">
+  <img src="images/TED_example_0.png" alt="Example Test Results">
+</p>
+
+
+2. Hyperlinks
+    * Hyperlinks start with a leading identifier `~`.
+    * Hyperlinks have two modes; raw link mode and pretty link mode.
+        * Raw link mode is where the specified url is displayed as the hyperlink. 
+            * `[~https://example.com]` -> `https://example.com`.
+        * Pretty link mode is where the specified TED markup is used as the display for the hyperlinke. This means you can nest macros inside of a hyperlink.
+            * `[~https://example.com|example]` -> `example`.
+<p align="center">
+  <img src="images/TED_example_1.png" alt="Example Test Results">
+</p>
+            * `[~https://example.com|[@F red]example]`.
+<p align="center">
+  <img src="images/TED_example_2.png" alt="Example Test Results">
+</p>
+            * `[~https://exmaple.com|[^rainbow|example]]`.
+<p align="center">
+  <img src="images/TED_example_3.png" alt="Example Test Results">
+</p>
+
+
+1. Builtin functions
+    * Builtin functions start with the identifier `^`. They are also structure as `[^func|string]`, where func is the built in function and string is the value to pass to it.
+    * The `|` is required and the string can be blank as `""` will be passed to the function.
+    * The builtin function takes the given string processes it and returns the resulting string.
+    * Examples:
+        * `[^rainbow|rainbow text]` will return the string with a rainbow foreground color.
+<p align="center">
+  <img src="images/TED_example_4.png" alt="Example Test Results">
+</p>
+        * `[^repr|string]` will return the repr of the string. Good for displaying TED markup without processing it, and for displaying escape characters.
+<p align="center">
+  <img src="images/TED_example_5.png" alt="Example Test Results">
+</p>
+
+TED also follows some inspiration from markdown where `*` means toggle bold and `_` means to toggle underline.
+To reset all attributes, color and formatting, use the empty brackets `[]`.
+
+<p align="center">
+  <img src="images/TED_example_6.png" alt="Example Test Results">
+</p>
+
+<p align="center" style="bold">
+  <a href="./examples/TED/" title="Docs" target="_blank">See `examples > basics.py` to see how TED could be used along with seeing theoutputs</a>.
+<p>

@@ -19,7 +19,7 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
         * This can be a predifined color such as; black, red, green, yellow, blue, magenta, cyan, white. `[@F black]`.
         * It can be a hex code `#ead1a8`. `[@F #ead1a8]`.
         * It can be a XTerm code 0-256. `[@F 9]`.
-        * Lastely, it can be an rgb color where the 3 numbers can be seperated by a `,` or a `;`. `[@F 114;12,212].
+        * Lastely, it can be an rgb color where the 3 numbers can be seperated by a `,` or a `;`. `[@F 114;12,212]`.
     * Colors can be reset with `[@F]` or `[@B]` to reset foreground or background respectively or `[@]` can be use to reset both.
     * Foreground and background can be specified in the same macro `[@F 1 @B 2], but they can not be reset in the same macro `[@F @B]`, use `[@]` instead.
     * While the macro will ignore white space and you can do something like `[@F#ead1a8@B3]` it is preferred to use whitespace for readability `[@F #ead1a8 @B 3]`.
@@ -45,4 +45,4 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
 TED also follows some inspiration from markdown where `*` means toggle bold and `_` means to toggle underline.
 To reset all attributes, color and formatting, use the empty brackets `[]`.
 """
-from .TED import *
+from .markup import *
