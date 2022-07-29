@@ -41,5 +41,8 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
     * Examples:
         * `[^rainbow|rainbow text]` will return the string with a rainbow foreground color.
         * `[^repr|string]` will return the repr of the string. Good for displaying TED markup without processing it, and for displaying escape characters.
+
+TED also follows some inspiration from markdown where `*` means toggle bold and `_` means to toggle underline.
+To reset all attributes, color and formatting, use the empty brackets `[]`.
 """
 from .TED import *
