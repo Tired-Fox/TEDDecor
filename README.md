@@ -158,14 +158,14 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
             * `[~https://example.com]` -> `https://example.com`.
         * Pretty link mode is where the specified TED markup is used as the display for the hyperlinke. This means you can nest macros inside of a hyperlink.
             * `[~https://example.com|example]` -> `example`.
+            * `[~https://example.com|[@F red]example]`.
+            * `[~https://exmaple.com|[^rainbow|example]]`.
 <p align="center">
   <img src="images/TED_example_1.png" alt="Example Test Results">
 </p>
-            * `[~https://example.com|[@F red]example]`.
 <p align="center">
   <img src="images/TED_example_2.png" alt="Example Test Results">
 </p>
-            * `[~https://exmaple.com|[^rainbow|example]]`.
 <p align="center">
   <img src="images/TED_example_3.png" alt="Example Test Results">
 </p>
@@ -177,10 +177,10 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
     * The builtin function takes the given string processes it and returns the resulting string.
     * Examples:
         * `[^rainbow|rainbow text]` will return the string with a rainbow foreground color.
+        * `[^repr|string]` will return the repr of the string. Good for displaying TED markup without processing it, and for displaying escape characters.
 <p align="center">
   <img src="images/TED_example_4.png" alt="Example Test Results">
 </p>
-        * `[^repr|string]` will return the repr of the string. Good for displaying TED markup without processing it, and for displaying escape characters.
 <p align="center">
   <img src="images/TED_example_5.png" alt="Example Test Results">
 </p>
