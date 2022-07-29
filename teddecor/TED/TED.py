@@ -6,6 +6,7 @@ Raises:
     MacroError: If there is a general formatting error with a macro
 """
 from __future__ import annotations
+from turtle import back
 
 from .exception import *
 from .colors import *
@@ -16,20 +17,23 @@ __all__ = [
 ]
 
 
-def __getMacroType(index: int, char: str, string: str) -> str:
-    if char != " ":
-        if char == "@":
-            return "@"
-        elif char == "~":
-            return "~"
-        elif char == "^":
-            return "^"
-        elif char != ["@", "~", "^"]:
-            raise MacroError(
-                string,
-                index + 1,
-                "Must be macro type, @ or ~",
-            )
+def __tokenizeMacro(index: int, start: int, string: str, content: str) -> str:
+    content = content.strip()
+    if content.startswith(("@", "~", "^")):
+        if content.startswith("~"):
+            return __parseLink(content[1:], string, start, index)
+        elif content.startswith("^"):
+            return __parseFunc(content[1:], string, start, index)
+        else:
+            return __parseColor(content, string, start)
+    else:
+        raise MacroMissingError(
+            string,
+            start,
+            start + 1,
+            "Macro must start with an identifier such as @, ~, or ^",
+            "?",
+        )
 
 
 def __getMacroContent(index: int, string: str, start: int) -> tuple[int, str]:
@@ -68,49 +72,82 @@ def __getMacroContent(index: int, string: str, start: int) -> tuple[int, str]:
         )
 
 
-def __parseColor(token: str, string: str, start: int) -> str:
+def __parseColor(content: str, string: str, start: int) -> str:
     from re import match
 
-    if token.strip() == "":
-        return RESETCOLORS
-    if token.startswith(("F", "B")):
-        type = token[0]
-        token = token[1:].strip(" ")
-        if type == "F":
-            type = Context.FG
-            if len(token) == 0:
-                return RESETFOREGROUND
-        elif type == "B":
-            type = Context.BG
-            if len(token) == 0:
-                return RESETBACKGROUND
+    foreground = ""
+    background = ""
 
-        if token.startswith("#"):
-            if len(token) == 4 and match(r"#[a-fA-F0-9]{3}", token):
-                return HEX(type, token)
-            elif len(token) == 7 and match(r"#[a-fA-F0-9]{6}", token):
-                return HEX(type, token)
-        elif match(r"\d{1,3}[,;]\d{1,3}[,;]\d{1,3}", token):
-            rgb = token.replace(";", ",").split(",")
-            return RGB(type, rgb[0], rgb[1], rgb[2])
-        elif match(r"\d{1,3}", token):
-            return XTERM(type, token)
-        else:
-            if token.lower() in PREDEFINED.keys():
-                return PREDEFINED[token](type)
+    # start + 1 = beginning
+    tokens = content.split("@")
+    tokens.remove("")
+
+    for token in tokens:
+        if token.strip() == "":
+            return RESETCOLORS
+        if token.startswith(("F", "B")):
+            type = token[0]
+            content = token[1:].strip(" ")
+            if type == "F":
+                type = Context.FG
+                if len(content) == 0:
+                    return RESETFOREGROUND
+            elif type == "B":
+                type = Context.BG
+                if len(content) == 0:
+                    return RESETBACKGROUND
+
+            if content.startswith("#"):
+                if len(content) == 4 and match(r"#[a-fA-F0-9]{3}", content):
+                    if type == Context.FG:
+                        foreground = HEX(type, content)
+                    else:
+                        background = HEX(type, content)
+                elif len(content) == 7 and match(r"#[a-fA-F0-9]{6}", content):
+                    if type == Context.FG:
+                        foreground = HEX(type, content)
+                    else:
+                        background = HEX(type, content)
+            elif match(r"\d{1,3}[,;]\d{1,3}[,;]\d{1,3}", content):
+                if type == Context.FG:
+                    rgb = content.replace(";", ",").split(",")
+                    foreground = RGB(type, rgb[0], rgb[1], rgb[2])
+                else:
+                    rgb = content.replace(";", ",").split(",")
+                    foreground = RGB(type, rgb[0], rgb[1], rgb[2])
+            elif match(r"\d{1,3}", content):
+                if type == Context.FG:
+                    foreground = XTERM(type, content)
+                else:
+                    background = XTERM(type, content)
             else:
-                raise MacroError(
-                    string,
-                    start + 4,
-                    "Color must be hex, rgb (r;g;b), xterm, or in the list of predefined",
-                )
-    else:
-        raise MacroError(
-            string,
-            start + 2,
-            "Must have color type if color is specified, F or B",
-        )
-    return ""
+                if content.lower() in PREDEFINED.keys():
+                    if type == Context.FG:
+                        foreground = PREDEFINED[content](type)
+                    else:
+                        background = PREDEFINED[content](type)
+                else:
+                    raise MacroError(
+                        string,
+                        start + 4,
+                        "Color must be hex, rgb (r;g;b), xterm, or in the list of predefined",
+                    )
+        else:
+            raise MacroError(
+                string,
+                start + 2,
+                "Must have color type if color is specified, F or B",
+            )
+
+    result = "\x1b["
+    if foreground != "" and background != "":
+        result += f"{foreground};{background}m"
+    elif foreground != "":
+        result += f"{foreground}m"
+    elif background != "":
+        result += f"{foreground}m"
+
+    return result
 
 
 def __parseLink(token: str, string: str, start: int, index: int) -> str:
@@ -156,22 +193,12 @@ def __parseFunc(token: str, string: str, start: int, index: int) -> str:
 def __parseMacro(index: int, string: str) -> str:
     start = index
     index += 1
-    result = ""
 
     if string[index] == "]":
         return index, RESET
     else:
-        type = __getMacroType(index, string[index], string)
-        index += 1
-
-        index, token = __getMacroContent(index, string, start)
-
-        if type == "@":
-            result = __parseColor(token, string, start)
-        elif type == "~":
-            result = __parseLink(token, string, start, index)
-        elif type == "^":
-            result = __parseFunc(token, string, start, index)
+        index, content = __getMacroContent(index, string, start)
+        result = __tokenizeMacro(index, start, string, content)
 
         return index, result
 
@@ -220,7 +247,7 @@ def parse(string: str) -> str:
 
 
 def pprint(string: str) -> None:
-    """Takes the given string, sends it through the TED parser then prints the result
+    """Takes the given string and gives it to the TED parser, then prints the result.
 
     Args:
         string (str): The TED markup string to pretty print

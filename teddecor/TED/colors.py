@@ -24,21 +24,21 @@ __all__ = [
 # [@δ #ababab]   <=> (hex) `#` followed by 2, 3, or 6 numbers or letter defining a hex code hex -> rgb
 # [@δ 3]         <=> (XTERM) 256 color index. \x1b[{38/48};5;n
 PREDEFINED = {
-    "black": lambda c: f"\x1b[{c + 0}m",
-    "red": lambda c: f"\x1b[{c + 1}m",
-    "green": lambda c: f"\x1b[{c + 2}m",
-    "yellow": lambda c: f"\x1b[{c + 3}m",
-    "blue": lambda c: f"\x1b[{c + 4}m",
-    "magenta": lambda c: f"\x1b[{c + 5}m",
-    "cyan": lambda c: f"\x1b[{c + 6}m",
-    "white": lambda c: f"\x1b[{c + 7}m",
+    "black": lambda c: f"{c + 0}",
+    "red": lambda c: f"{c + 1}",
+    "green": lambda c: f"{c + 2}",
+    "yellow": lambda c: f"{c + 3}",
+    "blue": lambda c: f"{c + 4}",
+    "magenta": lambda c: f"{c + 5}",
+    "cyan": lambda c: f"{c + 6}",
+    "white": lambda c: f"{c + 7}",
 }
 MACROS = {
-    "rainbow": lambda string: RAINBOW(string),
-    "repr": lambda string: REPR(string),
+    "rainbow": lambda string: __RAINBOW(string),
+    "repr": lambda string: repr(string).removeprefix("'").removesuffix("'"),
 }
-RGB = lambda c, r, g, b: f"\x1b[{c + 8};2;{r};{g};{b}m"
-XTERM = lambda c, v: f"\x1b[{c + 8};5;{v}m"
+RGB = lambda c, r, g, b: f"{c + 8};2;{r};{g};{b}"
+XTERM = lambda c, v: f"{c + 8};5;{v}"
 RESETFOREGROUND = "\x1b[39m"
 RESETBACKGROUND = "\x1b[49m"
 RESETCOLORS = "\x1b[39;49m"
@@ -47,7 +47,7 @@ BOLD = lambda state: "\x1b[22m" if state else "\x1b[1m"
 RESET = "\x1b[0m"
 
 
-def RAINBOW(input: str) -> str:
+def __RAINBOW(input: str) -> str:
     """Take a string input and make each character rainbow
 
     Args:
@@ -59,12 +59,12 @@ def RAINBOW(input: str) -> str:
     # red orange yellow green blue purple
     context = 30
     colors = [
-        XTERM(context, 196),
-        XTERM(context, 202),
-        XTERM(context, 190),
-        XTERM(context, 41),
-        XTERM(context, 39),
-        XTERM(context, 92),
+        f"\x1b[{XTERM(context, 196)}m",
+        f"\x1b[{XTERM(context, 202)}m",
+        f"\x1b[{XTERM(context, 190)}m",
+        f"\x1b[{XTERM(context, 41)}m",
+        f"\x1b[{XTERM(context, 39)}m",
+        f"\x1b[{XTERM(context, 92)}m",
     ]
 
     out = []
@@ -73,18 +73,6 @@ def RAINBOW(input: str) -> str:
     out.append(RESETCOLORS)
 
     return "".join(out)
-
-
-def REPR(string: str) -> str:
-    """Translates a string into it's literal format
-
-    Args:
-        string (str): String to get the literal from
-
-    Returns:
-        str: Literal representation of the inpu
-    """
-    return repr(string)
 
 
 def HEX(context: int, hex: str) -> str:
