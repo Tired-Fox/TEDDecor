@@ -2,7 +2,7 @@
 function that outputs the literal string from a TED markup.
 
 Raises:
-    MacroSpecifierError: If there is an incorrect macro or color specifier
+    MacroMissingError: If there is an incorrect macro or color specifier
     MacroError: If there is a general formatting error with a macro
 """
 from __future__ import annotations
