@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Union
 
 from ..Util import slash
+from ..TED import pprint
 
 
 __all__ = ["TestResult", "ClassResult", "SuiteResult", "SaveType", "ResultType"]
@@ -23,9 +24,9 @@ class ResultType:
         SKIPPED (tuple[str, str]): Message and color for a skipped test run
     """
 
-    SUCCESS: tuple[str, str, int] = ("Passed", "\x1b[1;32m", "✓")
-    FAILED: tuple[str, str, int] = ("Failed", "\x1b[1;31m", "x")
-    SKIPPED: tuple[str, str, int] = ("Skipped", "\x1b[1;33m", "↻")
+    SUCCESS: tuple[str, str, int] = ("Passed", "[@F green]", "✓")
+    FAILED: tuple[str, str, int] = ("Failed", "[@F red]", "x")
+    SKIPPED: tuple[str, str, int] = ("Skipped", "[@F yellow]", "↻")
 
 
 @dataclass
@@ -69,7 +70,7 @@ class Result:
             indent (int, optional): The amount to indent the values. Defaults to 0.
         """
         for line in self.pretty(indent):
-            print(line)
+            pprint(line)
 
     def pretty(self) -> list:
         """Format the result(s) into a formatted list
@@ -115,6 +116,12 @@ class Result:
                 location += slash()
 
         return location
+
+    def __str__(self):
+        return "\n".join(self.pretty())
+
+    def __repr__(self):
+        return "\n".join(self.str())
 
 
 class TestResult(Result):
@@ -165,14 +172,14 @@ class TestResult(Result):
 
         out = []
         out.append(
-            " " * indent + f"[{self.color}{self.icon}\x1b[0m] <case> {self.name}"
+            " " * indent + f"\[{self.color}{self.icon}[@F]] <case> [^repr|{self.name}]"
         )
         if isinstance(self.info, list):
             for trace in self.info:
-                out.append(" " * (indent + 4) + trace)
+                out.append(" " * (indent + 4) + f"_[^repr|{trace}]")
         else:
             if self.info != "":
-                out.append(" " * (indent + 4) + self.info)
+                out.append(" " * (indent + 4) + f"_[^repr|{self.info}]")
 
         return out
 
@@ -242,12 +249,6 @@ class TestResult(Result):
 
         return True
 
-    def __str__(self):
-        return "\n".join(self.pretty())
-
-    def __repr__(self):
-        return "\n".join(self.str())
-
 
 class ClassResult(Result):
     def __init__(self, name: str, results: list[TestResult] = None):
@@ -290,16 +291,16 @@ class ClassResult(Result):
         out = []
 
         passed, failed, skipped = self.counts
-        totals = f"\x1b[1m[{ResultType.SUCCESS[1]}{passed}\x1b[37m:{ResultType.SKIPPED[1]}{skipped}\x1b[37m\
-:{ResultType.FAILED[1]}{failed}\x1b[37m]\x1b[0m"
-        out.append(" " * indent + f"{totals} \x1b[1m<class> {self.name}\x1b[0m")
+        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
+:{ResultType.FAILED[1]}{failed}[@F]]"
+        out.append(" " * indent + f"*{totals} <class> [^repr|{self.name}]")
 
         if len(self.results):
             for result in self.results:
                 out.extend(result.pretty(indent + 4))
         else:
             out.append(
-                " " * (indent + 4) + f"\x1b[1;33mNo Tests Found for {self.name}\x1b[0m"
+                " " * (indent + 4) + f"[@Fyellow]No Tests Found for [^repr|{self.name}]"
             )
 
         return out
@@ -384,12 +385,6 @@ class ClassResult(Result):
 
         return True
 
-    def __str__(self):
-        return "\n".join(self.pretty())
-
-    def __repr__(self):
-        return "\n".join(self.str())
-
 
 class SuiteResult(Result):
     def __init__(self, name: str):
@@ -428,16 +423,16 @@ class SuiteResult(Result):
         out = []
 
         passed, failed, skipped = self.counts
-        totals = f"\x1b[1m[{ResultType.SUCCESS[1]}{passed}\x1b[37m:{ResultType.SKIPPED[1]}{skipped}\x1b[37m\
-:{ResultType.FAILED[1]}{failed}\x1b[37m]\x1b[0m"
-        out.append(" " * indent + f"{totals} \x1b[1m<suite> {self.name}\x1b[0m")
+        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
+:{ResultType.FAILED[1]}{failed}[@F]]"
+        out.append(" " * indent + f"*{totals} <suite> [^repr|{self.name}]")
 
         if len(self.results):
             for result in self.results:
                 out.extend(result.pretty(indent + 4))
         else:
             out.append(
-                " " * (indent + 4) + f"\x1b[1;33mNo Tests Found for {self.name}\x1b[0m"
+                " " * (indent + 4) + f"[@Fyellow]No Tests Found for [^repr|{self.name}]"
             )
 
         return out

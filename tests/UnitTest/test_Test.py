@@ -71,6 +71,6 @@ if __name__ == "__main__":
 
     TestResults().run(regex=".*format").save(location="./Outputs", type=SaveType.TXT)
 
-    runTest(is_true).save(location="./Outputs", type=SaveType.TXT)
-    runTest(is_fail).save(location="./Outputs", type=SaveType.TXT)
-    runTest(is_skip).save(location="./Outputs", type=SaveType.TXT)
+    run(is_true).save(location="./Outputs", type=SaveType.TXT)
+    run(is_fail).save(location="./Outputs", type=SaveType.TXT)
+    run(is_skip).save(location="./Outputs", type=SaveType.TXT)

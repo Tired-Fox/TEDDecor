@@ -1,3 +1,4 @@
+from genericpath import isfile
 from shutil import ReadError
 from tkinter import E
 from teddecor.UnitTest import *
@@ -159,12 +160,12 @@ class Assert_That(Test):
         return True
 
     @test
-    def assert_eq_pass(self):
+    def eq_pass(self):
         assert isinstance(eq(12), Callable)
         assert assertThat(12, eq(12))
 
     @test
-    def assert_eq_fail(self):
+    def eq_fail(self):
         try:
             assertThat(12, eq(10))
         except AssertionError as error:
@@ -176,49 +177,49 @@ class Assert_That(Test):
             Asserts.assertWithin("Numbers are not equal", str(error))
 
     @test
-    def assert_neq_pass(self):
+    def neq_pass(self):
         assert isinstance(neq(12), Callable)
         assert assertThat(12, neq(10))
 
     @test
-    def assert_neq_fail(self):
+    def neq_fail(self):
         try:
             assertThat(12, eq(12), "Numbers are equal")
         except AssertionError as error:
             Asserts.assertWithin("Numbers are equal", str(error))
 
     @test
-    def assert_none_pass(self):
+    def none_pass(self):
         assert isinstance(none(), Callable)
         assert assertThat(None, none())
 
     @test
-    def assert_none_fail(self):
+    def none_fail(self):
         try:
             assertThat(12, none(), "Custom Message")
         except AssertionError as error:
             Asserts.assertWithin("Custom Message", str(error))
 
     @test
-    def assert_not_none_pass(self):
+    def not_none_pass(self):
         assert isinstance(notNone(), Callable)
         assert assertThat(12, notNone())
 
     @test
-    def assert_not_none_fail(self):
+    def not_none_fail(self):
         try:
             assertThat(12, notNone(), "Custom Message")
         except AssertionError as error:
             Asserts.assertWithin("Custom Message", str(error))
 
     @test
-    def assert_raises_plass(self):
+    def raises_plass(self):
         assert isinstance(raises(), Callable)
         assert assertThat(self.raises_lookup, raises(LookupError))
         assert assertThat(self.raises_lookup, raises())
 
     @test
-    def assert_raises_fail(self):
+    def raises_fail(self):
         try:
             assertThat(self.raises_lookup, raises(AssertionError), "Custom Message")
         except AssertionError as error:
@@ -230,26 +231,26 @@ class Assert_That(Test):
             Asserts.assertWithin("Custom Message", str(error))
 
     @test
-    def assert_within_pass(self):
+    def within_pass(self):
         assert isinstance(within(None), Callable)
         assert assertThat("dog", within(["dog", "cat"]))
         assert assertThat("dog", within("Can you play with the dog?"))
 
     @test
-    def assert_within_fail(self):
+    def within_fail(self):
         try:
             assertThat("dog", within(None), "Custom Message")
         except AssertionError as error:
             Asserts.assertWithin("Custom Message", str(error))
 
     @test
-    def assert_within_pass(self):
+    def has_pass(self):
         assert isinstance(has(None), Callable)
         assert assertThat(["dog", "cat"], has("dog"))
         assert assertThat("Can you play with the dog?", has("dog"))
 
     @test
-    def assert_within_fail(self):
+    def has_fail(self):
         try:
             assertThat([], has("dog"), "Custom Message")
         except AssertionError as error:
@@ -278,3 +279,5 @@ if __name__ == "__main__":
             is_true,
         ],
     ).run().save(location="./Outputs", type=SaveType.TXT)
+
+    run(is_fail)

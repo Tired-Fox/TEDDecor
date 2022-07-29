@@ -10,11 +10,11 @@ from typing import Callable, Pattern
 from .Results import TestResult, ClassResult, ResultType
 from ..Util import *
 
-__all__ = ["test", "Test", "runTest", "TestResult"]
+__all__ = ["test", "Test", "run", "TestResult"]
 
 
-def runTest(test: Callable, display: bool = True) -> TestResult:
-    """Runs a function decorated with `@test` and constructs it's results.
+def run(test: Callable, display: bool = True) -> TestResult:
+    """Runs a single test case, function decorated with `@test` and constructs it's results.
 
     Args:
         test (Callable): @test function to run
@@ -155,7 +155,7 @@ class Test:
         results = ClassResult(name=self.__class__.__name__)
 
         for name in fnames:
-            results.append(runTest(getattr(self, name), display=False))
+            results.append(run(getattr(self, name), display=False))
 
         return results
 

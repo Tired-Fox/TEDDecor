@@ -8,7 +8,7 @@ from inspect import isclass
 from typing import Pattern, Union
 
 from .Results import SuiteResult
-from .Testing import Test, test, runTest
+from .Testing import Test, test, run
 
 __all__ = ["TestSuite"]
 
@@ -75,7 +75,7 @@ class TestSuite:
             if isclass(test):
                 _results.append(test().run(regex=regex, display=False))
             else:
-                result = runTest(test, display=False)
+                result = run(test, display=False)
                 if regex is not None and match(regex, result.name):
                     _results.append(result)
                 elif regex is None:
