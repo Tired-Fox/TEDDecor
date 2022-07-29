@@ -1,0 +1,8 @@
+Test Class,Test Case,Result,Info
+ExampleTests,AssertThat,assertThat,Passed,''
+ExampleTests,AssertThat,assertThat_custom_message,Failed,'[example_everything.py:60] assertThat_custom_message
+[AssertThat.py:33] assertThat
+[AssertThat.py:75] <lambda>
+[Asserts.py:146] assertNone
+[Error Message] assertThat custom error message'
+ExampleTests,AssertThat,assertThat_raises,Passed,''

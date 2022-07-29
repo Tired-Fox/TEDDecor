@@ -61,14 +61,14 @@ def __getMacroContent(index: int, string: str, start: int) -> tuple[int, str]:
             index += 1
             if index == len(string):
                 raise MacroMissingError(
-                    string, start, index, "Macro must end with \x1b[32m", "]"
+                    string, start, index, "Macro must end with a \x1b[32m]", "]"
                 )
 
     if closed == 0:
         return index, token
     else:
         raise MacroMissingError(
-            string, start, index, "Macro must end with \x1b[32m]", "]"
+            string, start, index, "Macro must end with a \x1b[32m]", "]"
         )
 
 
@@ -122,6 +122,7 @@ def __parseColor(content: str, string: str, start: int) -> str:
                     background = XTERM(type, content)
             else:
                 if content.lower() in PREDEFINED.keys():
+                    content = content.lower()
                     if type == Context.FG:
                         foreground = PREDEFINED[content](type)
                     else:
@@ -130,7 +131,9 @@ def __parseColor(content: str, string: str, start: int) -> str:
                     raise MacroError(
                         string,
                         start + 4,
-                        "Color must be hex, rgb (r;g;b), xterm, or in the list of predefined",
+                        parse(
+                            "Value must be in predefined or a different color type, see [~https://tired-fox.github.io/TEDDecor/teddecor/TED/colors.html|Colors docs]"
+                        ),
                     )
         else:
             raise MacroError(
@@ -145,7 +148,7 @@ def __parseColor(content: str, string: str, start: int) -> str:
     elif foreground != "":
         result += f"{foreground}m"
     elif background != "":
-        result += f"{foreground}m"
+        result += f"{background}m"
 
     return result
 

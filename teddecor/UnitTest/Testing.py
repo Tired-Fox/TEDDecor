@@ -10,7 +10,7 @@ from typing import Callable, Pattern
 from .Results import TestResult, ClassResult, ResultType
 from ..Util import *
 
-__all__ = ["test", "Test", "run", "TestResult"]
+__all__ = ["test", "Test", "run", "TestResult", "wrap"]
 
 
 def run(test: Callable, display: bool = True) -> TestResult:
@@ -33,6 +33,19 @@ def run(test: Callable, display: bool = True) -> TestResult:
         return _result
     else:
         raise TypeError("Test function must have @test decorator")
+
+
+def wrap(func: Callable, *args, **kwargs) -> Callable:
+    """Used to return a lambda that runs the function with the given args.
+    This is so that the function can be run later with provided parameters
+
+    Args:
+        func (Callable): Function to run
+
+    Returns:
+        Callable: Lambda of the funciton to be run later
+    """
+    return lambda: func(*args, **kwargs)
 
 
 def __getTracback(error: Exception) -> list:

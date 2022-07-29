@@ -69,8 +69,8 @@ if __name__ == "__main__":
         tests=[TestTesting, TestResults, is_true, is_fail],
     ).run(regex=r"result").save(location="./Outputs", type=SaveType.TXT)
 
-    TestResults().run(regex=".*format").save(location="./Outputs", type=SaveType.TXT)
+    TestResults().run(regex=".*format").save(location="./Outputs", ext=SaveType.TXT)
 
-    run(is_true).save(location="./Outputs", type=SaveType.TXT)
-    run(is_fail).save(location="./Outputs", type=SaveType.TXT)
-    run(is_skip).save(location="./Outputs", type=SaveType.TXT)
+    run(is_true).save(location="./Outputs", ext=SaveType.TXT)
+    run(is_fail).save(location="./Outputs", ext=SaveType.TXT)
+    run(is_skip).save(location="./Outputs", ext=SaveType.TXT)

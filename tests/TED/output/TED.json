@@ -1,0 +1,94 @@
+{
+  "TED": {
+    "Colors": {
+      "foreground": {
+        "result": "Passed",
+        "info": ""
+      },
+      "background": {
+        "result": "Passed",
+        "info": ""
+      },
+      "foreground_and_background": {
+        "result": "Passed",
+        "info": ""
+      },
+      "predefined_color": {
+        "result": "Passed",
+        "info": ""
+      },
+      "xterm_color": {
+        "result": "Passed",
+        "info": ""
+      },
+      "rgb_color": {
+        "result": "Passed",
+        "info": ""
+      },
+      "hex_color": {
+        "result": "Passed",
+        "info": ""
+      },
+      "reset_foreground": {
+        "result": "Passed",
+        "info": ""
+      },
+      "reset_background": {
+        "result": "Passed",
+        "info": ""
+      },
+      "reset_foreground_and_background": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "ColorExceptions": {
+      "not_in_predefined": {
+        "result": "Passed",
+        "info": ""
+      },
+      "no_specifier": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "Builtin": {
+      "rainbow": {
+        "result": "Passed",
+        "info": ""
+      },
+      "repr": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "BuiltinExceptions": {
+      "does_not_exist": {
+        "result": "Passed",
+        "info": ""
+      },
+      "requires_input": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "Links": {
+      "normal_link": {
+        "result": "Passed",
+        "info": ""
+      },
+      "pretty_link": {
+        "result": "Passed",
+        "info": ""
+      },
+      "pretty_link_nested": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "pretty_link_no_markup": {
+      "result": "Passed",
+      "info": ""
+    }
+  }
+}

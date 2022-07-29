@@ -42,6 +42,7 @@ class SaveType:
     CSV: str = ".csv"
     JSON: str = ".json"
     TXT: str = ".txt"
+    ALL: callable = lambda: [".txt",".json",".csv"]
 
 
 class Result:
@@ -172,14 +173,14 @@ class TestResult(Result):
 
         out = []
         out.append(
-            " " * indent + f"\[{self.color}{self.icon}[@F]] <case> [^repr|{self.name}]"
+            " " * indent + f"\[{self.color}{self.icon}[@F]] <case> [^esc|{self.name}]"
         )
         if isinstance(self.info, list):
             for trace in self.info:
-                out.append(" " * (indent + 4) + f"_[^repr|{trace}]")
+                out.append(" " * (indent + 4) + f"[^esc|{trace}]")
         else:
             if self.info != "":
-                out.append(" " * (indent + 4) + f"_[^repr|{self.info}]")
+                out.append(" " * (indent + 4) + f"[^esc|{self.info}]")
 
         return out
 
@@ -220,7 +221,9 @@ class TestResult(Result):
         info = "\n".join(self.info) if isinstance(self.info, list) else self.info
         return f"{self.name},{self.result},'{info}'"
 
-    def save(self, location: str = "", type: str = SaveType.CSV) -> bool:
+    def save(
+        self, location: str = "", ext: Union[str, list[str]] = SaveType.CSV
+    ) -> bool:
         """Takes a file location and creates a json file with the test data
 
         Args:
@@ -229,25 +232,42 @@ class TestResult(Result):
         Returns:
             bool: True if the file was successfully created
         """
-        ext = type
 
-        location = super().isdir(location)
+        location = self.isdir(location)
 
+        if isinstance(ext, str):
+            self.__save_to_file(location, ext)
+        elif isinstance(ext, list):
+            for ext in ext:
+                self.__save_to_file(location, ext)
+        return True
+
+    def __save_to_file(self, location: str, type: str) -> bool:
+        """Saves the data to a given file type in a given location
+
+        Args:
+            location (str): Where to save the file
+            type (str): Type of file to save, CSV, JSON, TXT
+
+        Returns:
+            bool: True if file was saved
+        """
         if location is not None:
-            with open(location + self.name + ext, "+w", encoding="utf-8") as file:
+            with open(location + self.name + type, "+w", encoding="utf-8") as file:
                 if type == SaveType.CSV:
                     file.write("Test Case,result,info\n")
                     file.write(self.csv())
+                    return True
                 elif type == SaveType.JSON:
                     from json import dumps
 
                     file.write(dumps(self.dict(), indent=2))
+                    return True
                 elif type == SaveType.TXT:
                     file.write(repr(self))
+                    return True
         else:
             return False
-
-        return True
 
 
 class ClassResult(Result):
@@ -293,14 +313,14 @@ class ClassResult(Result):
         passed, failed, skipped = self.counts
         totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
 :{ResultType.FAILED[1]}{failed}[@F]]"
-        out.append(" " * indent + f"*{totals} <class> [^repr|{self.name}]")
+        out.append(" " * indent + f"*{totals} <class> [^esc|{self.name}]")
 
         if len(self.results):
             for result in self.results:
                 out.extend(result.pretty(indent + 4))
         else:
             out.append(
-                " " * (indent + 4) + f"[@Fyellow]No Tests Found for [^repr|{self.name}]"
+                " " * (indent + 4) + f"[@Fyellow]No Tests Found for [^esc|{self.name}]"
             )
 
         return out
@@ -355,7 +375,9 @@ class ClassResult(Result):
 
         return out
 
-    def save(self, location: str = "", type: str = SaveType.CSV) -> bool:
+    def save(
+        self, location: str = "", ext: Union[str, list[str]] = SaveType.CSV
+    ) -> bool:
         """Takes a file location and creates a json file with the test data
 
         Args:
@@ -364,26 +386,43 @@ class ClassResult(Result):
         Returns:
             bool: True if the file was successfully created
         """
-        ext = type
 
-        location = super().isdir(location)
+        location = self.isdir(location)
 
+        if isinstance(ext, str):
+            self.__save_to_file(location, ext)
+        elif isinstance(ext, list):
+            for ext in ext:
+                self.__save_to_file(location, ext)
+        return True
+
+    def __save_to_file(self, location: str, type: str) -> bool:
+        """Saves the data to a given file type in a given location
+
+        Args:
+            location (str): Where to save the file
+            type (str): Type of file to save, CSV, JSON, TXT
+
+        Returns:
+            bool: True if file was saved
+        """
         if location is not None:
-            with open(location + self.name + ext, "+w", encoding="utf-8") as file:
+            with open(location + self.name + type, "+w", encoding="utf-8") as file:
                 if type == SaveType.CSV:
                     file.write("Test Class,Test Case,Result,Info\n")
                     for line in self.csv():
                         file.write(f"{line}\n")
+                    return True
                 elif type == SaveType.JSON:
                     from json import dumps
 
                     file.write(dumps(self.dict(), indent=2))
+                    return True
                 elif type == SaveType.TXT:
                     file.write(repr(self))
+                    return True
         else:
             return False
-
-        return True
 
 
 class SuiteResult(Result):
@@ -425,14 +464,14 @@ class SuiteResult(Result):
         passed, failed, skipped = self.counts
         totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
 :{ResultType.FAILED[1]}{failed}[@F]]"
-        out.append(" " * indent + f"*{totals} <suite> [^repr|{self.name}]")
+        out.append(" " * indent + f"*{totals} <suite> [^esc|{self.name}]")
 
         if len(self.results):
             for result in self.results:
                 out.extend(result.pretty(indent + 4))
         else:
             out.append(
-                " " * (indent + 4) + f"[@Fyellow]No Tests Found for [^repr|{self.name}]"
+                " " * (indent + 4) + f"[@Fyellow]No Tests Found for [^esc|{self.name}]"
             )
 
         return out
@@ -491,7 +530,9 @@ class SuiteResult(Result):
 
         return out
 
-    def save(self, location: str = "", type: str = SaveType.CSV) -> bool:
+    def save(
+        self, location: str = "", ext: Union[str, list[str]] = SaveType.CSV
+    ) -> bool:
         """Takes a file location and creates a json file with the test data
 
         Args:
@@ -500,26 +541,44 @@ class SuiteResult(Result):
         Returns:
             bool: True if the file was successfully created
         """
-        ext = type
 
-        location = super().isdir(location)
+        location = self.isdir(location)
+
+        if isinstance(ext, str):
+            self.__save_to_file(location, ext)
+        elif isinstance(ext, list):
+            for ext in ext:
+                self.__save_to_file(location, ext)
+        return True
+
+    def __save_to_file(self, location: str, type: str) -> bool:
+        """Saves the data to a given file type in a given location
+
+        Args:
+            location (str): Where to save the file
+            type (str): Type of file to save, CSV, JSON, TXT
+
+        Returns:
+            bool: True if file was saved
+        """
 
         if location is not None:
-            with open(location + self.name + ext, "+w", encoding="utf-8") as file:
+            with open(location + self.name + type, "+w", encoding="utf-8") as file:
                 if type == SaveType.CSV:
                     file.write("Test Class,Test Case,Result,Info\n")
                     for line in self.csv():
                         file.write(f"{line}\n")
+                    return True
                 elif type == SaveType.JSON:
                     from json import dumps
 
                     file.write(dumps(self.dict(), indent=2))
+                    return True
                 elif type == SaveType.TXT:
                     file.write(repr(self))
+                    return True
         else:
             return False
-
-        return True
 
     def __str__(self):
         return "\n".join(self.pretty())
