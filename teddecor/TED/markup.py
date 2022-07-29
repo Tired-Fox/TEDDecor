@@ -114,7 +114,7 @@ def __parseColor(content: str, string: str, start: int) -> str:
                     foreground = RGB(type, rgb[0], rgb[1], rgb[2])
                 else:
                     rgb = content.replace(";", ",").split(",")
-                    foreground = RGB(type, rgb[0], rgb[1], rgb[2])
+                    background = RGB(type, rgb[0], rgb[1], rgb[2])
             elif match(r"\d{1,3}", content):
                 if type == Context.FG:
                     foreground = XTERM(type, content)
