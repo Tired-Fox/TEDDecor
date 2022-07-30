@@ -1,0 +1,52 @@
+Constant:
+    - value (Any)
+    Funcs:
+        + __str__
+
+Name:
+    - id (str)
+    Funcs:
+        + __str__
+
+Expr:
+    - value (Constant)
+    Funcs:
+        + __str__
+
+Arg:
+    - arg (str)
+    - annotation (Name)
+    Properties:
+        + arg (str)
+        + annotation (str)
+    Funcs:
+        + __str__
+
+
+Arguments:
+    - args list(Arg)
+    - vararg (Arg)
+    - kwarg (Arg)
+    - defaults list(Constant)
+    Properties:
+        + args list(Arg)
+        + vararg (Arg)
+        + kwarg (Arg)
+    Funcs:
+        + __str__
+
+Func:
+    - name (str)
+    - args (Arguments)
+    - docs (Expr)
+    - body (list)
+    - decorator_list list(Name)
+    - returns (Name)
+    Properties:
+        + name
+        + arguments
+        + body
+        + decorator
+        + returns
+    Funcs:
+        + __str__
