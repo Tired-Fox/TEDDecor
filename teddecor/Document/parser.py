@@ -1,12 +1,7 @@
 from __future__ import annotations
-
 import ast
-import os
 
-with open("test_colors.py", "r") as fd:
-    file_content = fd.read()
-
-module = ast.parse(file_content)
+from objects import *
 
 
 def getFunctions(node) -> list:
@@ -17,19 +12,28 @@ def getClasses(node) -> list:
     return [obj for obj in node.body if isinstance(obj, ast.ClassDef)]
 
 
-# print(ast.dump(module, indent=4))
-if isinstance(module.body[0], ast.Expr):
-    print(module.body[0].value.value)
+with open("Results.py", "r") as fd:
+    file_content = fd.read()
 
-docstring = {"doc": ""}
-classes = {"classes": []}
-functions = {"functions": []}
+module = ast.parse(file_content)
 
-docs = {"module": {"classes": [], "functions": []}}
+
+from teddecor import TED
+
+
+TED.pprint(f"[@F green]{ast.get_docstring(module)}\n\n")
+
+# print(ast.dump(module, indent=2))
+for klass in getClasses(module):
+    from os import system
+
+    system("cls")
+    TED.pprint(Klass(klass).pretty())
+    input()
 
 for func in getFunctions(module):
-    print(ast.dump(func, indent=2))
+    from os import system
 
-# print(ast.dump(getClasses(module)[0], indent=2))
-# for klass in :
-#     print()
+    system("cls")
+    TED.pprint(Func(func).pretty())
+    input()

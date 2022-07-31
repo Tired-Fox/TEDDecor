@@ -1,52 +1,30 @@
-Constant:
-    - value (Any)
-    Funcs:
-        + __str__
+Assign:
+    - targets list(Name)
 
-Name:
-    - id (str)
-    Funcs:
-        + __str__
-
-Expr:
-    - value (Constant)
-    Funcs:
-        + __str__
-
-Arg:
-    - arg (str)
+AnnAssign:
+    - target (Name)
     - annotation (Name)
-    Properties:
-        + arg (str)
-        + annotation (str)
-    Funcs:
-        + __str__
 
+Attribute:
+    - value (Name)
+    - attr (str)
+    
+Subscript:
+    - value (Name)
+    - slice (Tuple, Name)
 
-Arguments:
-    - args list(Arg)
-    - vararg (Arg)
-    - kwarg (Arg)
-    - defaults list(Constant)
-    Properties:
-        + args list(Arg)
-        + vararg (Arg)
-        + kwarg (Arg)
-    Funcs:
-        + __str__
+slice:
+    - lower (Constant)
+    - upper (Constant)
 
-Func:
-    - name (str)
-    - args (Arguments)
-    - docs (Expr)
-    - body (list)
-    - decorator_list list(Name)
-    - returns (Name)
-    Properties:
-        + name
-        + arguments
-        + body
-        + decorator
-        + returns
-    Funcs:
-        + __str__
+Subscript(
+    value=Name(id='Union', ctx=Load()),
+    slice=Tuple(
+    elts=[
+        Name(id='str', ctx=Load()),
+        Subscript(
+        value=Name(id='list', ctx=Load()),
+        slice=Name(id='str', ctx=Load()),
+        ctx=Load())],
+    ctx=Load()),
+    ctx=Load()))],

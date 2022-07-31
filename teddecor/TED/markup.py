@@ -16,6 +16,9 @@ __all__ = [
     "pprint",
 ]
 
+_underlined = False
+_bold = False
+
 
 def __tokenizeMacro(index: int, start: int, string: str, content: str) -> str:
     content = content.strip()
@@ -197,7 +200,12 @@ def __parseMacro(index: int, string: str) -> str:
     start = index
     index += 1
 
+    global _underlined
+    global _bold
+
     if string[index] == "]":
+        _underlined = False
+        _bold = False
         return index, RESET
     else:
         index, content = __getMacroContent(index, string, start)
@@ -215,10 +223,9 @@ def parse(string: str) -> str:
     Returns:
         str: Translated version of the string
     """
-    _underlined = False
-    _bold = False
     _escaped = False
-
+    global _underlined
+    global _bold
     out = []
 
     i = 0
