@@ -1,5 +1,5 @@
 from teddecor.UnitTest import *
-from teddecor.TED import parse
+from teddecor import TED
 from teddecor.TED.exception import *
 from teddecor.TED.colors import XTERM
 
@@ -16,7 +16,7 @@ class Builtin(Test):
             f"\x1b[{XTERM(30, 92)}m",
         ]
         string = "rainbow"
-        result = parse(f"[^rainbow|{string}]")
+        result = TED.parse(f"[^rainbow|{string}]")
         against = ""
         for i, char in enumerate(string):
             against += f"{colors[i%len(colors)]}{char}"
@@ -26,23 +26,23 @@ class Builtin(Test):
 
     @test
     def repr(self):
-        result = parse(f"[^repr|test_result]")
+        result = TED.parse(f"[^repr]test_result")
         assertThat(result, eq("'test_result'\x1b[0m"))
 
     @test
     def repr(self):
-        result = parse(f"[^esc|test_result]")
+        result = TED.parse(f"[^esc]test_result")
         assertThat(result, eq("test_result\x1b[0m"))
 
 
 class BuiltinExceptions(Test):
     @test
     def does_not_exist(self):
-        assertThat(wrap(parse, "[^bad|Bad]"), raises(MacroError))
+        assertThat(wrap(TED.parse, "[^bad]Bad"), raises(MacroError))
 
     @test
     def requires_input(self):
-        assertThat(wrap(parse, "[^rainbow]"), raises(MacroMissingError))
+        assertThat(wrap(TED.parse, "[^rainbow]"), raises(MacroMissingError))
 
 
 if __name__ == "__main__":

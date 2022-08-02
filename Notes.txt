@@ -17,14 +17,8 @@ slice:
     - lower (Constant)
     - upper (Constant)
 
-Subscript(
-    value=Name(id='Union', ctx=Load()),
-    slice=Tuple(
-    elts=[
-        Name(id='str', ctx=Load()),
-        Subscript(
-        value=Name(id='list', ctx=Load()),
-        slice=Name(id='str', ctx=Load()),
-        ctx=Load())],
-    ctx=Load()),
-    ctx=Load()))],
+
+[@F black @B white ~https://something.com]Black background white foreground link[!@F !@B !@ !~ @F red] Error [! ^rainbow] sometext [!rainbow]
+f"\x1b]8;;{token[0]}\x1b\\{self.parse(token[1])}\x1b]8;;\x1b\\"
+
+[@< black @> blue @ red]    [@ red]

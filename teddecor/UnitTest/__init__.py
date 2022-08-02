@@ -96,6 +96,8 @@ if __name__ == "__main__":
 
 The above example shows that you need to have a class that inherits from `UnitTest.Test`. Then when you run the `main()` function from an instance of that class,
 you get the results printed out. The `main()` function will run any method in the class that has the `@test` decorator.
+
+Look at the repositories [example/UnitTest/overview.py](https://github.com/Tired-Fox/TEDDecor/tree/main/examples/UnitTest/overview.py) file to see more detailed examples
 """
 
 from .Asserts import *

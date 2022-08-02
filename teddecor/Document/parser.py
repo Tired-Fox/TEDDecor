@@ -20,20 +20,12 @@ module = ast.parse(file_content)
 
 from teddecor import TED
 
+objects = [ast.get_docstring(module)]
 
-TED.pprint(f"[@F green]{ast.get_docstring(module)}\n\n")
-
-# print(ast.dump(module, indent=2))
 for klass in getClasses(module):
-    from os import system
-
-    system("cls")
-    TED.pprint(Klass(klass).pretty())
-    input()
+    objects.append(Klass(klass))
 
 for func in getFunctions(module):
-    from os import system
+    objects.append(Func(func))
 
-    system("cls")
-    TED.pprint(Func(func).pretty())
-    input()
+print(objects)

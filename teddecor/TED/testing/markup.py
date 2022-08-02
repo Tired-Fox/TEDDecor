@@ -6,10 +6,10 @@ Raises:
     MacroError: If there is a general formatting error with a macro
 """
 from __future__ import annotations
-from typing import Union, Callable
+from typing import Callable
 
-from .exception import *
-from .colors import *
+from exception import *
+from colors import *
 
 __all__ = [
     "TED",
@@ -18,7 +18,7 @@ __all__ = [
 
 class TEDParser:
     def __init__(self):
-        self.cache = {"*": BOLD.POP, "_": UNDERLINE.POP, "~": False, "^": False}
+        self.cache = {"*": BOLD.POP, "_": UNDERLINE.POP, "~": False}
         self._escaped = False
         self._capture = False
         self._captured = [None, []]
@@ -145,39 +145,6 @@ class TEDParser:
             else:
                 return LINK.OPEN(link)
 
-    def __parse_func(self, func: str) -> str:
-        func = func[1:].strip().lower()
-
-        if len(func) == 0:
-            if self.cache["^"] and self._captured[0] is not None:
-                result = self._captured[0]("".join(self._captured[1]))
-                self._captured = [None, []]
-                self.cache["^"] = False
-                return result
-        elif len(func) > 0:
-            result = ""
-            if self.cache["^"]:
-                result = self._captured[0]("".join(self._captured[1]))
-                self._captured = [None, []]
-
-            if func in MACROS.keys():
-                self._captured[0] = MACROS[func]
-                print(self._captured[0])
-            elif getattr(self._module, func, None) is not None:
-                self._captured[0] = getattr(self._module, func)
-
-            self.cache["^"] = True
-
-            return result
-        else:
-            raise MacroError(
-                self._markup,
-                self._index,
-                "Not a valid function, make sure it is in scope",
-            )
-
-        return ""
-
     def __parse_macro_content(self, content: str) -> None:
         identifiers = ["@", "~", "^"]
 
@@ -203,16 +170,13 @@ class TEDParser:
                 elif char == "~":
                     macros.append(["link", _sub_index])
                     caller = self.__parse_link
-                elif char == "^":
-                    self._capture = True
-                    macros.append(["func", _sub_index])
-                    caller = self.__parse_func
 
                 _sub_index += 1
 
             if len(macros) > 0 and len(macros[-1]) == 2:
                 macros[-1].extend([_sub_index, content[macros[-1][1] : _sub_index]])
                 results.append(caller(content[macros[-1][1] : _sub_index]))
+
         elif len(content) == 0:
             return RESET
         else:
@@ -251,8 +215,6 @@ class TEDParser:
             if len(self.attributes) > 0:
                 self.output.append(BUILDFORMAT(self.attributes))
                 self.attributes = []
-            if self.cache["^"]:
-                self._captured[1].append(self._markup[self._index])
             else:
                 self.output.append(self._markup[self._index])
             self._escaped = False
@@ -283,10 +245,6 @@ class TEDParser:
         if self.cache["~"] is not None:
             end += LINK.CLOSE
 
-        if self.cache["^"] and self._captured[0] is not None:
-            self.output.append(self._captured[0]("".join(self._captured[1])))
-            self._captured = [None, []]
-            self.cache["^"] = False
         elif len(self._captured[1]) > 0:
             self.output.append("".join(self._captured[1]))
 
@@ -299,9 +257,9 @@ class TEDParser:
             markup (Union[str, list[str]]): TED markup string or list of strings
         """
 
+        parsed = []
         for arg in args:
             if isinstance(arg, str):
-                print(self.parse(arg))
-
-
+                parsed.append(self.parse(arg))
+                
 TED = TEDParser()

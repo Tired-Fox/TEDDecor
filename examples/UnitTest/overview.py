@@ -38,14 +38,14 @@ class Basics(Test):
 # Asserting something is true is the  most important part of a test.
 # This library provides an easy to use and read way of writing test, or you can just use assert :)
 class AssertThat(Test):
-    def helper(num: int) -> bool:
+    def helper(self, num: int) -> bool:
         if num > 100:
             return False
         else:
             return True
 
-    def raises_error():
-        raise Exception("Random error was found")
+    def raises_error(self, exception: Exception = Exception):
+        raise exception("An error was found")
 
     @test
     def assertThat(self):
@@ -63,6 +63,7 @@ class AssertThat(Test):
     def assertThat_raises(self):
         # Something that is useful is checking if a function throws an error when called.
         # With assert that it is requested that the first parameter is some callable object which is called later.
+        # In general assertThat should only be used for testing raise conditions when there is a single call.
 
         # The second parameter is raises() where if it has no parameters expects any exception
         # otherwise you can specify it.
@@ -71,6 +72,12 @@ class AssertThat(Test):
         # There is a provided wrap function that allows you to provide a function and parameters
         # which is called later when it checks the condition.
         assertThat(wrap(self.helper, None), raises(TypeError))
+
+        # If you need to do more complex logic or feel that assertThat isn't a great format there
+        # is the `with Raises(Exception):` format.
+        # This way you only need to call the code you expect will raise an error inside the block.
+        with Raises(TypeError):
+            self.raises_error(TypeError)
 
     # Make sure to check out the documentation for a full list of provided functions like eq (equals)
     # and raises along with a guide on how to make your own.

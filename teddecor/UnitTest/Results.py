@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from typing import Union
 
 from ..Util import slash
-from ..TED import pprint
+from ..TED.markup import TED
 
 
 __all__ = ["TestResult", "ClassResult", "SuiteResult", "SaveType", "ResultType"]
@@ -24,9 +24,9 @@ class ResultType:
         SKIPPED (tuple[str, str]): Message and color for a skipped test run
     """
 
-    SUCCESS: tuple[str, str, int] = ("Passed", "[@F green]", "✓")
-    FAILED: tuple[str, str, int] = ("Failed", "[@F red]", "x")
-    SKIPPED: tuple[str, str, int] = ("Skipped", "[@F yellow]", "↻")
+    SUCCESS: tuple[str, str, int] = ("Passed", "[@> green]", "✓")
+    FAILED: tuple[str, str, int] = ("Failed", "[@> red]", "x")
+    SKIPPED: tuple[str, str, int] = ("Skipped", "[@> yellow]", "↻")
 
 
 @dataclass
@@ -42,7 +42,7 @@ class SaveType:
     CSV: str = ".csv"
     JSON: str = ".json"
     TXT: str = ".txt"
-    ALL: callable = lambda: [".txt",".json",".csv"]
+    ALL: callable = lambda: [".txt", ".json", ".csv"]
 
 
 class Result:
@@ -71,7 +71,7 @@ class Result:
             indent (int, optional): The amount to indent the values. Defaults to 0.
         """
         for line in self.pretty(indent):
-            pprint(line)
+            TED.pprint(line)
 
     def pretty(self) -> list:
         """Format the result(s) into a formatted list
@@ -173,7 +173,7 @@ class TestResult(Result):
 
         out = []
         out.append(
-            " " * indent + f"\[{self.color}{self.icon}[@F]] <case> [^esc|{self.name}]"
+            " " * indent + f"\[{self.color}{self.icon}[@>]] <case> [^esc|{self.name}]"
         )
         if isinstance(self.info, list):
             for trace in self.info:
@@ -311,8 +311,8 @@ class ClassResult(Result):
         out = []
 
         passed, failed, skipped = self.counts
-        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
-:{ResultType.FAILED[1]}{failed}[@F]]"
+        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@>]:{ResultType.SKIPPED[1]}{skipped}[@>]\
+:{ResultType.FAILED[1]}{failed}[@>]]"
         out.append(" " * indent + f"*{totals} <class> [^esc|{self.name}]")
 
         if len(self.results):
@@ -320,7 +320,7 @@ class ClassResult(Result):
                 out.extend(result.pretty(indent + 4))
         else:
             out.append(
-                " " * (indent + 4) + f"[@Fyellow]No Tests Found for [^esc|{self.name}]"
+                " " * (indent + 4) + f"[@>yellow]No Tests Found for [^esc|{self.name}]"
             )
 
         return out
@@ -462,8 +462,8 @@ class SuiteResult(Result):
         out = []
 
         passed, failed, skipped = self.counts
-        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
-:{ResultType.FAILED[1]}{failed}[@F]]"
+        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@>]:{ResultType.SKIPPED[1]}{skipped}[@>]\
+:{ResultType.FAILED[1]}{failed}[@>]]"
         out.append(" " * indent + f"*{totals} <suite> [^esc|{self.name}]")
 
         if len(self.results):
@@ -471,7 +471,7 @@ class SuiteResult(Result):
                 out.extend(result.pretty(indent + 4))
         else:
             out.append(
-                " " * (indent + 4) + f"[@Fyellow]No Tests Found for [^esc|{self.name}]"
+                " " * (indent + 4) + f"[@>yellow]No Tests Found for [^esc|{self.name}]"
             )
 
         return out

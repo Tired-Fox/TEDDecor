@@ -19,7 +19,7 @@ Function macros can be of types rainbow, gradient, esc, and repr
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable
-from .exception import *
+from exception import *
 
 __all__ = [
     "PREDEFINED",
