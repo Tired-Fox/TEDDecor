@@ -1,17 +1,17 @@
 from teddecor import TED
 
 # There are include macros that will do cool affects like make the passed text rainbow
-TED.pprint("[^rainbow]Rainbow Text")
+TED.pprint("[^rainbow|Rainbow Text]")
 # There is also an included macro for displaying hyperlinks
-TED.pprint("[~https://tired-fox.github.io/TEDDecor/teddecor.html]Documentation")
+TED.pprint("[~https://tired-fox.github.io/TEDDecor/teddecor.html|Documentation]")
 # There is currently also a macro for outputing a string literal
 # For example if you have special escape character and want to print there literals then you can do
-TED.pprint("[^repr]\x1b\[0m")
+TED.pprint("[^repr|\x1b[0m]")
 
 # Macros can be nested, but this is really only useful if you want to stype your hyperlinks atm
 # Colors can be passed with many formats... the one below shows rgb which can be seperated with both `,` and `;`
 TED.pprint(
-    "[~https://github.com/Tired-Fox/TEDDecor]*TEDDecor [@>138,43,226]Github [@>220;20;60 @<255;255,255]page"
+    "[~https://github.com/Tired-Fox/TEDDecor|*TEDDecor][@>138,43,226]Github [@>220;20;60 @<255;255,255]page"
 )
 
 # Here is passing colors as hex and xterm color codes. Hex must have a `#` in front of it
@@ -44,14 +44,14 @@ TED.pprint("[@>red]*I have a color and style[], and I don't")
 # Escaping `[` will also automatically escape the `]`. However, if you want to escape macros when they are nested you will need
 # to escape everything which you can do with the `[^esc|{string}]` macro. It is possible to do with `\` but it is more difficult that way.
 TED.pprint(
-    "[~https://tired-fox.github.io/TEDDecor/teddecor.html ^esc]\[^rainbow|Documentation]"
+    "[~https://tired-fox.github.io/TEDDecor/teddecor.html|[^esc|[^rainbow|Documentation]]]"
 )
 
 # This is a literal block to show what will be output next using `\`
 TED.pprint(
-    "\[~https://tired-fox.github.io/TEDDecor/teddecor.html ^rainbow]\Documentation"
+    "\[~https://tired-fox.github.io/TEDDecor/teddecor.html|\[^rainbow|Documentation]]"
 )
 # Now for the output
 TED.pprint(
-    "[~https://tired-fox.github.io/TEDDecor/teddecor.html ^rainbow]Documentation"
+    "[~https://tired-fox.github.io/TEDDecor/teddecor.html|[^rainbow|Documentation]]"
 )

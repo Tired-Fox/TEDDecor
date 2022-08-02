@@ -5,17 +5,9 @@ from teddecor.TED.exception import MacroMissingError
 
 class Links(Test):
     @test
-    def normal_link(self):
-        link = "https://example.com"
-        result = TED.parse(f"[~{link}]")
-        assertThat(
-            result, eq(f"\x1b]8;;{link}\x1b\\{link}\x1b[0m\x1b]8;;\x1b\\\x1b[0m")
-        )
-
-    @test
     def pretty_link(self):
         link = "https://example.com"
-        result = TED.parse(f"[~{link}|example]")
+        result = TED.parse(f"[~{link}]example")
         assertThat(
             result, eq(f"\x1b]8;;{link}\x1b\\example\x1b[0m\x1b]8;;\x1b\\\x1b[0m")
         )
@@ -23,7 +15,7 @@ class Links(Test):
     @test
     def pretty_link_nested(self):
         link = "https://example.com"
-        result = TED.parse(f"[~{link}|[@F red]example]")
+        result = TED.parse(f"[~{link} @> red]example")
         assertThat(
             result,
             eq(f"\x1b]8;;{link}\x1b\\\x1b[31mexample\x1b[0m\x1b]8;;\x1b\\\x1b[0m"),

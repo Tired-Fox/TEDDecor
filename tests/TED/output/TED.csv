@@ -12,12 +12,13 @@ TED,Colors,reset_foreground_and_background,Passed,''
 TED,ColorExceptions,not_in_predefined,Passed,''
 TED,ColorExceptions,no_specifier,Passed,''
 TED,ColorExceptions,no_specifier,Passed,''
-TED,Builtin,rainbow,Passed,''
-TED,Builtin,repr,Passed,''
-TED,Builtin,repr,Passed,''
-TED,BuiltinExceptions,does_not_exist,Passed,''
-TED,BuiltinExceptions,requires_input,Passed,''
-TED,Links,normal_link,Passed,''
-TED,Links,pretty_link,Passed,''
-TED,Links,pretty_link_nested,Passed,''
-TED,pretty_link_no_markup,Passed,''
+TED,Links,pretty_link,Failed,'[test_links.py:11] pretty_link
+[AssertThat.py:55] assertThat
+[AssertThat.py:70] <lambda>
+[Asserts.py:37] assertEqual
+[Error Message] Values are not equal'
+TED,Links,pretty_link_nested,Failed,'[test_links.py:19] pretty_link_nested
+[AssertThat.py:55] assertThat
+[AssertThat.py:70] <lambda>
+[Asserts.py:37] assertEqual
+[Error Message] Values are not equal'

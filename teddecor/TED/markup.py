@@ -6,256 +6,205 @@ Raises:
     MacroError: If there is a general formatting error with a macro
 """
 from __future__ import annotations
-from typing import Union, Callable
+from tempfile import tempdir
 
 from .exception import *
 from .colors import *
 
-__all__ = [
-    "TED",
-]
+__all__ = ["TED"]
 
 
 class TEDParser:
     def __init__(self):
-        self.cache = {"*": BOLD.POP, "_": UNDERLINE.POP, "~": False, "^": False}
-        self._escaped = False
-        self._capture = False
-        self._captured = [None, []]
-        self.attributes = []
-        self.output = []
+        self._underlined = False
+        self._bold = False
 
-    def __parse_macro(self):
-        self._index += 1
-        start = self._index
-        macro_content = []
-        _macro_count = 1
-
-        while self._index < len(self._markup) and _macro_count > 0:
-            if self._markup[self._index] == "]" and not self._escaped:
-                _macro_count -= 1
-                if _macro_count == 0:
-                    break
-                else:
-                    macro_content.append(self._markup[self._index])
-            elif self._markup[self._index] == "\\" and not self._escaped:
-                self._escaped = True
-            elif self._markup[self._index] == "[" and not self._escaped:
-                macro_content.append(self._markup[self._index])
-                _macro_count += 1
+    def __tokenizeMacro(self, index: int, start: int, string: str, content: str) -> str:
+        content = content.strip()
+        if content.startswith(("@", "~", "^")):
+            if content.startswith("~"):
+                return self.__parseLink(content[1:], string, start, index)
+            elif content.startswith("^"):
+                return self.__parseFunc(content[1:], string, start, index)
             else:
-                macro_content.append(self._markup[self._index])
-
-            self._index += 1
-
-        if _macro_count > 0:
-            raise MacroError(
-                self._markup,
-                start - 1,
-                "Macro must be closed with a non escaped \x1b[32m]",
-            )
+                return self.__parseColor(content, string, start)
         else:
-            macro_content = self.__parse_macro_content("".join(macro_content))
+            raise MacroMissingError(
+                string,
+                start,
+                start + 1,
+                "Macro must start with an identifier such as @, ~, or ^",
+                "?",
+            )
 
-        self.output.append(macro_content)
+    def __getMacroContent(self, index: int, string: str, start: int) -> tuple[int, str]:
+        token = ""
+        closed = 1
+        _escaped = False
+        while closed:
+            if string[index] == "]" and not _escaped:
+                closed -= 1
+                if closed:
+                    token += string[index]
+            elif string[index] == "\x1b":
+                token += string[index]
+                _escaped = True
+            elif string[index] == "\\" and not _escaped:
+                _escaped = True
+            elif string[index] == "[" and not _escaped:
+                closed += 1
+                token += string[index]
+            else:
+                token += string[index]
+                _escaped = False
 
-    def __parse_color(self, color: str) -> str:
-        # #ababab, 123;12,123, 2, red
-        color = color[1:].strip()
+            if closed:
+                index += 1
+                if index == len(string):
+                    raise MacroMissingError(
+                        string, start, index, "Macro must end with a \x1b[32m]", "]"
+                    )
 
-        def get_color(content: str, context: int) -> str:
-            from re import match
+        if closed == 0:
+            return index, token
+        else:
+            raise MacroMissingError(
+                string, start, index, "Macro must end with a \x1b[32m]", "]"
+            )
 
-            if content.strip() == "":
+    def __parseColor(self, content: str, string: str, start: int) -> str:
+        from re import match
+
+        foreground = ""
+        background = ""
+
+        # start + 1 = beginning
+        tokens = content.split("@")
+        tokens.remove("")
+
+        for token in tokens:
+            if token.strip() == "":
                 return RESETCOLORS
+            if token.startswith((">", "<")):
+                type = token[0]
+                content = token[1:].strip(" ")
+                if type == ">":
+                    type = Context.FG
+                    if len(content) == 0:
+                        return RESETFOREGROUND
+                elif type == "<":
+                    type = Context.BG
+                    if len(content) == 0:
+                        return RESETBACKGROUND
 
-            if content.startswith("#"):
-                if len(content) == 4 and match(r"#[a-fA-F0-9]{3}", content):
-                    if context == Context.BOTH:
-                        return BUILDFORMAT(
-                            [HEX(Context.FG, content), HEX(Context.BG, content)]
-                        )
+                if content.startswith("#"):
+                    if len(content) == 4 and match(r"#[a-fA-F0-9]{3}", content):
+                        if type == Context.FG:
+                            foreground = HEX(type, content)
+                        else:
+                            background = HEX(type, content)
+                    elif len(content) == 7 and match(r"#[a-fA-F0-9]{6}", content):
+                        if type == Context.FG:
+                            foreground = HEX(type, content)
+                        else:
+                            background = HEX(type, content)
+                elif match(r"\d{1,3}[,;]\d{1,3}[,;]\d{1,3}", content):
+                    if type == Context.FG:
+                        rgb = content.replace(";", ",").split(",")
+                        foreground = RGB(type, rgb[0], rgb[1], rgb[2])
                     else:
-                        return BUILDFORMAT([HEX(context, content)])
-                elif len(content) == 7 and match(r"#[a-fA-F0-9]{6}", content):
-                    if context == Context.BOTH:
-                        return BUILDFORMAT(
-                            [HEX(Context.FG, content), HEX(Context.BG, content)]
-                        )
+                        rgb = content.replace(";", ",").split(",")
+                        background = RGB(type, rgb[0], rgb[1], rgb[2])
+                elif match(r"\d{1,3}", content):
+                    if type == Context.FG:
+                        foreground = XTERM(type, content)
                     else:
-                        return BUILDFORMAT([HEX(context, content)])
-            elif match(r"\d{1,3}[,;]\d{1,3}[,;]\d{1,3}", content):
-                if context == Context.BOTH:
-                    rgb = content.replace(";", ",").split(",")
-                    return BUILDFORMAT(
-                        [
-                            RGB(Context.FG, rgb[0], rgb[1], rgb[2]),
-                            RGB(Context.BG, rgb[0], rgb[1], rgb[2]),
-                        ]
-                    )
+                        background = XTERM(type, content)
                 else:
-                    rgb = content.replace(";", ",").split(",")
-                    return BUILDFORMAT([RGB(context, rgb[0], rgb[1], rgb[2])])
-            elif match(r"\d{1,3}", content):
-                if context == Context.BOTH:
-                    return BUILDFORMAT(
-                        [XTERM(Context.FG, content), XTERM(Context.BG, content)]
-                    )
-                else:
-                    return BUILDFORMAT([XTERM(context, content)])
+                    if content.lower() in PREDEFINED.keys():
+                        content = content.lower()
+                        if type == Context.FG:
+                            foreground = PREDEFINED[content](type)
+                        else:
+                            background = PREDEFINED[content](type)
+                    else:
+                        raise MacroError(
+                            string,
+                            start + 4,
+                            self.parse(
+                                "Value must be in predefined or a different color type, see [~https://tired-fox.github.io/TEDDecor/teddecor/TED/colors.html|Colors docs]"
+                            ),
+                        )
             else:
-                if content.lower() in PREDEFINED.keys():
-                    content = content.lower()
-                    if context == Context.BOTH:
-                        return BUILDFORMAT(
-                            [
-                                PREDEFINED[content](Context.FG),
-                                PREDEFINED[content](Context.BG),
-                            ]
-                        )
-                    else:
-                        return BUILDFORMAT([PREDEFINED[content](context)])
-                else:
-                    raise MacroError(
-                        self._markup,
-                        self._index,
-                        "Value must be in predefined or a different color type",
-                    )
+                raise MacroError(
+                    string,
+                    start + 2,
+                    "Must have color type if color is specified, F or B",
+                )
 
-        if color.startswith(">"):
-            return get_color(color[1:].strip(), Context.FG)
-        elif color.startswith("<"):
-            return get_color(color[1:].strip(), Context.BG)
+        result = "\x1b["
+        if foreground != "" and background != "":
+            result += f"{foreground};{background}m"
+        elif foreground != "":
+            result += f"{foreground}m"
+        elif background != "":
+            result += f"{background}m"
+
+        return result
+
+    def __parseLink(self, token: str, string: str, start: int, index: int) -> str:
+        token = token.split("|", 1)
+        if len(token) == 2:
+            if token[1] == "":
+                raise MacroMissingError(
+                    string,
+                    start,
+                    index,
+                    "\x1b[32m string\x1b[39m is required if \x1b[32m| \x1b[39mis provided",
+                    " string",
+                )
+            else:
+                return f"\x1b]8;;{token[0]}\x1b\\{self.parse(token[1])}\x1b]8;;\x1b\\"
         else:
-            return get_color(color.strip(), Context.BOTH)
+            return f"\x1b]8;;{token[0]}\x1b\\{self.parse(token[0])}\x1b]8;;\x1b\\"
 
-    def __parse_link(self, link: str) -> str:
-        link = link[1:].strip()
-
-        if len(link) == 0:
-            if self.cache["~"]:
-                self.cache["~"] = False
-                return LINK.CLOSE
+    def __parseFunc(self, token: str, string: str, start: int, index: int) -> str:
+        token = token.split("|", 1)
+        token[0] = token[0].lower()
+        if token[0] in MACROS.keys():
+            if len(token) == 2:
+                return MACROS[token[0]](token[1])
             else:
-                return ""
-        elif len(link) > 0:
-            self.cache["~"] = True
-            if self.cache["~"]:
-                return LINK.CLOSE + LINK.OPEN(link)
-            else:
-                return LINK.OPEN(link)
-
-    def __parse_func(self, func: str) -> str:
-        func = func[1:].strip().lower()
-
-        if len(func) == 0:
-            if self.cache["^"] and self._captured[0] is not None:
-                result = self._captured[0]("".join(self._captured[1]))
-                self._captured = [None, []]
-                self.cache["^"] = False
-                return result
-        elif len(func) > 0:
-            result = ""
-            if self.cache["^"]:
-                result = self._captured[0]("".join(self._captured[1]))
-                self._captured = [None, []]
-
-            if func in MACROS.keys():
-                self._captured[0] = MACROS[func]
-                print(self._captured[0])
-            elif getattr(self._module, func, None) is not None:
-                self._captured[0] = getattr(self._module, func)
-
-            self.cache["^"] = True
-
-            return result
+                try:
+                    return MACROS[token[0]]()
+                except Exception:
+                    raise MacroMissingError(
+                        string,
+                        start,
+                        index,
+                        "Macro must have \x1b[32m| string",
+                        "| string",
+                    )
         else:
             raise MacroError(
-                self._markup,
-                self._index,
-                "Not a valid function, make sure it is in scope",
+                string,
+                start + 3,
+                "Not a valid macro",
             )
 
-        return ""
+    def __parseMacro(self, index: int, string: str) -> str:
+        start = index
+        index += 1
 
-    def __parse_macro_content(self, content: str) -> None:
-        identifiers = ["@", "~", "^"]
-
-        macros = []
-        results = []
-
-        caller: Callable = None
-        scont = content.strip()
-
-        _sub_index = 0
-
-        if scont.startswith(tuple(identifiers)):
-            while _sub_index < len(scont):
-                char = scont[_sub_index]
-
-                if char in identifiers and len(macros) > 0:
-                    if len(macros[-1]) == 2:
-                        macros[-1].append(_sub_index)
-                        results.append(caller(content[macros[-1][1] : _sub_index]))
-                if char == "@":
-                    macros.append(["color", _sub_index])
-                    caller = self.__parse_color
-                elif char == "~":
-                    macros.append(["link", _sub_index])
-                    caller = self.__parse_link
-                elif char == "^":
-                    self._capture = True
-                    macros.append(["func", _sub_index])
-                    caller = self.__parse_func
-
-                _sub_index += 1
-
-            if len(macros) > 0 and len(macros[-1]) == 2:
-                macros[-1].extend([_sub_index, content[macros[-1][1] : _sub_index]])
-                results.append(caller(content[macros[-1][1] : _sub_index]))
-        elif len(content) == 0:
-            return RESET
+        if string[index] == "]":
+            self._underline = False
+            self._bold = False
+            return index, RESET
         else:
-            raise MacroError(
-                self._markup,
-                self._index - len(content),
-                "Macro must begin with an identifier; \x1b[32m@\x1b[39m, \x1b[32m^\x1b[39m, \x1b[32m~",
-            )
+            index, content = self.__getMacroContent(index, string, start)
+            result = self.__tokenizeMacro(index, start, string, content)
 
-        return "".join(results)
-
-    def __indentify_char(self):
-        if self._markup[self._index] == "*" and not self._escaped:
-            attr = BOLD.inverse(self.cache["*"])
-
-            if BOLD.inverse(self.cache["*"]) in self.attributes:
-                self.attributes.remove(BOLD.inverse(self.cache["*"]))
-            else:
-                self.attributes.append(attr)
-
-            self.cache["*"] = attr
-        elif self._markup[self._index] == "_" and not self._escaped:
-            attr = UNDERLINE.inverse(self.cache["*"])
-
-            if UNDERLINE.inverse(self.cache["*"]) in self.attributes:
-                self.attributes.remove(UNDERLINE.inverse(self.cache["*"]))
-            else:
-                self.attributes.append(attr)
-
-            self.cache["*"] = attr
-        elif self._markup[self._index] == "[" and not self._escaped:
-            self.__parse_macro()
-        elif self._markup[self._index] == "\\" and not self._escaped:
-            self._escaped = True
-        else:
-            if len(self.attributes) > 0:
-                self.output.append(BUILDFORMAT(self.attributes))
-                self.attributes = []
-            if self.cache["^"]:
-                self._captured[1].append(self._markup[self._index])
-            else:
-                self.output.append(self._markup[self._index])
-            self._escaped = False
+            return index, result
 
     def parse(self, string: str) -> str:
         """TED parser that translates the given TED markup string
@@ -266,42 +215,48 @@ class TEDParser:
         Returns:
             str: Translated version of the string
         """
-        if True:
-            import inspect
+        _escaped = False
+        out = []
 
-            frame = inspect.stack()[1]
-            self._module = inspect.getmodule(frame[0])
+        i = 0
+        while i < len(string):
+            if string[i] in ["_", "*", "["] and _escaped == False:
+                if string[i] == "_":
+                    out.append(UNDERLINE(self._underlined))
+                    self._underlined = not self._underlined
+                elif string[i] == "*":
+                    out.append(BOLD(self._bold))
+                    self._bold = not self._bold
+                elif string[i] == "[" and not _escaped:
+                    index, value = self.__parseMacro(i, string)
+                    i = index
+                    if value != "":
+                        out.append(value)
+            elif string[i] == "\x1b":
+                out.append(string[i])
+                _escaped = True
+            elif string[i] == "\\" and not _escaped:
+                _escaped = True
+            else:
+                out.append(string[i])
+                _escaped = False
+            i += 1
 
-        self._index = 0
-        self._markup = string
-
-        while self._index < len(self._markup):
-            self.__indentify_char()
-            self._index += 1
-
-        end = "\x1b[0m"
-        if self.cache["~"] is not None:
-            end += LINK.CLOSE
-
-        if self.cache["^"] and self._captured[0] is not None:
-            self.output.append(self._captured[0]("".join(self._captured[1])))
-            self._captured = [None, []]
-            self.cache["^"] = False
-        elif len(self._captured[1]) > 0:
-            self.output.append("".join(self._captured[1]))
-
-        return "".join(self.output) + end
+        out.append(RESET)
+        return "".join(out)
 
     def pprint(self, *args) -> None:
         """Takes the given string and gives it to the TED parser, then prints the result.
 
         Args:
-            markup (Union[str, list[str]]): TED markup string or list of strings
+            string (str): The TED markup string to pretty print
         """
 
+        parsed = []
         for arg in args:
-            if isinstance(arg, str):
-                print(self.parse(arg))
+            parsed.append(self.parse(arg))
+
+        print(*parsed)
 
 
 TED = TEDParser()

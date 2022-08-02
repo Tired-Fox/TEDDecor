@@ -52,43 +52,27 @@
         "info": ""
       }
     },
-    "Builtin": {
-      "rainbow": {
-        "result": "Passed",
-        "info": ""
-      },
-      "repr": {
-        "result": "Passed",
-        "info": ""
-      }
-    },
-    "BuiltinExceptions": {
-      "does_not_exist": {
-        "result": "Passed",
-        "info": ""
-      },
-      "requires_input": {
-        "result": "Passed",
-        "info": ""
-      }
-    },
     "Links": {
-      "normal_link": {
-        "result": "Passed",
-        "info": ""
-      },
       "pretty_link": {
-        "result": "Passed",
-        "info": ""
+        "result": "Failed",
+        "info": [
+          "[test_links.py:11] pretty_link",
+          "[AssertThat.py:55] assertThat",
+          "[AssertThat.py:70] <lambda>",
+          "[Asserts.py:37] assertEqual",
+          "[Error Message] Values are not equal"
+        ]
       },
       "pretty_link_nested": {
-        "result": "Passed",
-        "info": ""
+        "result": "Failed",
+        "info": [
+          "[test_links.py:19] pretty_link_nested",
+          "[AssertThat.py:55] assertThat",
+          "[AssertThat.py:70] <lambda>",
+          "[Asserts.py:37] assertEqual",
+          "[Error Message] Values are not equal"
+        ]
       }
-    },
-    "pretty_link_no_markup": {
-      "result": "Passed",
-      "info": ""
     }
   }
 }

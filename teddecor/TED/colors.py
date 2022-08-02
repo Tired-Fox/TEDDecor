@@ -35,7 +35,7 @@ __all__ = [
     "HEX",
     "Context",
     "BUILDFORMAT",
-    "LINK"
+    "LINK",
 ]
 
 # @{δ}           <=> @F = foreground, @B = background
@@ -70,30 +70,17 @@ RESETCOLORS = "\x1b[39;49m"
 RESET = "\x1b[0m"
 
 
-@dataclass
-class BOLD:
-    POP: int = 22
-    PUSH: int = 1
+def BOLD(state: bool) -> str:
+    return "\x1b[22m" if state else "\x1b[1m"
 
-    @staticmethod
-    def inverse(current: int):
-        return BOLD.POP if current == BOLD.PUSH else BOLD.PUSH
 
+def UNDERLINE(state: bool) -> str:
+    return "\x1b[24m" if state else "\x1b[4m"
 
 @dataclass
 class LINK:
     OPEN: Callable = lambda value: f"\x1b]8;;{value}\x1b\\"
     CLOSE: str = "\x1b]8;;\x1b\\"
-
-
-@dataclass
-class UNDERLINE:
-    POP: int = 24
-    PUSH: int = 4
-
-    @staticmethod
-    def inverse(current: int):
-        return UNDERLINE.POP if current == UNDERLINE.PUSH else UNDERLINE.PUSH
 
 
 def BUILDFORMAT(formats: list) -> str:
