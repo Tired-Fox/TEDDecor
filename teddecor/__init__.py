@@ -7,3 +7,4 @@ Dive in with minimal effort and get great results.
 
 __version__ = "0.1.0"
 from . import UnitTest
+from .TED import TED

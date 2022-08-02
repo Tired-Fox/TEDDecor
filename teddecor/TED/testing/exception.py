@@ -1,9 +1,6 @@
-from os import get_terminal_size
+__all__ = ["MacroError", "MacroMissingError", "MacroGeneralError"]
 
-__all__ = [
-    "MacroError",
-    "MacroMissingError",
-]
+from os import get_terminal_size
 
 
 def get_len(string: str) -> int:
@@ -65,3 +62,19 @@ class MacroMissingError(Exception):
 
     def __str__(self):
         return self.error
+
+
+class MacroGeneralError(Exception):
+    """Takes a value, start pos of macro, current error index, hint, and what is missing.
+    It then takes this information and displays what is missing and hints to why
+
+    Args:
+        Exception (_type_): _description_
+    """
+
+    def __init__(self, hint: str):
+        self._hint = "\n\x1b[0m\x1b[1mInvalid Macro:\n" + "  " + hint + "\x1b[0m"
+        super().__init__(self._hint)
+
+    def __str__(self):
+        return self._hint

@@ -13,7 +13,29 @@ __all__ = [
     "raises",
     "within",
     "has",
+    "Raises",
 ]
+
+
+class Raises:
+    """Assert that the code ran inside the `with` keyword raises an exception."""
+
+    def __init__(self, exception: Exception = Exception):
+        self._exception = exception
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_val is not None:
+            if not isinstance(exc_val, self._exception):
+                raise AssertionError(
+                    f"Unexpected exception raised {exc_val.__class__}"
+                ) from exc_val
+            else:
+                return True
+        else:
+            raise AssertionError("No exception raised")
 
 
 def assertThat(value: Any, compare: Callable, message: str = "") -> Union[bool, None]:

@@ -1,3 +1,4 @@
+from ast import Raise
 from genericpath import isfile
 from shutil import ReadError
 from tkinter import E
@@ -51,6 +52,9 @@ class Assert_Raises(Test):
     def raises_lookup_error(self):
         raise LookupError
 
+    def raise_exception(self, exception: Exception):
+        raise exception
+
     @test
     def assert_raise_pass(self):
         assert Asserts.assertRaises(self.raises_lookup_error, LookupError)
@@ -89,6 +93,28 @@ class Assert_Raises(Test):
     def assert_raise_fail_any(self):
         try:
             Asserts.assertRaises(self.raises_lookup_error)
+        except AssertionError as error:
+            assert "No exception raised" in str(error)
+
+    @test
+    def with_raises(self):
+        with Raises():
+            self.raise_exception(TypeError)
+
+        with Raises():
+            raise AssertionError
+
+        with Raises(TypeError):
+            raise TypeError
+        try:
+            with Raises(TypeError):
+                raise AssertionError
+        except AssertionError as error:
+            assert "Unexpected exception raised" in str(error)
+
+        try:
+            with Raises():
+                pass
         except AssertionError as error:
             assert "No exception raised" in str(error)
 
@@ -278,6 +304,6 @@ if __name__ == "__main__":
             Assert_That,
             is_true,
         ],
-    ).run().save(location="./Outputs", type=SaveType.TXT)
+    ).run().save(location="./Outputs", ext=SaveType.TXT)
 
     run(is_fail)

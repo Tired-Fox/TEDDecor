@@ -1,6 +1,5 @@
 from __future__ import annotations
 import ast
-from re import sub
 from typing import Any, Union
 
 from sys import path
@@ -352,25 +351,22 @@ class Func(AstObj):
         """Functions return type"""
         return self._returns
 
-    def pretty(self, indent: int = 0):
+    def pretty(self, indent: int = 0) -> list:
         spacing = " " * indent
-        out = (
+        out = [
             spacing
-            + f"[@F #EBBC4E]*def [@F magenta][^esc|{self.name}][@F]({self.arguments.pretty()})[]"
-        )
+            + f"*[@F #EBBC4E]def [@F magenta][^esc|{self.name}][@F]({self.arguments.pretty()}[@F])"
+        ]
         if self.returns is not None:
-            out += f" *→ [@F yellow]{self.returns}[]"
+            out[0] += f" → [@F yellow]{self.returns}"
 
         if self.docs is not None:
-            doc = []
             for line in str(self.docs).split("\n"):
-                doc.append(f"{spacing}[^esc|" + line + "]")
-
-            doc = "\n".join(doc)
-            out += f"\n[@F green]{doc}[]\n"
+                out.append(f"{spacing}[@F green][^esc|" + line + "]")
 
         if len(self.body) > 0:
-            out += "\n".join(f.pretty(indent=4) for f in self.body)
+            out.extend(f.pretty(indent=4) for f in self.body)
+
         return out
 
     def str(self, indent: int = 0) -> str:
@@ -441,23 +437,20 @@ class Klass:
             if isinstance(node, ast.FunctionDef):
                 self._body.append(Func(node))
 
-    def pretty(self, indent: int = 0):
+    def pretty(self, indent: int = 0) -> list:
         spacing = " " * indent
-        out = (
+        out = [
             spacing
-            + f"[@F #EBBC4E]*class [@F magenta][^esc|{self.name}][@F]({'[@F], [@F yellow]'.join(str(base) for base in self.bases)}[@F])[]"
-        )
+            + f"[@F #EBBC4E]*class [@F magenta][^esc|{self.name}][@F]({'[@F], [@F yellow]'.join(str(base) for base in self.bases)}[@F])"
+        ]
 
         if self.docs is not None:
-            doc = []
             for line in str(self.docs).split("\n"):
-                doc.append(f"{spacing}[^esc|" + line + "]")
-
-            doc = "\n".join(doc)
-            out += f"\n[@F green]{doc}[]\n"
+                out.append(f"{spacing}[@F green][^esc|" + line + "]")
 
         if len(self.body) > 0:
-            out += "\n".join(f.pretty(indent=4) for f in self.body)
+            for f in self.body:
+                out.extend(f.pretty(indent=4))
         return out
 
     def str(self, indent: int = 0) -> str:
@@ -481,7 +474,3 @@ class Klass:
 
     def __str__(self) -> str:
         return self.str()
-
-
-if __name__ == "__main__":
-    print(Func(None))
