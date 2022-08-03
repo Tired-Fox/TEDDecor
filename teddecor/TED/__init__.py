@@ -26,23 +26,29 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
 
 2. Hyperlinks
     * Hyperlinks start with a leading identifier `~`.
-    * Hyperlinks have two modes; raw link mode and pretty link mode.
-        * Raw link mode is where the specified url is displayed as the hyperlink. 
-            * `[~https://example.com]` -> `https://example.com`.
-        * Pretty link mode is where the specified TED markup is used as the display for the hyperlinke. This means you can nest macros inside of a hyperlink.
-            * `[~https://example.com|example]` -> `example`.
-            * `[~https://example.com|[@F red]example]`.
-            * `[~https://exmaple.com|[^rainbow|example]]`.
+    * Hyperlinks will surround plain text blocks. `[~https://example.com]Example` -> ``Example``.
+        *   Links end on the next macro with the simpl `~` or at the end of the string
+            * `[~https://example.com]Example[~] Not part of the link` → ``Example` Not part of the link`
+            * `[~https://example.com]Link1 [~https://example.com]Link2` → ``Link1 ``link2``
             
 3. Builtin functions
-    * Builtin functions start with the identifier `^`. They are also structure as `[^func|string]`, where func is the built in function and string is the value to pass to it.
-    * The `|` is required and the string can be blank as `""` will be passed to the function.
-    * The builtin function takes the given string processes it and returns the resulting string.
-    * Examples:
-        * `[^rainbow|rainbow text]` will return the string with a rainbow foreground color.
-        * `[^repr|string]` will return the repr of the string. Good for displaying TED markup without processing it, and for displaying escape characters.
+    * Builtin functions start with the identifier `^`. The text block following the function will have it's string value passed as a parameter.
+    * You can also specify your own function or override the provided ones by calling TED.define("Macro Name", Callable)
+    * The custom function needs to take a string and return a string. If it does not return a string it will not have an affect.
+        * Example:
+            ```python
+            def hello_world(string: str) → str:
+                return "Hello World"
+            
+            TED.define("hw", hello_world)
+            TED.print("[^hw]Cat goes moo")
+            ```
+        * The above example lets TED know about the function hello_world and says it can be called with `hw`
+        * Then all that needs to happen is to call it with `[^hw]`
+    * Example:
+        * `[^rainbow]Rainbow Text` will return the string with a rainbow foreground color.
 
 TED also follows some inspiration from markdown where `*` means toggle bold and `_` means to toggle underline.
 To reset all attributes, color and formatting, use the empty brackets `[]`.
 """
-from .markup import *
+from .markup import TED

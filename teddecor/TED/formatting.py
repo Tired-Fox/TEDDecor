@@ -24,6 +24,7 @@ __all__ = [
     "UNDERLINE",
     "BOLD",
     "RESET",
+    "FUNC",
     "build_color",
 ]
 
@@ -34,6 +35,9 @@ class ColorType:
     BG: int = 40
     BOTH: list = (30, 40)
 
+
+FUNC = {"rainbow": lambda string: __RAINBOW(string),
+        "repr": lambda string: repr(string)}
 
 PREDEFINED = {
     "black": lambda c: f"{c + 0}",
@@ -101,11 +105,13 @@ class UNDERLINE:
     def inverse(current: int):
         return UNDERLINE.POP if current == UNDERLINE.PUSH else UNDERLINE.PUSH
 
+
 @dataclass
 class LINK:
     CLOSE: str = "\x1b]8;;\x1b\\"
     OPEN: str = lambda url: f"\x1b]8;;{url}\x1b\\"
-    
+
+
 def get_color(types: Union[int, list[int]], content: str) -> Union[int, list[int]]:
     """Parse and translate the color value from hex, xterm, rgb, and predefined color values.
 
@@ -154,12 +160,12 @@ def build_color(color: str) -> tuple[ColorType, str]:
     ctype = ColorType.BOTH
     content = color.strip()
 
-    if color.startswith((">", "<")):
+    if color.startswith(("F", "B")):
         ctype = color[0]
         content = color[1:].strip(" ")
-        if ctype == ">":
+        if ctype == "F":
             ctype = [ColorType.FG]
-        elif ctype == "<":
+        elif ctype == "B":
             ctype = [ColorType.BG]
 
     return ctype, get_color(ctype, content)
@@ -188,6 +194,6 @@ def __RAINBOW(input: str) -> str:
     out = []
     for i, char in enumerate(input):
         out.append(colors[i % len(colors)] + char)
-    out.append(RESETCOLORS)
+    out.append("\x1b[39;49m")
 
     return "".join(out)

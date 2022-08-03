@@ -1,7 +1,9 @@
 from __future__ import annotations
 from functools import cached_property
-from typing import Union
-from .formatting import build_color, ColorType, LINK
+from typing import Union, Callable, Dict
+
+from .exception import MacroError
+from .formatting import build_color, ColorType, LINK, RESET, FUNC
 
 
 class Token:
@@ -9,6 +11,42 @@ class Token:
 
     def __repr__(self) -> str:
         return f"<{type(self).__name__}: {self._markup}, {self.value}>"
+
+
+class Reset(Token):
+    @property
+    def value(self) -> str:
+        return RESET
+
+    def __str__(self) -> str:
+        return self.value
+
+
+class Func(Token):
+    def __init__(self, markup: str, funcs: Dict[str, Callable]) -> None:
+        self._markup: str = markup
+        self._func: str = markup[1:].strip().lower()
+        self._caller = lambda string: string
+        self.parse_func(funcs)
+
+    def parse_func(self, funcs: Dict[str, Callable]) -> None:
+        if self._func in funcs:
+            self._caller = funcs[self._func]
+        else:
+            raise MacroError(self._markup, 1, "Invalid function")
+
+    def exec(self, string: str) -> str:
+        return self._caller(string)
+
+    @property
+    def value(self) -> str:
+        return self._func
+
+    def __str__(self) -> str:
+        return self._markup
+
+    def __repr__(self) -> str:
+        return f"<Func: {self._func}"
 
 
 class HLink(Token):
@@ -52,17 +90,23 @@ class Text(Token):
 
     def __init__(self, markup: str) -> None:
         self._markup: str = markup
+        self._value: str = markup
 
-    @cached_property
+    @property
     def value(self) -> str:
         """Fomatted value of the tokens markup."""
-        return self._markup
+        return self._value
+
+    @value.setter
+    def value(self, text: str) -> str:
+        """Fomatted value of the tokens markup."""
+        self._value = text
 
     def __repr__(self) -> str:
         return f"<{type(self).__name__}: '{self._markup}'>"
 
     def __str__(self) -> str:
-        return self._markup
+        return self._value
 
 
 class Color(Token):
