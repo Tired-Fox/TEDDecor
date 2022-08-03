@@ -9,16 +9,6 @@ TED,Colors,hex_color,Passed,''
 TED,Colors,reset_foreground,Passed,''
 TED,Colors,reset_background,Passed,''
 TED,Colors,reset_foreground_and_background,Passed,''
-TED,ColorExceptions,not_in_predefined,Passed,''
-TED,ColorExceptions,no_specifier,Passed,''
-TED,ColorExceptions,no_specifier,Passed,''
-TED,Links,pretty_link,Failed,'[test_links.py:11] pretty_link
-[AssertThat.py:55] assertThat
-[AssertThat.py:70] <lambda>
-[Asserts.py:37] assertEqual
-[Error Message] Values are not equal'
-TED,Links,pretty_link_nested,Failed,'[test_links.py:19] pretty_link_nested
-[AssertThat.py:55] assertThat
-[AssertThat.py:70] <lambda>
-[Asserts.py:37] assertEqual
-[Error Message] Values are not equal'
+TED,Colors,assign_both,Passed,''
+TED,Colors,optimizations,Passed,''
+TED,encoding,Passed,''

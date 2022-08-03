@@ -1,5 +1,5 @@
-[13:0:2] <suite> TED
-    [10:0:0] <class> Colors
+[13:0:0] <suite> TED
+    [12:0:0] <class> Colors
         [✓] <case> foreground
         [✓] <case> background
         [✓] <case> foreground_and_background
@@ -10,20 +10,6 @@
         [✓] <case> reset_foreground
         [✓] <case> reset_background
         [✓] <case> reset_foreground_and_background
-    [3:0:0] <class> ColorExceptions
-        [✓] <case> not_in_predefined
-        [✓] <case> no_specifier
-        [✓] <case> no_specifier
-    [0:0:2] <class> Links
-        [x] <case> pretty_link
-            [test_links.py:11] pretty_link
-            [AssertThat.py:55] assertThat
-            [AssertThat.py:70] <lambda>
-            [Asserts.py:37] assertEqual
-            [Error Message] Values are not equal
-        [x] <case> pretty_link_nested
-            [test_links.py:19] pretty_link_nested
-            [AssertThat.py:55] assertThat
-            [AssertThat.py:70] <lambda>
-            [Asserts.py:37] assertEqual
-            [Error Message] Values are not equal
+        [✓] <case> assign_both
+        [✓] <case> optimizations
+    [✓] <case> encoding

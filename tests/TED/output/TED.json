@@ -40,39 +40,19 @@
       "reset_foreground_and_background": {
         "result": "Passed",
         "info": ""
-      }
-    },
-    "ColorExceptions": {
-      "not_in_predefined": {
+      },
+      "assign_both": {
         "result": "Passed",
         "info": ""
       },
-      "no_specifier": {
+      "optimizations": {
         "result": "Passed",
         "info": ""
       }
     },
-    "Links": {
-      "pretty_link": {
-        "result": "Failed",
-        "info": [
-          "[test_links.py:11] pretty_link",
-          "[AssertThat.py:55] assertThat",
-          "[AssertThat.py:70] <lambda>",
-          "[Asserts.py:37] assertEqual",
-          "[Error Message] Values are not equal"
-        ]
-      },
-      "pretty_link_nested": {
-        "result": "Failed",
-        "info": [
-          "[test_links.py:19] pretty_link_nested",
-          "[AssertThat.py:55] assertThat",
-          "[AssertThat.py:70] <lambda>",
-          "[Asserts.py:37] assertEqual",
-          "[Error Message] Values are not equal"
-        ]
-      }
+    "encoding": {
+      "result": "Passed",
+      "info": ""
     }
   }
 }

@@ -1,6 +1,6 @@
 from teddecor.UnitTest import *
 from teddecor import TED
-from teddecor.TED.exception import *
+from teddecor.TED.exception import MacroError
 
 
 class Colors(Test):
@@ -57,6 +57,23 @@ class Colors(Test):
         result = TED.parse("[@> red @< Red]Color[@] reset")
         assertThat("\x1b[31;41mColor\x1b[39;49m reset\x1b[0m", eq(result))
 
+    @test
+    def assign_both(self):
+        result = TED.parse("[@ red]Assing fg and bg")
+        assertThat("\x1b[31;41mAssing fg and bg\x1b[0m", eq(result))
+
+    @test
+    def optimizations(self):
+        result = TED.parse("[@ red @< white]*Optimize **format ansi")
+        print(repr(result))
+        assertThat("\x1b[1;31;47mOptimize format ansi\x1b[0m", eq(result))
+
+
+@test
+def encoding() -> None:
+    encoded_string = TED.encode("_U_*B*[mac]")
+    assertThat(encoded_string, eq("\_U\_\*B\*\[mac]"))
+
 
 class ColorExceptions(Test):
     @test
@@ -66,7 +83,3 @@ class ColorExceptions(Test):
     @test
     def no_specifier(self):
         assertThat(wrap(TED.parse, "[@ bad]Bad"), raises(MacroError))
-
-    @test
-    def no_specifier(self):
-        assertThat(wrap(TED.parse, "[bad]Bad"), raises(MacroMissingError))
