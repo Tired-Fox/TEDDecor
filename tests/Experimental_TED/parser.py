@@ -1,13 +1,14 @@
 from __future__ import annotations
 from typing import Iterator
 
-from teddecor.TED.exception import MacroError
+from exception import MacroError
+from tokens import HLink
 from tokens import Token, Color, Text, Bold, Underline, Formatter
-from formatting import BOLD, UNDERLINE, RESET
+from formatting import BOLD, UNDERLINE, RESET, LINK
 
 __all__ = ["parse_macro"]
 
-# TODO: Add optimization for formatting tokens
+# TODO: Add Hyperlinks
 
 
 def split_macros(text: str) -> Iterator[str]:
@@ -31,10 +32,13 @@ def parse_macro(text: str) -> list[Token]:
         sub_macro = sub_macro.strip()
         if sub_macro.startswith("@"):
             tokens.append(Color(sub_macro))
+        elif sub_macro.startswith("~"):
+            tokens.append(HLink(sub_macro))
     return tokens
 
 
 def optimize(tokens: list) -> list:
+    open_link = False
     format = Formatter()
     output = []
     for token in tokens:
@@ -44,6 +48,16 @@ def optimize(tokens: list) -> list:
             format.bold = token
         elif isinstance(token, Underline):
             format.underline = token
+        elif isinstance(token, HLink):
+            if token.closing and open_link:
+                open_link = False
+                output.append(token)
+            elif not token.closing and open_link:
+                token.value = LINK.CLOSE + token.value
+                output.append(token)
+            else:
+                open_link = True
+                output.append(token)
         else:
             if not format.is_empty():
                 output.append(format)
@@ -52,7 +66,8 @@ def optimize(tokens: list) -> list:
 
     if not format.is_empty():
         output.append(format)
-
+    if open_link:
+        output.append(HLink("~"))
     return output
 
 

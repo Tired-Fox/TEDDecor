@@ -36,4 +36,5 @@ class TEDParser:
 TED = TEDParser()
 
 if __name__ == "__main__":
-    TED.print("[@> red @< blue @> green]*Something** bold*")
+    # TED.print("[@> red ~https://example.com]*Something")
+    TED.print("[~https://example.com]*Something* [~https://github.com]Github")

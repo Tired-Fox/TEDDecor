@@ -98,6 +98,12 @@ class UNDERLINE:
         return UNDERLINE.POP if current == UNDERLINE.PUSH else UNDERLINE.PUSH
 
 
+@dataclass
+class LINK:
+    CLOSE: str = "\x1b]8;;\x1b\\"
+    OPEN: str = lambda url: f"\x1b]8;;{url}\x1b\\"
+
+
 def get_color(types: Union[int, list[int]], content: str) -> Union[int, list[int]]:
     from re import match
 

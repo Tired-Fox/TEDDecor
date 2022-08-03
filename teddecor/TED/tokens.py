@@ -1,7 +1,7 @@
 from __future__ import annotations
 from functools import cached_property
 from typing import Union
-from .formatting import build_color, ColorType
+from .formatting import build_color, ColorType, LINK
 
 
 class Token:
@@ -9,6 +9,42 @@ class Token:
 
     def __repr__(self) -> str:
         return f"<{type(self).__name__}: {self._markup}, {self.value}>"
+
+
+class HLink(Token):
+    def __init__(self, markup: str) -> None:
+        self._markup = markup.strip()
+        self._closing = False
+        self._value = self.parse_link()
+
+    def parse_link(self) -> str:
+        """Determine if the token is a closing link token and assign _closing accordingly.
+
+        Returns:
+            str: The value of the token based on if the token is closing
+        """
+        if len(self._markup) == 1:
+            self._closing = True
+            return LINK.CLOSE
+        elif len(self._markup) > 1:
+            return LINK.OPEN(self._markup[1:])
+
+    @property
+    def value(self) -> str:
+        """Value of the token."""
+        return self._value
+
+    @value.setter
+    def value(self, value: str) -> str:
+        self._value = value
+
+    @property
+    def closing(self) -> bool:
+        """True if this link token is a closing link token."""
+        return self._closing
+
+    def __str__(self) -> str:
+        return self.value
 
 
 class Text(Token):

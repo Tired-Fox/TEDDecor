@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Iterator
 
 from .exception import MacroError
-from .tokens import Token, Color, Text, Bold, Underline, Formatter
-from .formatting import BOLD, UNDERLINE, RESET
+from .tokens import Token, Color, Text, Bold, Underline, Formatter, HLink
+from .formatting import BOLD, UNDERLINE, RESET, LINK
 
 __all__ = ["parse_macro"]
 
@@ -45,6 +45,8 @@ def parse_macro(text: str) -> list[Token]:
         sub_macro = sub_macro.strip()
         if sub_macro.startswith("@"):
             tokens.append(Color(sub_macro))
+        elif sub_macro.startswith("~"):
+            tokens.append(HLink(sub_macro))
     return tokens
 
 
@@ -69,23 +71,36 @@ def optimize(tokens: list) -> list:
     Returns:
         list: The optimized list of tokens. Bold, underline, fg, and bg tokens are combined into Formatter tokens
     """
-    format = Formatter()
+    open_link = False
+    formatter = Formatter()
     output = []
     for token in tokens:
         if isinstance(token, Color):
-            format.color = token
+            formatter.color = token
         elif isinstance(token, Bold):
-            format.bold = token
+            formatter.bold = token
         elif isinstance(token, Underline):
-            format.underline = token
+            formatter.underline = token
+        elif isinstance(token, HLink):
+            if token.closing and open_link:
+                open_link = False
+                output.append(token)
+            elif not token.closing and open_link:
+                token.value = LINK.CLOSE + token.value
+                output.append(token)
+            else:
+                open_link = True
+                output.append(token)
         else:
-            if not format.is_empty():
-                output.append(format)
-                format = Formatter()
+            if not formatter.is_empty():
+                output.append(formatter)
+                formatter = Formatter()
             output.append(token)
 
-    if not format.is_empty():
-        output.append(format)
+    if not formatter.is_empty():
+        output.append(formatter)
+    if open_link:
+        output.append(HLink("~"))
 
     return output
 

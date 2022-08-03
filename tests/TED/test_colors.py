@@ -68,12 +68,6 @@ class Colors(Test):
         assertThat("\x1b[1;31;47mOptimize format ansi\x1b[0m", eq(result))
 
 
-@test
-def encoding() -> None:
-    encoded_string = TED.encode("_U_*B*[mac]")
-    assertThat(encoded_string, eq("\_U\_\*B\*\[mac]"))
-
-
 class ColorExceptions(Test):
     @test
     def not_in_predefined(self):
