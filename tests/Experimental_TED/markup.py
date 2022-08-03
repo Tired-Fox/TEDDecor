@@ -7,7 +7,7 @@ Raises:
 """
 from __future__ import annotations
 
-from .parser import parse
+from parser import parse
 
 __all__ = [
     "TED",
@@ -34,3 +34,6 @@ class TEDParser:
 
 
 TED = TEDParser()
+
+if __name__ == "__main__":
+    TED.print("[@> red @< blue @> green]*Something** bold*")

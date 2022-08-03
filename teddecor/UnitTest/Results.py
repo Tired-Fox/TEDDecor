@@ -71,9 +71,9 @@ class Result:
             indent (int, optional): The amount to indent the values. Defaults to 0.
         """
         for line in self.pretty(indent):
-            TED.pprint(line)
+            TED.print(line)
 
-    def pretty(self) -> list:
+    def pretty(self, indent: int) -> list:
         """Format the result(s) into a formatted list
 
         Returns:
@@ -170,17 +170,17 @@ class TestResult(Result):
         Returns:
             list: The formatted results as a list of string with indents
         """
-
         out = []
         out.append(
-            " " * indent + f"\[{self.color}{self.icon}[@>]] <case> [^esc|{self.name}]"
+            "".ljust(indent, " ")
+            + f"\[{self.color}{self.icon}[@>]] <case> {TED.encode(self.name)}"
         )
         if isinstance(self.info, list):
             for trace in self.info:
-                out.append(" " * (indent + 4) + f"[^esc|{trace}]")
+                out.append("".ljust(indent + 4, " ") + trace)
         else:
             if self.info != "":
-                out.append(" " * (indent + 4) + f"[^esc|{self.info}]")
+                out.append("".ljust(indent + 4, " ") + self.info)
 
         return out
 
@@ -313,14 +313,15 @@ class ClassResult(Result):
         passed, failed, skipped = self.counts
         totals = f"\[{ResultType.SUCCESS[1]}{passed}[@>]:{ResultType.SKIPPED[1]}{skipped}[@>]\
 :{ResultType.FAILED[1]}{failed}[@>]]"
-        out.append(" " * indent + f"*{totals} <class> [^esc|{self.name}]")
+        out.append(" " * indent + f"*{totals} <class> {TED.encode(self.name)}")
 
         if len(self.results):
             for result in self.results:
                 out.extend(result.pretty(indent + 4))
         else:
             out.append(
-                " " * (indent + 4) + f"[@>yellow]No Tests Found for [^esc|{self.name}]"
+                " " * (indent + 4)
+                + f"[@> yellow]No Tests Found for {TED.encode(self.name)}"
             )
 
         return out
@@ -464,14 +465,15 @@ class SuiteResult(Result):
         passed, failed, skipped = self.counts
         totals = f"\[{ResultType.SUCCESS[1]}{passed}[@>]:{ResultType.SKIPPED[1]}{skipped}[@>]\
 :{ResultType.FAILED[1]}{failed}[@>]]"
-        out.append(" " * indent + f"*{totals} <suite> [^esc|{self.name}]")
+        out.append(" " * indent + f"*{totals} <suite> {TED.encode(self.name)}")
 
         if len(self.results):
             for result in self.results:
                 out.extend(result.pretty(indent + 4))
         else:
             out.append(
-                " " * (indent + 4) + f"[@>yellow]No Tests Found for [^esc|{self.name}]"
+                " " * (indent + 4)
+                + f"[@>yellow]No Tests Found for {TED.encode(self.name)}"
             )
 
         return out
