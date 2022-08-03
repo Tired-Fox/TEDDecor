@@ -1,4 +1,4 @@
-__all__ = ["MacroError", "MacroMissingError", "MacroGeneralError"]
+__all__ = ["MacroError"]
 
 from os import get_terminal_size
 

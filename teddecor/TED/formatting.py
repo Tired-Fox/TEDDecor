@@ -80,6 +80,8 @@ def HEX(context: int, hex: str) -> str:
 
 @dataclass
 class BOLD:
+    """The bold value based on the current toggle value."""
+
     POP: int = 22
     PUSH: int = 1
 
@@ -90,6 +92,8 @@ class BOLD:
 
 @dataclass
 class UNDERLINE:
+    """The bold value based on the current toggle value."""
+
     POP: int = 24
     PUSH: int = 4
 
@@ -99,6 +103,15 @@ class UNDERLINE:
 
 
 def get_color(types: Union[int, list[int]], content: str) -> Union[int, list[int]]:
+    """Parse and translate the color value from hex, xterm, rgb, and predefined color values.
+
+    Args:
+        types (Union[int, list[int]]): Tells what types to generate the color for. This include fg, bg, and both fg and bg.
+        content (str): The color string that is to be parsed
+
+    Returns:
+        Union[int, list[int]]: List of color code values according to the needed types
+    """
     from re import match
 
     results = []
@@ -124,6 +137,15 @@ def get_color(types: Union[int, list[int]], content: str) -> Union[int, list[int
 
 
 def build_color(color: str) -> tuple[ColorType, str]:
+    """Takes a color macro and determines if it is type fg, bg, or both.
+    It will get the color string and produce color codes for each type that was specified.
+
+    Args:
+        color (str): The color macro to parse
+
+    Returns:
+        tuple[ColorType, str]: Tuple of the ColorType fg, bg, or both, along with the color codes
+    """
     color = color[1:]
     ctype = ColorType.BOTH
     content = color.strip()

@@ -54,6 +54,15 @@
             <li>
                     <a class="function" href="#within">within</a>
             </li>
+            <li>
+                    <a class="class" href="#Raises">Raises</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Raises.__init__">Raises</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -90,114 +99,136 @@
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>    <span class="s2">&quot;raises&quot;</span><span class="p">,</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="s2">&quot;within&quot;</span><span class="p">,</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="s2">&quot;has&quot;</span><span class="p">,</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="p">]</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="s2">&quot;Raises&quot;</span><span class="p">,</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="p">]</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="k">def</span> <span class="nf">assertThat</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">compare</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>    <span class="sd">&quot;&quot;&quot;A general assert that takes logical value, callable pairs that make the testing more readable.</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="sd">    Args:</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">        value (Any): The value to assert equal to</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">        compare (Callable): The function type to apply. Equal to, not equal to, is null, is not null</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        message (str): The user defined error message to display</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>
-</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">    Returns:</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">        Union[bool, None]: True if assert passed</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">    Raises:</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a><span class="sd">        AssertionError: When assert function fails</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>    <span class="k">return</span> <span class="n">compare</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a second value and asserts that it is equal to the given value.</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">    Args:</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a><span class="sd">        value (Any): The value to assert equal to</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
-</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="sd">    Returns:</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">        Callable: Function that takes a second value that asserts equal to the given value</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">    Note:</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value1 equals value2.</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertEqual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>
-</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a second value and asserts that it is not equal to the given value.</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    Args:</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        value (Any): The value to assert not equal to</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="k">class</span> <span class="nc">Raises</span><span class="p">:</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>    <span class="sd">&quot;&quot;&quot;Assert that the code ran inside the `with` keyword raises an exception.&quot;&quot;&quot;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="ne">Exception</span><span class="p">):</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="o">=</span> <span class="n">exception</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>        <span class="k">if</span> <span class="n">exc_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span><span class="p">):</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>                    <span class="sa">f</span><span class="s2">&quot;Unexpected exception raised </span><span class="si">{</span><span class="n">exc_val</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>                <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc_val</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>                <span class="k">return</span> <span class="kc">True</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;No exception raised&quot;</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a><span class="k">def</span> <span class="nf">assertThat</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">compare</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>    <span class="sd">&quot;&quot;&quot;A general assert that takes logical value, callable pairs that make the testing more readable.</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">    Args:</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">        value (Any): The value to assert equal to</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">        compare (Callable): The function type to apply. Equal to, not equal to, is null, is not null</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">        message (str): The user defined error message to display</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">    Returns:</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">        Union[bool, None]: True if assert passed</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">    Raises:</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        AssertionError: When assert function fails</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="k">return</span> <span class="n">compare</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">    Returns:</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        Callable: Function that takes a second value that asserts not equal to the given value</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">    Note:</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value1 does not equals value2.</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNotEqual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="k">def</span> <span class="nf">none</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value and asserts that it is None.</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">    Returns:</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="sd">        Callable: Function that takes a value and asserts that it is `None`</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a second value and asserts that it is equal to the given value.</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">    Args:</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        value (Any): The value to assert equal to</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">    Returns:</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">        Callable: Function that takes a second value that asserts equal to the given value</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="sd">    Note:</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value1 equals value2.</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertEqual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="sd">    Note:</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value is None.</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="k">def</span> <span class="nf">notNone</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value and asserts that it is not None.</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="sd">    Returns:</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">        Callable: Function that takes a value and asserts that it is not `None`</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">    Note:</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value is not None</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNotNone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="k">def</span> <span class="nf">raises</span><span class="p">(</span><span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a callable and asserts that it raises an exception</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">    Args:</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">        exception (Exception): The exception that is expected. Leave as None to expect any exception</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">    Returns:</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">        Callable: Function that takes a callable</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertRaises</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="k">def</span> <span class="nf">within</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value is supposed to be within an object.</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">    Args:</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">        obj (Any): The object that implements __iter__</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">    Returns:</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a><span class="sd">        Callable: Function that takes any value</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertWithin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes an iterable object and asserts if value is in it.</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">    Args:</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">        value (Any): The value that is in the iterable object</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">    Returns:</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="sd">        Callable: Function that takes an object that implements __iter__</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertWithin</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a second value and asserts that it is not equal to the given value.</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="sd">    Args:</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="sd">        value (Any): The value to assert not equal to</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="sd">    Returns:</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="sd">        Callable: Function that takes a second value that asserts not equal to the given value</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="sd">    Note:</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value1 does not equals value2.</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNotEqual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="k">def</span> <span class="nf">none</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value and asserts that it is None.</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">    Returns:</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">        Callable: Function that takes a value and asserts that it is `None`</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">    Note:</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value is None.</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="k">def</span> <span class="nf">notNone</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value and asserts that it is not None.</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">    Returns:</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        Callable: Function that takes a value and asserts that it is not `None`</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">    Note:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value is not None</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNotNone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="k">def</span> <span class="nf">raises</span><span class="p">(</span><span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a callable and asserts that it raises an exception</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">    Args:</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">        exception (Exception): The exception that is expected. Leave as None to expect any exception</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">    Returns:</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">        Callable: Function that takes a callable</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertRaises</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="k">def</span> <span class="nf">within</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value is supposed to be within an object.</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="sd">    Args:</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">        obj (Any): The object that implements __iter__</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">    Returns:</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="sd">        Callable: Function that takes any value</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertWithin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a><span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes an iterable object and asserts if value is in it.</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="sd">    Args:</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="sd">        value (Any): The value that is in the iterable object</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">    Returns:</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="sd">        Callable: Function that takes an object that implements __iter__</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertWithin</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -213,21 +244,21 @@
 
     </div>
     <a class="headerlink" href="#assertThat"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="assertThat-20"><a href="#assertThat-20"><span class="linenos">20</span></a><span class="k">def</span> <span class="nf">assertThat</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">compare</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-</span><span id="assertThat-21"><a href="#assertThat-21"><span class="linenos">21</span></a>    <span class="sd">&quot;&quot;&quot;A general assert that takes logical value, callable pairs that make the testing more readable.</span>
-</span><span id="assertThat-22"><a href="#assertThat-22"><span class="linenos">22</span></a>
-</span><span id="assertThat-23"><a href="#assertThat-23"><span class="linenos">23</span></a><span class="sd">    Args:</span>
-</span><span id="assertThat-24"><a href="#assertThat-24"><span class="linenos">24</span></a><span class="sd">        value (Any): The value to assert equal to</span>
-</span><span id="assertThat-25"><a href="#assertThat-25"><span class="linenos">25</span></a><span class="sd">        compare (Callable): The function type to apply. Equal to, not equal to, is null, is not null</span>
-</span><span id="assertThat-26"><a href="#assertThat-26"><span class="linenos">26</span></a><span class="sd">        message (str): The user defined error message to display</span>
-</span><span id="assertThat-27"><a href="#assertThat-27"><span class="linenos">27</span></a>
-</span><span id="assertThat-28"><a href="#assertThat-28"><span class="linenos">28</span></a><span class="sd">    Returns:</span>
-</span><span id="assertThat-29"><a href="#assertThat-29"><span class="linenos">29</span></a><span class="sd">        Union[bool, None]: True if assert passed</span>
-</span><span id="assertThat-30"><a href="#assertThat-30"><span class="linenos">30</span></a>
-</span><span id="assertThat-31"><a href="#assertThat-31"><span class="linenos">31</span></a><span class="sd">    Raises:</span>
-</span><span id="assertThat-32"><a href="#assertThat-32"><span class="linenos">32</span></a><span class="sd">        AssertionError: When assert function fails</span>
-</span><span id="assertThat-33"><a href="#assertThat-33"><span class="linenos">33</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="assertThat-34"><a href="#assertThat-34"><span class="linenos">34</span></a>    <span class="k">return</span> <span class="n">compare</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="assertThat-42"><a href="#assertThat-42"><span class="linenos">42</span></a><span class="k">def</span> <span class="nf">assertThat</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">compare</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="assertThat-43"><a href="#assertThat-43"><span class="linenos">43</span></a>    <span class="sd">&quot;&quot;&quot;A general assert that takes logical value, callable pairs that make the testing more readable.</span>
+</span><span id="assertThat-44"><a href="#assertThat-44"><span class="linenos">44</span></a>
+</span><span id="assertThat-45"><a href="#assertThat-45"><span class="linenos">45</span></a><span class="sd">    Args:</span>
+</span><span id="assertThat-46"><a href="#assertThat-46"><span class="linenos">46</span></a><span class="sd">        value (Any): The value to assert equal to</span>
+</span><span id="assertThat-47"><a href="#assertThat-47"><span class="linenos">47</span></a><span class="sd">        compare (Callable): The function type to apply. Equal to, not equal to, is null, is not null</span>
+</span><span id="assertThat-48"><a href="#assertThat-48"><span class="linenos">48</span></a><span class="sd">        message (str): The user defined error message to display</span>
+</span><span id="assertThat-49"><a href="#assertThat-49"><span class="linenos">49</span></a>
+</span><span id="assertThat-50"><a href="#assertThat-50"><span class="linenos">50</span></a><span class="sd">    Returns:</span>
+</span><span id="assertThat-51"><a href="#assertThat-51"><span class="linenos">51</span></a><span class="sd">        Union[bool, None]: True if assert passed</span>
+</span><span id="assertThat-52"><a href="#assertThat-52"><span class="linenos">52</span></a>
+</span><span id="assertThat-53"><a href="#assertThat-53"><span class="linenos">53</span></a><span class="sd">    Raises:</span>
+</span><span id="assertThat-54"><a href="#assertThat-54"><span class="linenos">54</span></a><span class="sd">        AssertionError: When assert function fails</span>
+</span><span id="assertThat-55"><a href="#assertThat-55"><span class="linenos">55</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="assertThat-56"><a href="#assertThat-56"><span class="linenos">56</span></a>    <span class="k">return</span> <span class="n">compare</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -258,19 +289,19 @@
 
     </div>
     <a class="headerlink" href="#eq"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="eq-37"><a href="#eq-37"><span class="linenos">37</span></a><span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="eq-38"><a href="#eq-38"><span class="linenos">38</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a second value and asserts that it is equal to the given value.</span>
-</span><span id="eq-39"><a href="#eq-39"><span class="linenos">39</span></a>
-</span><span id="eq-40"><a href="#eq-40"><span class="linenos">40</span></a><span class="sd">    Args:</span>
-</span><span id="eq-41"><a href="#eq-41"><span class="linenos">41</span></a><span class="sd">        value (Any): The value to assert equal to</span>
-</span><span id="eq-42"><a href="#eq-42"><span class="linenos">42</span></a>
-</span><span id="eq-43"><a href="#eq-43"><span class="linenos">43</span></a><span class="sd">    Returns:</span>
-</span><span id="eq-44"><a href="#eq-44"><span class="linenos">44</span></a><span class="sd">        Callable: Function that takes a second value that asserts equal to the given value</span>
-</span><span id="eq-45"><a href="#eq-45"><span class="linenos">45</span></a>
-</span><span id="eq-46"><a href="#eq-46"><span class="linenos">46</span></a><span class="sd">    Note:</span>
-</span><span id="eq-47"><a href="#eq-47"><span class="linenos">47</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value1 equals value2.</span>
-</span><span id="eq-48"><a href="#eq-48"><span class="linenos">48</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="eq-49"><a href="#eq-49"><span class="linenos">49</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertEqual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="eq-59"><a href="#eq-59"><span class="linenos">59</span></a><span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="eq-60"><a href="#eq-60"><span class="linenos">60</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a second value and asserts that it is equal to the given value.</span>
+</span><span id="eq-61"><a href="#eq-61"><span class="linenos">61</span></a>
+</span><span id="eq-62"><a href="#eq-62"><span class="linenos">62</span></a><span class="sd">    Args:</span>
+</span><span id="eq-63"><a href="#eq-63"><span class="linenos">63</span></a><span class="sd">        value (Any): The value to assert equal to</span>
+</span><span id="eq-64"><a href="#eq-64"><span class="linenos">64</span></a>
+</span><span id="eq-65"><a href="#eq-65"><span class="linenos">65</span></a><span class="sd">    Returns:</span>
+</span><span id="eq-66"><a href="#eq-66"><span class="linenos">66</span></a><span class="sd">        Callable: Function that takes a second value that asserts equal to the given value</span>
+</span><span id="eq-67"><a href="#eq-67"><span class="linenos">67</span></a>
+</span><span id="eq-68"><a href="#eq-68"><span class="linenos">68</span></a><span class="sd">    Note:</span>
+</span><span id="eq-69"><a href="#eq-69"><span class="linenos">69</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value1 equals value2.</span>
+</span><span id="eq-70"><a href="#eq-70"><span class="linenos">70</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="eq-71"><a href="#eq-71"><span class="linenos">71</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertEqual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -299,19 +330,19 @@
 
     </div>
     <a class="headerlink" href="#neq"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="neq-52"><a href="#neq-52"><span class="linenos">52</span></a><span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="neq-53"><a href="#neq-53"><span class="linenos">53</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a second value and asserts that it is not equal to the given value.</span>
-</span><span id="neq-54"><a href="#neq-54"><span class="linenos">54</span></a>
-</span><span id="neq-55"><a href="#neq-55"><span class="linenos">55</span></a><span class="sd">    Args:</span>
-</span><span id="neq-56"><a href="#neq-56"><span class="linenos">56</span></a><span class="sd">        value (Any): The value to assert not equal to</span>
-</span><span id="neq-57"><a href="#neq-57"><span class="linenos">57</span></a>
-</span><span id="neq-58"><a href="#neq-58"><span class="linenos">58</span></a><span class="sd">    Returns:</span>
-</span><span id="neq-59"><a href="#neq-59"><span class="linenos">59</span></a><span class="sd">        Callable: Function that takes a second value that asserts not equal to the given value</span>
-</span><span id="neq-60"><a href="#neq-60"><span class="linenos">60</span></a>
-</span><span id="neq-61"><a href="#neq-61"><span class="linenos">61</span></a><span class="sd">    Note:</span>
-</span><span id="neq-62"><a href="#neq-62"><span class="linenos">62</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value1 does not equals value2.</span>
-</span><span id="neq-63"><a href="#neq-63"><span class="linenos">63</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="neq-64"><a href="#neq-64"><span class="linenos">64</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNotEqual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="neq-74"><a href="#neq-74"><span class="linenos">74</span></a><span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="neq-75"><a href="#neq-75"><span class="linenos">75</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a second value and asserts that it is not equal to the given value.</span>
+</span><span id="neq-76"><a href="#neq-76"><span class="linenos">76</span></a>
+</span><span id="neq-77"><a href="#neq-77"><span class="linenos">77</span></a><span class="sd">    Args:</span>
+</span><span id="neq-78"><a href="#neq-78"><span class="linenos">78</span></a><span class="sd">        value (Any): The value to assert not equal to</span>
+</span><span id="neq-79"><a href="#neq-79"><span class="linenos">79</span></a>
+</span><span id="neq-80"><a href="#neq-80"><span class="linenos">80</span></a><span class="sd">    Returns:</span>
+</span><span id="neq-81"><a href="#neq-81"><span class="linenos">81</span></a><span class="sd">        Callable: Function that takes a second value that asserts not equal to the given value</span>
+</span><span id="neq-82"><a href="#neq-82"><span class="linenos">82</span></a>
+</span><span id="neq-83"><a href="#neq-83"><span class="linenos">83</span></a><span class="sd">    Note:</span>
+</span><span id="neq-84"><a href="#neq-84"><span class="linenos">84</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value1 does not equals value2.</span>
+</span><span id="neq-85"><a href="#neq-85"><span class="linenos">85</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="neq-86"><a href="#neq-86"><span class="linenos">86</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNotEqual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -340,16 +371,16 @@
 
     </div>
     <a class="headerlink" href="#none"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="none-67"><a href="#none-67"><span class="linenos">67</span></a><span class="k">def</span> <span class="nf">none</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="none-68"><a href="#none-68"><span class="linenos">68</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value and asserts that it is None.</span>
-</span><span id="none-69"><a href="#none-69"><span class="linenos">69</span></a>
-</span><span id="none-70"><a href="#none-70"><span class="linenos">70</span></a><span class="sd">    Returns:</span>
-</span><span id="none-71"><a href="#none-71"><span class="linenos">71</span></a><span class="sd">        Callable: Function that takes a value and asserts that it is `None`</span>
-</span><span id="none-72"><a href="#none-72"><span class="linenos">72</span></a>
-</span><span id="none-73"><a href="#none-73"><span class="linenos">73</span></a><span class="sd">    Note:</span>
-</span><span id="none-74"><a href="#none-74"><span class="linenos">74</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value is None.</span>
-</span><span id="none-75"><a href="#none-75"><span class="linenos">75</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="none-76"><a href="#none-76"><span class="linenos">76</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="none-89"><a href="#none-89"><span class="linenos">89</span></a><span class="k">def</span> <span class="nf">none</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="none-90"><a href="#none-90"><span class="linenos">90</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value and asserts that it is None.</span>
+</span><span id="none-91"><a href="#none-91"><span class="linenos">91</span></a>
+</span><span id="none-92"><a href="#none-92"><span class="linenos">92</span></a><span class="sd">    Returns:</span>
+</span><span id="none-93"><a href="#none-93"><span class="linenos">93</span></a><span class="sd">        Callable: Function that takes a value and asserts that it is `None`</span>
+</span><span id="none-94"><a href="#none-94"><span class="linenos">94</span></a>
+</span><span id="none-95"><a href="#none-95"><span class="linenos">95</span></a><span class="sd">    Note:</span>
+</span><span id="none-96"><a href="#none-96"><span class="linenos">96</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value is None.</span>
+</span><span id="none-97"><a href="#none-97"><span class="linenos">97</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="none-98"><a href="#none-98"><span class="linenos">98</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -375,16 +406,16 @@
 
     </div>
     <a class="headerlink" href="#notNone"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="notNone-79"><a href="#notNone-79"><span class="linenos">79</span></a><span class="k">def</span> <span class="nf">notNone</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="notNone-80"><a href="#notNone-80"><span class="linenos">80</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value and asserts that it is not None.</span>
-</span><span id="notNone-81"><a href="#notNone-81"><span class="linenos">81</span></a>
-</span><span id="notNone-82"><a href="#notNone-82"><span class="linenos">82</span></a><span class="sd">    Returns:</span>
-</span><span id="notNone-83"><a href="#notNone-83"><span class="linenos">83</span></a><span class="sd">        Callable: Function that takes a value and asserts that it is not `None`</span>
-</span><span id="notNone-84"><a href="#notNone-84"><span class="linenos">84</span></a>
-</span><span id="notNone-85"><a href="#notNone-85"><span class="linenos">85</span></a><span class="sd">    Note:</span>
-</span><span id="notNone-86"><a href="#notNone-86"><span class="linenos">86</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value is not None</span>
-</span><span id="notNone-87"><a href="#notNone-87"><span class="linenos">87</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="notNone-88"><a href="#notNone-88"><span class="linenos">88</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNotNone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="notNone-101"><a href="#notNone-101"><span class="linenos">101</span></a><span class="k">def</span> <span class="nf">notNone</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="notNone-102"><a href="#notNone-102"><span class="linenos">102</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value and asserts that it is not None.</span>
+</span><span id="notNone-103"><a href="#notNone-103"><span class="linenos">103</span></a>
+</span><span id="notNone-104"><a href="#notNone-104"><span class="linenos">104</span></a><span class="sd">    Returns:</span>
+</span><span id="notNone-105"><a href="#notNone-105"><span class="linenos">105</span></a><span class="sd">        Callable: Function that takes a value and asserts that it is not `None`</span>
+</span><span id="notNone-106"><a href="#notNone-106"><span class="linenos">106</span></a>
+</span><span id="notNone-107"><a href="#notNone-107"><span class="linenos">107</span></a><span class="sd">    Note:</span>
+</span><span id="notNone-108"><a href="#notNone-108"><span class="linenos">108</span></a><span class="sd">        Used in `assert_that` and can be thought of, assert that value is not None</span>
+</span><span id="notNone-109"><a href="#notNone-109"><span class="linenos">109</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="notNone-110"><a href="#notNone-110"><span class="linenos">110</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertNotNone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -410,16 +441,16 @@
 
     </div>
     <a class="headerlink" href="#has"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="has-115"><a href="#has-115"><span class="linenos">115</span></a><span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="has-116"><a href="#has-116"><span class="linenos">116</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes an iterable object and asserts if value is in it.</span>
-</span><span id="has-117"><a href="#has-117"><span class="linenos">117</span></a>
-</span><span id="has-118"><a href="#has-118"><span class="linenos">118</span></a><span class="sd">    Args:</span>
-</span><span id="has-119"><a href="#has-119"><span class="linenos">119</span></a><span class="sd">        value (Any): The value that is in the iterable object</span>
-</span><span id="has-120"><a href="#has-120"><span class="linenos">120</span></a>
-</span><span id="has-121"><a href="#has-121"><span class="linenos">121</span></a><span class="sd">    Returns:</span>
-</span><span id="has-122"><a href="#has-122"><span class="linenos">122</span></a><span class="sd">        Callable: Function that takes an object that implements __iter__</span>
-</span><span id="has-123"><a href="#has-123"><span class="linenos">123</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="has-124"><a href="#has-124"><span class="linenos">124</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertWithin</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="has-137"><a href="#has-137"><span class="linenos">137</span></a><span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="has-138"><a href="#has-138"><span class="linenos">138</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes an iterable object and asserts if value is in it.</span>
+</span><span id="has-139"><a href="#has-139"><span class="linenos">139</span></a>
+</span><span id="has-140"><a href="#has-140"><span class="linenos">140</span></a><span class="sd">    Args:</span>
+</span><span id="has-141"><a href="#has-141"><span class="linenos">141</span></a><span class="sd">        value (Any): The value that is in the iterable object</span>
+</span><span id="has-142"><a href="#has-142"><span class="linenos">142</span></a>
+</span><span id="has-143"><a href="#has-143"><span class="linenos">143</span></a><span class="sd">    Returns:</span>
+</span><span id="has-144"><a href="#has-144"><span class="linenos">144</span></a><span class="sd">        Callable: Function that takes an object that implements __iter__</span>
+</span><span id="has-145"><a href="#has-145"><span class="linenos">145</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="has-146"><a href="#has-146"><span class="linenos">146</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertWithin</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -445,16 +476,16 @@
 
     </div>
     <a class="headerlink" href="#raises"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="raises-91"><a href="#raises-91"><span class="linenos"> 91</span></a><span class="k">def</span> <span class="nf">raises</span><span class="p">(</span><span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="raises-92"><a href="#raises-92"><span class="linenos"> 92</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a callable and asserts that it raises an exception</span>
-</span><span id="raises-93"><a href="#raises-93"><span class="linenos"> 93</span></a>
-</span><span id="raises-94"><a href="#raises-94"><span class="linenos"> 94</span></a><span class="sd">    Args:</span>
-</span><span id="raises-95"><a href="#raises-95"><span class="linenos"> 95</span></a><span class="sd">        exception (Exception): The exception that is expected. Leave as None to expect any exception</span>
-</span><span id="raises-96"><a href="#raises-96"><span class="linenos"> 96</span></a>
-</span><span id="raises-97"><a href="#raises-97"><span class="linenos"> 97</span></a><span class="sd">    Returns:</span>
-</span><span id="raises-98"><a href="#raises-98"><span class="linenos"> 98</span></a><span class="sd">        Callable: Function that takes a callable</span>
-</span><span id="raises-99"><a href="#raises-99"><span class="linenos"> 99</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="raises-100"><a href="#raises-100"><span class="linenos">100</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertRaises</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="raises-113"><a href="#raises-113"><span class="linenos">113</span></a><span class="k">def</span> <span class="nf">raises</span><span class="p">(</span><span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="raises-114"><a href="#raises-114"><span class="linenos">114</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a callable and asserts that it raises an exception</span>
+</span><span id="raises-115"><a href="#raises-115"><span class="linenos">115</span></a>
+</span><span id="raises-116"><a href="#raises-116"><span class="linenos">116</span></a><span class="sd">    Args:</span>
+</span><span id="raises-117"><a href="#raises-117"><span class="linenos">117</span></a><span class="sd">        exception (Exception): The exception that is expected. Leave as None to expect any exception</span>
+</span><span id="raises-118"><a href="#raises-118"><span class="linenos">118</span></a>
+</span><span id="raises-119"><a href="#raises-119"><span class="linenos">119</span></a><span class="sd">    Returns:</span>
+</span><span id="raises-120"><a href="#raises-120"><span class="linenos">120</span></a><span class="sd">        Callable: Function that takes a callable</span>
+</span><span id="raises-121"><a href="#raises-121"><span class="linenos">121</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="raises-122"><a href="#raises-122"><span class="linenos">122</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertRaises</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -480,16 +511,16 @@
 
     </div>
     <a class="headerlink" href="#within"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="within-103"><a href="#within-103"><span class="linenos">103</span></a><span class="k">def</span> <span class="nf">within</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-</span><span id="within-104"><a href="#within-104"><span class="linenos">104</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value is supposed to be within an object.</span>
-</span><span id="within-105"><a href="#within-105"><span class="linenos">105</span></a>
-</span><span id="within-106"><a href="#within-106"><span class="linenos">106</span></a><span class="sd">    Args:</span>
-</span><span id="within-107"><a href="#within-107"><span class="linenos">107</span></a><span class="sd">        obj (Any): The object that implements __iter__</span>
-</span><span id="within-108"><a href="#within-108"><span class="linenos">108</span></a>
-</span><span id="within-109"><a href="#within-109"><span class="linenos">109</span></a><span class="sd">    Returns:</span>
-</span><span id="within-110"><a href="#within-110"><span class="linenos">110</span></a><span class="sd">        Callable: Function that takes any value</span>
-</span><span id="within-111"><a href="#within-111"><span class="linenos">111</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="within-112"><a href="#within-112"><span class="linenos">112</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertWithin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="within-125"><a href="#within-125"><span class="linenos">125</span></a><span class="k">def</span> <span class="nf">within</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+</span><span id="within-126"><a href="#within-126"><span class="linenos">126</span></a>    <span class="sd">&quot;&quot;&quot;Return a function that takes a value is supposed to be within an object.</span>
+</span><span id="within-127"><a href="#within-127"><span class="linenos">127</span></a>
+</span><span id="within-128"><a href="#within-128"><span class="linenos">128</span></a><span class="sd">    Args:</span>
+</span><span id="within-129"><a href="#within-129"><span class="linenos">129</span></a><span class="sd">        obj (Any): The object that implements __iter__</span>
+</span><span id="within-130"><a href="#within-130"><span class="linenos">130</span></a>
+</span><span id="within-131"><a href="#within-131"><span class="linenos">131</span></a><span class="sd">    Returns:</span>
+</span><span id="within-132"><a href="#within-132"><span class="linenos">132</span></a><span class="sd">        Callable: Function that takes any value</span>
+</span><span id="within-133"><a href="#within-133"><span class="linenos">133</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="within-134"><a href="#within-134"><span class="linenos">134</span></a>    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">assertWithin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -503,6 +534,62 @@
 </div>
 
 
+                </section>
+                <section id="Raises">
+                            <input id="Raises-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">Raises</span>:
+
+                <label class="view-source-button" for="Raises-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Raises"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Raises-21"><a href="#Raises-21"><span class="linenos">21</span></a><span class="k">class</span> <span class="nc">Raises</span><span class="p">:</span>
+</span><span id="Raises-22"><a href="#Raises-22"><span class="linenos">22</span></a>    <span class="sd">&quot;&quot;&quot;Assert that the code ran inside the `with` keyword raises an exception.&quot;&quot;&quot;</span>
+</span><span id="Raises-23"><a href="#Raises-23"><span class="linenos">23</span></a>
+</span><span id="Raises-24"><a href="#Raises-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="ne">Exception</span><span class="p">):</span>
+</span><span id="Raises-25"><a href="#Raises-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="o">=</span> <span class="n">exception</span>
+</span><span id="Raises-26"><a href="#Raises-26"><span class="linenos">26</span></a>
+</span><span id="Raises-27"><a href="#Raises-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Raises-28"><a href="#Raises-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="Raises-29"><a href="#Raises-29"><span class="linenos">29</span></a>
+</span><span id="Raises-30"><a href="#Raises-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+</span><span id="Raises-31"><a href="#Raises-31"><span class="linenos">31</span></a>        <span class="k">if</span> <span class="n">exc_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Raises-32"><a href="#Raises-32"><span class="linenos">32</span></a>            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exc_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span><span class="p">):</span>
+</span><span id="Raises-33"><a href="#Raises-33"><span class="linenos">33</span></a>                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+</span><span id="Raises-34"><a href="#Raises-34"><span class="linenos">34</span></a>                    <span class="sa">f</span><span class="s2">&quot;Unexpected exception raised </span><span class="si">{</span><span class="n">exc_val</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="Raises-35"><a href="#Raises-35"><span class="linenos">35</span></a>                <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc_val</span>
+</span><span id="Raises-36"><a href="#Raises-36"><span class="linenos">36</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="Raises-37"><a href="#Raises-37"><span class="linenos">37</span></a>                <span class="k">return</span> <span class="kc">True</span>
+</span><span id="Raises-38"><a href="#Raises-38"><span class="linenos">38</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Raises-39"><a href="#Raises-39"><span class="linenos">39</span></a>            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;No exception raised&quot;</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Assert that the code ran inside the <code>with</code> keyword raises an exception.</p>
+</div>
+
+
+                            <div id="Raises.__init__" class="classattr">
+                                        <input id="Raises.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">Raises</span><span class="signature pdoc-code condensed">(<span class="param">exception: Exception = <class 'Exception'></span>)</span>
+
+                <label class="view-source-button" for="Raises.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Raises.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Raises.__init__-24"><a href="#Raises.__init__-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">=</span> <span class="ne">Exception</span><span class="p">):</span>
+</span><span id="Raises.__init__-25"><a href="#Raises.__init__-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_exception</span> <span class="o">=</span> <span class="n">exception</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
                 </section>
     </main>
 <script>

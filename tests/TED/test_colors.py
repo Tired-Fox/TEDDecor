@@ -65,7 +65,6 @@ class Colors(Test):
     @test
     def optimizations(self):
         result = TED.parse("[@ red @< white]*Optimize **format ansi")
-        print(repr(result))
         assertThat("\x1b[1;31;47mOptimize format ansi\x1b[0m", eq(result))
 
 

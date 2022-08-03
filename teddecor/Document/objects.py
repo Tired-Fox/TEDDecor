@@ -4,8 +4,7 @@ from typing import Any, Union
 
 from sys import path
 
-path.insert(0, "./")
-from exceptions import *
+from .exceptions import *
 
 __all__ = ["Constant", "Expr", "Name", "Arg", "Arguments", "Func", "Klass"]
 

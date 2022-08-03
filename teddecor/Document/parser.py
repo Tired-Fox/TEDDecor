@@ -1,7 +1,7 @@
 from __future__ import annotations
 import ast
 
-from objects import *
+from .objects import *
 
 
 def getFunctions(node) -> list:

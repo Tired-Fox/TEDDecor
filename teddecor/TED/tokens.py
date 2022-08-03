@@ -5,16 +5,21 @@ from .formatting import build_color, ColorType
 
 
 class Token:
+    """Generic base class that has a default repr."""
+
     def __repr__(self) -> str:
         return f"<{type(self).__name__}: {self._markup}, {self.value}>"
 
 
 class Text(Token):
+    """Plain text token."""
+
     def __init__(self, markup: str) -> None:
         self._markup: str = markup
 
     @cached_property
     def value(self) -> str:
+        """Fomatted value of the tokens markup."""
         return self._markup
 
     def __repr__(self) -> str:
@@ -25,6 +30,8 @@ class Text(Token):
 
 
 class Color(Token):
+    """A color tokens that is either hex, xterm, rgb, or predefined."""
+
     def __init__(
         self, markup: str, colors: list[int] = None, ctype: ColorType = None
     ) -> None:
@@ -38,10 +45,12 @@ class Color(Token):
 
     @cached_property
     def value(self) -> str:
+        """Fomatted value of the tokens markup."""
         return f"{';'.join(self._colors)}"
 
     @cached_property
     def type_str(self) -> str:
+        """Redable type of the color."""
         if len(self._type) == 1 and self._type[0] == ColorType.FG:
             return "FG"
         elif len(self._type) == 1 and self._type[0] == ColorType.BG:
@@ -51,6 +60,7 @@ class Color(Token):
 
     @property
     def colors(self) -> list[int]:
+        """List of color codes."""
         return self._colors
 
     @colors.setter
@@ -59,16 +69,16 @@ class Color(Token):
 
     @property
     def type(self) -> ColorType:
+        """The colors type; fg, bg, or both."""
         return self._type
 
-    def pretty(self) -> str:
-        return f"<Color:\n  focus: {self.type_str}\n  value: {repr(self.value)}\n>"
-
     def __repr__(self) -> str:
+        """String representation of the class when printing class."""
         return f"<Color: {self.type}, {repr(self.value)}>"
 
     def __str__(self) -> str:
-        return self.value
+        """Full ansi representation of the token."""
+        return f"\x1b[{';'.join(self._colors)}m"
 
 
 class Bold(Token):
@@ -78,9 +88,11 @@ class Bold(Token):
 
     @property
     def value(self) -> int:
+        """The ansi code for the markup."""
         return self._value
 
     def __str__(self) -> str:
+        """Full ansi representation of the token."""
         return f"\x1b[{self.value}m"
 
 
@@ -91,13 +103,17 @@ class Underline(Token):
 
     @property
     def value(self) -> int:
+        """The ansi code for the markup."""
         return self._value
 
     def __str__(self) -> str:
+        """Full ansi representation of the token."""
         return f"\x1b[{self.value}m"
 
 
 class Formatter(Token):
+    """A class used to combine format tokens that are next to eachother."""
+
     def __init__(self):
         self._fg = None
         self._bg = None
@@ -106,6 +122,7 @@ class Formatter(Token):
 
     @property
     def color(self) -> str:
+        """The colors current in the format"""
         return f"{self._fg};{self._bg}"
 
     @color.setter
@@ -120,6 +137,7 @@ class Formatter(Token):
 
     @property
     def bold(self) -> Union[Bold, None]:
+        """The bold toggle currently in the format."""
         return self._bold
 
     @bold.setter
@@ -128,6 +146,7 @@ class Formatter(Token):
 
     @property
     def underline(self) -> Union[Underline, None]:
+        """The underline toggle currently in the format."""
         return self._underline
 
     @bold.setter
@@ -135,6 +154,7 @@ class Formatter(Token):
         self._underline = underline if self._underline is None else None
 
     def is_empty(self) -> bool:
+        """True if all of fg, bg, underline, and bold are None."""
         return (
             self._fg is None
             and self._bg is None

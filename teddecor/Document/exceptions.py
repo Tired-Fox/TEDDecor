@@ -1,7 +1,6 @@
 from sys import path
 
-path.insert(0, "../")
-from TED import *
+from ..TED import *
 
 __all__ = ["InvalidInputType", "InvalidInputValue"]
 
