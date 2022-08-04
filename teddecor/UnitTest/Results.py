@@ -24,9 +24,9 @@ class ResultType:
         SKIPPED (tuple[str, str]): Message and color for a skipped test run
     """
 
-    SUCCESS: tuple[str, str, int] = ("Passed", "[@> green]", "✓")
-    FAILED: tuple[str, str, int] = ("Failed", "[@> red]", "x")
-    SKIPPED: tuple[str, str, int] = ("Skipped", "[@> yellow]", "↻")
+    SUCCESS: tuple[str, str, int] = ("Passed", "[@F green]", "✓")
+    FAILED: tuple[str, str, int] = ("Failed", "[@F red]", "x")
+    SKIPPED: tuple[str, str, int] = ("Skipped", "[@F yellow]", "↻")
 
 
 @dataclass
@@ -173,7 +173,7 @@ class TestResult(Result):
         out = []
         out.append(
             "".ljust(indent, " ")
-            + f"\[{self.color}{self.icon}[@>]] <case> {TED.encode(self.name)}"
+            + f"\[{self.color}{self.icon}[@F]] <case> {TED.encode(self.name)}"
         )
         if isinstance(self.info, list):
             for trace in self.info:
@@ -311,8 +311,8 @@ class ClassResult(Result):
         out = []
 
         passed, failed, skipped = self.counts
-        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@>]:{ResultType.SKIPPED[1]}{skipped}[@>]\
-:{ResultType.FAILED[1]}{failed}[@>]]"
+        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
+:{ResultType.FAILED[1]}{failed}[@F]]"
         out.append(" " * indent + f"*{totals} <class> {TED.encode(self.name)}")
 
         if len(self.results):
@@ -321,7 +321,7 @@ class ClassResult(Result):
         else:
             out.append(
                 " " * (indent + 4)
-                + f"[@> yellow]No Tests Found for {TED.encode(self.name)}"
+                + f"[@F yellow]No Tests Found for {TED.encode(self.name)}"
             )
 
         return out
@@ -463,8 +463,8 @@ class SuiteResult(Result):
         out = []
 
         passed, failed, skipped = self.counts
-        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@>]:{ResultType.SKIPPED[1]}{skipped}[@>]\
-:{ResultType.FAILED[1]}{failed}[@>]]"
+        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
+:{ResultType.FAILED[1]}{failed}[@F]]"
         out.append(" " * indent + f"*{totals} <suite> {TED.encode(self.name)}")
 
         if len(self.results):
@@ -473,7 +473,7 @@ class SuiteResult(Result):
         else:
             out.append(
                 " " * (indent + 4)
-                + f"[@>yellow]No Tests Found for {TED.encode(self.name)}"
+                + f"[@Fyellow]No Tests Found for {TED.encode(self.name)}"
             )
 
         return out

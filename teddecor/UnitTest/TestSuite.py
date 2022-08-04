@@ -5,7 +5,7 @@ Can be either test classes or individual test cases.
 """
 from __future__ import annotations
 from inspect import isclass
-from typing import Pattern, Union
+from typing import Callable, Pattern, Union
 
 from .Results import SuiteResult
 from .Testing import Test, test, run
@@ -20,7 +20,7 @@ class TestSuite:
     def __init__(
         self,
         name: str,
-        tests: list[Union[Test, test]] = None,
+        tests: list[Union[Test, test]] = [],
     ):
         """Start with a list of Test classes or test functions. The function name patter can also be specified.
             Lastly you can specify whether a Test class outputs the result
@@ -52,6 +52,12 @@ class TestSuite:
     @regex.setter
     def regex(self, regex: str):
         self._regex = regex
+
+    def append(self, obj: Union[Test, Callable]):
+        if self._tests is None:
+            self._tests = []
+
+        self._tests.append(obj)
 
     def run(
         self,

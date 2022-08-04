@@ -114,6 +114,14 @@ you get the results printed out. The `main()` function will run any method in th
 
 Since this package is used to test itself, feel free to look through the files in the repo's `tests/` folder to see **examples** and **outputs** of testing.
 
+### CLI Testing Tool
+
+This library also includes a CLI tool to run your tests, `TEDTest`. By default, it will search your current directory recursively for python files that have classes that inherit from `Test` or methods decorated by `test`. It adds them to a `TestSuite` with the name of your current directory and runs them outputing the results to the terminal. Check out `TEDTest -h` for extra options and customization for the CLI tool.
+
+<p align="center">
+  <img src="images/TED_example_5.png" alt="Example Test Results">
+</p>
+
 <p align="center" style="bold">
   To see more testing features like, mocking, setup, result save file types, etc... see the <a href="https://tired-fox.github.io/TEDDecor/teddecor.html" title="Docs" target="_blank">documentation</a>.
 <p>

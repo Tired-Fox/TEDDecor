@@ -283,16 +283,6 @@ class Assert_That(Test):
             Asserts.assertWithin("Custom Message", str(error))
 
 
-@test
-def is_true():
-    return True
-
-
-@test
-def is_fail():
-    raise AssertionError("Testing")
-
-
 if __name__ == "__main__":
     TestSuite(
         name="Asserts",

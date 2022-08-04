@@ -115,7 +115,7 @@ class Color(Token):
     def __init__(
         self, markup: str, colors: list[int] = None, ctype: ColorType = None
     ) -> None:
-
+        # TODO: Error handling for invalid colors
         self._markup: str = markup
         self._type, self._colors = build_color(markup)
         if colors is not None:
