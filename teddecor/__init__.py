@@ -5,6 +5,6 @@ This is a easy to use library with testing, documentation, and docstring example
 Dive in with minimal effort and get great results.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 from . import UnitTest
 from .TED import TED

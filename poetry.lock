@@ -1,8 +1,19 @@
-package = []
+[[package]]
+name = "airium"
+version = "0.2.3"
+description = "Easy and quick html builder with natural syntax correspondence (python->html). No templates needed. Serves pure pythonic library with no dependencies."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+parse = ["beautifulsoup4 (>=4.10,<5.0)", "requests (>=2.12,<3)"]
+dev = ["pytest-mock (>=3.6,<4.0)", "pytest-cov (>=3.0,<4.0)", "pytest (>=6.2,<7.0)", "pdbpp (>=0.10,<1.0)"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.7"
-content-hash = "669741988c507fb04697bdb0c9077fa1b2342c356df6ae6c96baa3119a96a9ea"
+python-versions = ">=3.7"
+content-hash = "8291e7eac14f97cafd3dffaa59dc30fc5722414321d52ca81d6b603e87488a93"
 
 [metadata.files]
+airium = []
