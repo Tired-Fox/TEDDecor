@@ -4,6 +4,7 @@ This is a easy to use library with testing, documentation, and docstring example
 
 [TEDDecor](#teddecor)
   - [Testing](#testing)
+  - [TED](#TED)
 
 ## Testing
 
@@ -128,7 +129,7 @@ This library also includes a CLI tool to run your tests, `TEDTest`. By default, 
 
 ___
 
-## TED markup
+## TED
 
 TED is the name for the inline markup language for this library. This allows the user to customize strings and prettyprint different information to stdout.
 
