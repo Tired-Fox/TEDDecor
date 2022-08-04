@@ -6,7 +6,7 @@ This is a easy to use library with testing a custome inline markup language. Div
 
 [TEDDecor](#teddecor)
   - [Testing](#testing)
-  - [TED](#TED)
+  - [TED](#ted)
 
 ## Testing
 
