@@ -1,5 +1,7 @@
 # TEDDecor
-This is a easy to use library with testing, documentation, and docstring example code tools. Dive in with minimal effort and get great results. 
+This is a easy to use library with testing a custome inline markup language. Dive in with minimal effort and get great results. 
+
+> NOTE: This library only uses builtin python and only requires python v3.7 or higher
 
 
 [TEDDecor](#teddecor)
