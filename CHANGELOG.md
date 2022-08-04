@@ -1,9 +1,9 @@
-#### 1.1.0
+### 1.1.0
 + Add TEDTest CLI tool
   * Auto detects tests and runs them
   * Has same functionality as a TestSuite
 
-#### 1.0.0
+### 1.0.0
 + Add Testing
   * Test Suite
   * Test Classes
