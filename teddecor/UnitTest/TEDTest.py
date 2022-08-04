@@ -2,51 +2,72 @@ from __future__ import annotations
 import ast
 import argparse
 import os
-import sys
 
-from sys import path
-from pathlib import Path
-
-from teddecor.UnitTest import TestSuite, SaveType
-
-path.insert(0, str(Path.home()) + "\\Documents\\Repo\\TEDDecor\\teddecor")
-from Util import slash
+from ..UnitTest import TestSuite, SaveType
+from ..Util import slash
 
 
-def get_test_functions(node) -> list:
+def get_test_functions(module: ast.Module) -> list:
+    """Retrieve the test case names from the given module.
+
+    Args:
+        module (ast.Module): The module to parse test cases from.
+
+    Returns:
+        list: Test case names
+    """
     return [
         obj.name
-        for obj in node.body
+        for obj in module.body
         if isinstance(obj, ast.FunctionDef)
         and "test" in [decor.id for decor in obj.decorator_list]
     ]
 
 
-def get_test_classes(node) -> list:
+def get_test_classes(module: ast.Module) -> list:
+    """Retrieve the test class names from the given module.
+
+    Args:
+        module (ast.Module): The module the parse classes from.
+
+    Returns:
+        list: Test class names.
+    """
     return [
         obj.name
-        for obj in node.body
+        for obj in module.body
         if isinstance(obj, ast.ClassDef) and "Test" in [base.id for base in obj.bases]
     ]
 
 
 def get_files(dir: str) -> list[str]:
+    """Gets the python files/modules from the specified directory
 
-    if os.path.isdir(dir):
-        os.chdir(dir)
-        from glob import glob
+    Args:
+        dir (str): The directory to recursively search
 
-        return [
-            y for x in os.walk(f".{slash()}") for y in glob(os.path.join(x[0], "*.py"))
-        ]
-    else:
-        raise Exception(f"{dir} is not a directory")
+    Returns:
+        list[str]: The python files found in the specified directory
+    """
+
+    os.chdir(dir)
+    from glob import glob
+
+    return [y for x in os.walk(f".{slash()}") for y in glob(os.path.join(x[0], "*.py"))]
 
 
-def generate_suite(files: list[str], args: dict) -> TestSuite:
-    import importlib.util
+def generate_suite(files: list[str], name: str) -> TestSuite:
+    """Generates a TestSuite with the tests pulled from the found modules.
 
-    test_suite = TestSuite(name=args["name"])
+    Args:
+        files (list[str]): The files/modules that have tests.
+        name (str): The name of the test suite.
+
+    Returns:
+        TestSuite: The TestSuite with all tests added to it.
+    """
+
+    test_suite = TestSuite(name=name)
     curdir = os.getcwd()
 
     for file in files:
@@ -81,6 +102,14 @@ def generate_suite(files: list[str], args: dict) -> TestSuite:
 
 
 def get_args() -> dict:
+    """Parse the passed in arguments with `ArgParse`
+
+    Raises:
+        Exception: If the user specifies a start directory and it does not exist.
+
+    Returns:
+        dict: The key value pairs of the arguments passed in.
+    """
     from os import getcwd
 
     parser = argparse.ArgumentParser(description="Process some integers.")
