@@ -1,11 +1,15 @@
 from typing import Any, Callable, Union
 
 from .Asserts import *
+from .Asserts import assertGreaterThan
+from .Asserts import assertLessThan
 
 
 __all__ = [
     "assertThat",
     "eq",
+    "gt",
+    "lt",
     "neq",
     "none",
     "notNone",
@@ -83,6 +87,36 @@ def neq(value: Any) -> Callable:
         Used in `assert_that` and can be thought of, assert that value1 does not equals value2.
     """
     return lambda x, message: assertNotEqual(x, value, message)
+
+
+def gt(value: Any) -> Callable:
+    """Return a function that takes a second value and asserts that it is not equal to the given value.
+
+    Args:
+        value (Any): The value to assert not equal to
+
+    Returns:
+        Callable: Function that takes a second value that asserts not equal to the given value
+
+    Note:
+        Used in `assert_that` and can be thought of, assert that value1 does not equals value2.
+    """
+    return lambda x, message: assertGreaterThan(x, value, message)
+
+
+def lt(value: Any) -> Callable:
+    """Return a function that takes a second value and asserts that it is not equal to the given value.
+
+    Args:
+        value (Any): The value to assert not equal to
+
+    Returns:
+        Callable: Function that takes a second value that asserts not equal to the given value
+
+    Note:
+        Used in `assert_that` and can be thought of, assert that value1 does not equals value2.
+    """
+    return lambda x, message: assertLessThan(x, value, message)
 
 
 def none() -> Callable:

@@ -96,7 +96,7 @@ def test(func):
         except AssertionError as error:
             return (func.__name__, ResultType.FAILED, __getTracback(error))
         except NotImplementedError:
-            return (func.__name__, ResultType.SKIPPED, "Not Implemented")
+            return (func.__name__, ResultType.SKIPPED, "")
 
         return (func.__name__, ResultType.SUCCESS, "")
 

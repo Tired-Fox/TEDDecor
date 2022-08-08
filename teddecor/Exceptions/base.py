@@ -25,15 +25,15 @@ class Frame:
         self._module = frame.filename.split(slash())[-1].split(".")[0]
 
     def __str__(self) -> str:
-        return f"*<[@F blue ~{self._path}]{self._module}[~ @F]:[@F yellow]{self._line}[@F]> in {self._func}*"
+        return f"<[@F blue ~{self._path}]{self._module}[~ @F]:[@F yellow]{self._line}[@F]> in {self._func}"
 
 
 class BaseException(Exception):
-    def __init__(self, message: str = "[@F red]*An unknown error occured*[@F]"):
+    def __init__(self, message: str = "An unknown error occured"):
         #  config: Dict[str, Dict[str, bool]] = {"stack": {"bold": True}}
         self._stack = [Frame(frame) for frame in stack()]
-        self._message = TED.parse(message)
-        super().__init__(self._message)
+        self._message = message
+        super().__init__(TED.parse(message))
         self.slice_stack()
 
     def slice_stack(self) -> list:
@@ -51,13 +51,15 @@ class BaseException(Exception):
         return TED.parse(self.message)
 
     def throw(self, exits: bool = True) -> str:
-        from sys import exit
-
-        TED.print(self.stack)
-        TED.print(self.message)
-
         if exits:
+            from sys import exit
+
+            TED.print("*" + self.stack)
+            TED.print("[@ red]*" + self.message)
             exit(2)
+        else:
+            output = [TED.parse(self.stack), TED.parse(self.message)]
+            return "\n".join(output)
 
 
 class HintedException(BaseException):
@@ -106,15 +108,20 @@ class HintedException(BaseException):
         return self._index
 
     def throw(self, exits: bool = True) -> str:
-        from sys import exit
-
-        TED.print("*Hinted Error:*")
-        TED.print(self.stack, "\n")
-        TED.print("*[@F red]" + self.message, "*:*")
-        TED.print("*" + self.error)
-
         if exits:
+            from sys import exit
+
+            TED.print("*Hinted Error:*")
+            TED.print("*" + self.stack, "\n")
+            TED.print("*[@F red]" + self.message + "*:*")
+            TED.print("*" + self.error)
             exit(3)
+        else:
+            output = [TED.parse("*Hinted Error:*")]
+            output.append(TED.parse("*" + self.stack))
+            output.append(TED.parse("*[@F red]" + self.message + "*:*"))
+            output.append(TED.parse("*" + self.error))
+            return "\n".join(output)
 
 
 class MissingValueException(BaseException):
@@ -141,19 +148,30 @@ class MissingValueException(BaseException):
         return self._value
 
     @property
+    def missing(self) -> str:
+        return self._missing
+
+    @property
     def index(self) -> int:
         return self._index
 
     def throw(self, exits: bool = True) -> str:
-        from sys import exit
-
-        TED.print("*Missing Value Error:*")
-        TED.print(self.stack, "\n")
-        TED.print("*[@F red]" + self.message, "*:*")
-        TED.print("*" + self.error)
 
         if exits:
+            from sys import exit
+
+            TED.print("*Missing Value Error:*")
+            TED.print("*" + self.stack + "\n")
+            TED.print("*[@F red]" + self.message + "*:*")
+            TED.print("*" + self.error)
+
             exit(4)
+        else:
+            output = [TED.parse("*Missing Value Error:*")]
+            output.append(TED.parse("*" + self.stack + "\n"))
+            output.append(TED.parse("*[@F red]" + self.message + "*:*"))
+            output.append(TED.parse("*" + self.error))
+            return "\n".join(output)
 
 
 def main():

@@ -39,6 +39,48 @@ def assertEqual(left: Any, right: Any, message: str = "") -> Union[bool, None]:
     return True
 
 
+def assertGreaterThan(left: Any, right: Any, message: str = "") -> Union[bool, None]:
+    """Assert that the left operand (First parameter) is greater than the right operand (Second Parameter).
+
+    Args:
+        left (Any): Left Operand
+        right (Any): Right Operand
+        message (str, optional): User defind error messaage when left != right.
+                                    Defaults to "Left operand not equal to right operand".
+
+    Raises:
+        AssertionError: When left operand is less than the right operand
+    """
+
+    if left < right:
+        if message == "":
+            message = "Value is less than not greater than"
+        raise AssertionError(message)
+
+    return True
+
+
+def assertLessThan(left: Any, right: Any, message: str = "") -> Union[bool, None]:
+    """Assert that the left operand (First parameter) is less than the right operand (Second Parameter).
+
+    Args:
+        left (Any): Left Operand
+        right (Any): Right Operand
+        message (str, optional): User defind error messaage when left != right.
+                                    Defaults to "Left operand not equal to right operand".
+
+    Raises:
+        AssertionError: When left operand is greater than the right operands
+    """
+
+    if left > right:
+        if message == "":
+            message = "Value is greater than not less than"
+        raise AssertionError(message)
+
+    return True
+
+
 def assertNotEqual(left: Any, right: Any, message: str = "") -> Union[bool, None]:
     """Assert that the left operand (First parameter) is not equal to the right operand (Second Parameter).
 

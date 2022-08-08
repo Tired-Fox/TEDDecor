@@ -131,7 +131,7 @@ def get_color(types: Union[int, list[int]], content: str) -> Union[int, list[int
     for ctype in types:
         if len(content) == 0:
             results.append(RESETCOLOR(ctype))
-        if content.startswith("#"):
+        elif content.startswith("#"):
             if len(content) == 4 and match(r"#[a-fA-F0-9]{3}", content):
                 results.append(HEX(ctype, content))
             elif len(content) == 7 and match(r"#[a-fA-F0-9]{6}", content):
