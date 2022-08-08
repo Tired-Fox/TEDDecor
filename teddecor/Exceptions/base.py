@@ -75,7 +75,7 @@ class BaseException(Exception):
 
     def __str__(self) -> str:
         """Only used when class is called with raise"""
-        return TED.parse(self.message)
+        return TED.parse(f"[@F red]*{self.message}")
 
     def throw(self, exits: bool = True) -> str:
         """Custom throw method that allows for more custom output.
@@ -89,11 +89,14 @@ class BaseException(Exception):
         if exits:
             from sys import exit
 
-            TED.print("*" + self.stack)
+            TED.print("*" + "\n".join("  " + st for st in self.stack))
             TED.print("[@ red]*" + self.message)
             exit(2)
         else:
-            output = [TED.parse(self.stack), TED.parse(self.message)]
+            output = [
+                TED.parse("\n".join("  " + st for st in self.stack)),
+                TED.parse(self.message),
+            ]
             return "\n".join(output)
 
 
@@ -137,7 +140,9 @@ class HintedException(BaseException):
                 + f"{self.hint} {arrow}"
             )
         else:
-            error = f"  {self.value}\n " + " " * (self._index) + f"{arrow} {self.hint}"
+            error = (
+                f"  {self.value}\n " + " " * (self._index + 1) + f"{arrow} {self.hint}"
+            )
 
         return error
 
@@ -171,13 +176,13 @@ class HintedException(BaseException):
             from sys import exit
 
             TED.print("*Hinted Error:*")
-            TED.print("*" + self.stack, "\n")
+            TED.print("*" + "\n".join("  " + st for st in self.stack), "\n")
             TED.print("*[@F red]" + self.message + "*:*")
             TED.print("*" + self.error)
             exit(3)
         else:
             output = [TED.parse("*Hinted Error:*")]
-            output.append(TED.parse("*" + self.stack))
+            output.append(TED.parse("*" + "\n".join("  " + st for st in self.stack)))
             output.append(TED.parse("*[@F red]" + self.message + "*:*"))
             output.append(TED.parse("*" + self.error))
             return "\n".join(output)
@@ -209,7 +214,7 @@ class MissingValueException(BaseException):
     @cached_property
     def error(self) -> str:
         """The value with the injected missing value."""
-        return f"  {self.value[:self._index]}[@F red]{self._missing}[@F]{self.value[self._index:]}\n "
+        return f"  {self.value[:self._index]}[@F red]{self._missing}[@F]{self.value[self._index:]}"
 
     @property
     def value(self) -> str:
@@ -239,14 +244,16 @@ class MissingValueException(BaseException):
             from sys import exit
 
             TED.print("*Missing Value Error:*")
-            TED.print("*" + self.stack + "\n")
+            TED.print("*" + "\n".join("  " + st for st in self.stack) + "\n")
             TED.print("*[@F red]" + self.message + "*:*")
             TED.print("*" + self.error)
 
             exit(4)
         else:
             output = [TED.parse("*Missing Value Error:*")]
-            output.append(TED.parse("*" + self.stack + "\n"))
+            output.append(
+                TED.parse("*" + "\n".join("  " + st for st in self.stack) + "\n")
+            )
             output.append(TED.parse("*[@F red]" + self.message + "*:*"))
             output.append(TED.parse("*" + self.error))
             return "\n".join(output)
