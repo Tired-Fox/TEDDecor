@@ -219,7 +219,7 @@ class TestResult(Result):
             str: CSV format of the result
         """
         info = "\n".join(self.info) if isinstance(self.info, list) else self.info
-        return f"{self.name},{self.result},'{info}'"
+        return f'{self.name},{self.result},"{info}"'
 
     def save(
         self, location: str = "", ext: Union[str, list[str]] = SaveType.CSV
@@ -528,7 +528,7 @@ class SuiteResult(Result):
                 for line in result.csv():
                     out.append(f"{self.name}," + line)
             else:
-                out.append(f"{self.name}," + result.csv())
+                out.append(f"{self.name},," + result.csv())
 
         return out
 
@@ -567,7 +567,7 @@ class SuiteResult(Result):
         if location is not None:
             with open(location + self.name + type, "+w", encoding="utf-8") as file:
                 if type == SaveType.CSV:
-                    file.write("Test Class,Test Case,Result,Info\n")
+                    file.write("Test Suite, Test Class,Test Case,Result,Info\n")
                     for line in self.csv():
                         file.write(f"{line}\n")
                     return True

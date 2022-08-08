@@ -6,7 +6,7 @@ In a sense, this module is the brains of teddecor's unit testing.
 from __future__ import annotations
 
 from typing import Callable, Pattern
-
+ 
 from .Results import TestResult, ClassResult, ResultType
 from ..Util import *
 

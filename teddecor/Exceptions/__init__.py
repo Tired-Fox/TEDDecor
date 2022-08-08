@@ -1,7 +1,7 @@
 """The exceptions module is a collection of utilities to give rich and readable error messages.
 
-This module will provides:
-* Base error messages with great readability
+This module will provide:
+* Base error messages with good readability and file linking
 * Colored error messages
 * Hinted messages
 * Grouped errors

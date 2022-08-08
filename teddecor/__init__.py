@@ -6,6 +6,6 @@ Dive in with minimal effort and get great results.
 """
 
 __version__ = "1.1.0"
+from . import Exceptions
 from . import UnitTest
 from .TED import TED
-from .Exceptions import *

@@ -3,8 +3,8 @@ import ast
 import argparse
 import os
 
-from ..UnitTest import TestSuite, SaveType
-from ..Util import slash
+from teddecor.UnitTest import TestSuite, SaveType
+from teddecor.Util import slash
 
 
 def get_test_functions(module: ast.Module) -> list:
@@ -40,7 +40,7 @@ def get_test_classes(module: ast.Module) -> list:
     ]
 
 
-def get_files(dir: str) -> list[str]:
+def get_files() -> list[str]:
     """Gets the python files/modules from the specified directory
 
     Args:
@@ -49,8 +49,6 @@ def get_files(dir: str) -> list[str]:
     Returns:
         list[str]: The python files found in the specified directory
     """
-
-    os.chdir(dir)
     from glob import glob
 
     return [y for x in os.walk(f".{slash()}") for y in glob(os.path.join(x[0], "*.py"))]
@@ -72,7 +70,7 @@ def generate_suite(files: list[str], name: str) -> TestSuite:
     curdir = os.getcwd()
 
     for file in files:
-        mdir = file.split(slash())[0]
+        mdir = file.rsplit(slash(), 1)[0]
         mname = file.split(slash())[-1].split(".")[0]
 
         with open(file, "r", encoding="utf-8") as fd:
@@ -84,7 +82,8 @@ def generate_suite(files: list[str], name: str) -> TestSuite:
         os.chdir(mdir)
         try:
             # Bring module into scope and grab it
-            path.insert(0, "./")
+
+            path.insert(0, str(os.getcwd()))
             mod = __import__(mname)
 
             # For each of the valid test objects add them to the test suite
@@ -145,7 +144,7 @@ def get_args() -> dict:
         "path": None,
         "save": None,
         "regex": None,
-        "save_path": "",
+        "save_path": "." + slash(),
         "name": None,
     }
 
@@ -160,7 +159,8 @@ def get_args() -> dict:
             args.entry = str(Path.home()) + args.entry[1:]
 
         if os.path.isdir(args.entry):
-            variables["path"] = slash().join(split(r"[\\/]", args.entry))
+            os.chdir(slash().join(split(r"[\\/]", args.entry)))
+            variables["path"] = str(os.getcwd())
         else:
             raise Exception(f"{dir} is not a directory")
 
@@ -173,14 +173,15 @@ def get_args() -> dict:
     if args.regex is not None:
         variables["regex"] = args.regex
 
-    if args.save_path is not None:
-        variables["save_path"] = args.save_path
-
     if args.name is not None:
         variables["name"] = args.name
     else:
         variables["name"] = variables["path"].split(slash())[-1]
 
+    if args.save_path is not None:
+        variables["save_path"] = args.save_path
+
+    print(variables["save_path"])
     return variables
 
 
@@ -189,7 +190,7 @@ def main():
 
     arguments = get_args()
 
-    files = get_files(arguments["path"])
+    files = get_files()
     suite = generate_suite(files, arguments["name"])
     if len(suite.tests) > 0:
         results = suite.run(regex=arguments["regex"])
