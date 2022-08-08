@@ -119,7 +119,7 @@ Since this package is used to test itself, feel free to look through the files i
 
 ### CLI Testing Tool
 
-This library also includes a CLI tool to run your tests, `TEDTest`. By default, it will search your current directory recursively for python files that have classes that inherit from `Test` or methods decorated by `test`. It adds them to a `TestSuite` with the name of your current directory and runs them outputing the results to the terminal. Check out `TEDTest -h` for extra options and customization for the CLI tool.
+This library also includes a CLI tool to run your tests, `TEDTest`. By default, it will search your current directory recursively for python files that have classes that inherit from `Test` or methods decorated by `test`. Each file is concidered a test suite and the test classes and cases contained within it are added to a suite. It then adds teh suites to a `RunResult` with the name of your current directory and runs them. This outputs the results to the terminal. Check out `TEDTest -h` for extra options and customization for the CLI tool.
 
 <p align="center">
   <img src="images/TED_example_5.png" alt="Example Test Results">

@@ -1,0 +1,307 @@
+{
+  "tests": {
+    "ExceptionTypes": {
+      "BaseType": {
+        "message_default": {
+          "result": "Passed",
+          "info": ""
+        },
+        "message_custom": {
+          "result": "Passed",
+          "info": ""
+        },
+        "stack": {
+          "result": "Passed",
+          "info": ""
+        }
+      },
+      "HintingType": {
+        "message_default": {
+          "result": "Passed",
+          "info": ""
+        },
+        "message_custom": {
+          "result": "Passed",
+          "info": ""
+        },
+        "stack": {
+          "result": "Passed",
+          "info": ""
+        },
+        "value": {
+          "result": "Passed",
+          "info": ""
+        },
+        "hint": {
+          "result": "Passed",
+          "info": ""
+        },
+        "index": {
+          "result": "Passed",
+          "info": ""
+        }
+      },
+      "MissingValueType": {
+        "message_default": {
+          "result": "Passed",
+          "info": ""
+        },
+        "message_custom": {
+          "result": "Passed",
+          "info": ""
+        },
+        "stack": {
+          "result": "Passed",
+          "info": ""
+        },
+        "value": {
+          "result": "Passed",
+          "info": ""
+        },
+        "missing": {
+          "result": "Passed",
+          "info": ""
+        },
+        "index": {
+          "result": "Passed",
+          "info": ""
+        }
+      }
+    },
+    "runner": {
+      "test_encoding": {
+        "result": "Passed",
+        "info": ""
+      }
+    },
+    "test_colors": {
+      "Colors": {
+        "foreground": {
+          "result": "Passed",
+          "info": ""
+        },
+        "background": {
+          "result": "Passed",
+          "info": ""
+        },
+        "foreground_and_background": {
+          "result": "Passed",
+          "info": ""
+        },
+        "predefined_color": {
+          "result": "Passed",
+          "info": ""
+        },
+        "xterm_color": {
+          "result": "Passed",
+          "info": ""
+        },
+        "rgb_color": {
+          "result": "Passed",
+          "info": ""
+        },
+        "hex_color": {
+          "result": "Passed",
+          "info": ""
+        },
+        "reset_foreground": {
+          "result": "Passed",
+          "info": ""
+        },
+        "reset_background": {
+          "result": "Passed",
+          "info": ""
+        },
+        "reset_foreground_and_background": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assign_both": {
+          "result": "Passed",
+          "info": ""
+        },
+        "optimizations": {
+          "result": "Passed",
+          "info": ""
+        }
+      }
+    },
+    "test_hlinks": {
+      "HLink": {
+        "auto_close": {
+          "result": "Passed",
+          "info": ""
+        },
+        "manual_close": {
+          "result": "Passed",
+          "info": ""
+        },
+        "auto_close_between_links": {
+          "result": "Passed",
+          "info": ""
+        }
+      }
+    },
+    "test_Asserts": {
+      "Assert_Equal": {
+        "assert_equal_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_equal_fail": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_not_equal_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_not_equal_fail": {
+          "result": "Passed",
+          "info": ""
+        }
+      },
+      "Assert_Raises": {
+        "assert_raise_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_raise_pass_any": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_raise_unexpected_exception": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_raise_no_exception": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_raise_fail_any": {
+          "result": "Passed",
+          "info": ""
+        },
+        "with_raises": {
+          "result": "Passed",
+          "info": ""
+        }
+      },
+      "Assert_Within": {
+        "assert_within_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_within_fail": {
+          "result": "Passed",
+          "info": ""
+        }
+      },
+      "Assert_None": {
+        "assert_none_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_none_fail": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_not_none_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "assert_not_none_fail": {
+          "result": "Passed",
+          "info": ""
+        }
+      },
+      "Assert_That": {
+        "eq_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "eq_fail": {
+          "result": "Passed",
+          "info": ""
+        },
+        "neq_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "neq_fail": {
+          "result": "Passed",
+          "info": ""
+        },
+        "none_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "none_fail": {
+          "result": "Passed",
+          "info": ""
+        },
+        "not_none_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "not_none_fail": {
+          "result": "Passed",
+          "info": ""
+        },
+        "raises_plass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "raises_fail": {
+          "result": "Passed",
+          "info": ""
+        },
+        "within_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "within_fail": {
+          "result": "Passed",
+          "info": ""
+        },
+        "has_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "has_fail": {
+          "result": "Passed",
+          "info": ""
+        }
+      }
+    },
+    "test_Test": {
+      "TestTesting": {
+        "test_pass": {
+          "result": "Passed",
+          "info": ""
+        },
+        "test_fail": {
+          "result": "Failed",
+          "info": [
+            "[test_Test.py:11] test_fail",
+            "[Error Message] Assertion Failed"
+          ]
+        },
+        "test_notimplemented": {
+          "result": "Skipped",
+          "info": ""
+        }
+      },
+      "TestResults": {
+        "result_format": {
+          "result": "Passed",
+          "info": ""
+        },
+        "result_content": {
+          "result": "Passed",
+          "info": ""
+        }
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import ast
 import argparse
 import os
 
-from teddecor.UnitTest import TestSuite, SaveType
+from teddecor.UnitTest import RunResults, TestSuite, SaveType
 from teddecor.Util import slash
 
 
@@ -16,12 +16,13 @@ def get_test_functions(module: ast.Module) -> list:
     Returns:
         list: Test case names
     """
-    return [
+    functions = [
         obj.name
         for obj in module.body
         if isinstance(obj, ast.FunctionDef)
         and "test" in [decor.id for decor in obj.decorator_list]
     ]
+    return functions if functions is not None else []
 
 
 def get_test_classes(module: ast.Module) -> list:
@@ -33,11 +34,12 @@ def get_test_classes(module: ast.Module) -> list:
     Returns:
         list: Test class names.
     """
-    return [
+    klasses = [
         obj.name
         for obj in module.body
         if isinstance(obj, ast.ClassDef) and "Test" in [base.id for base in obj.bases]
     ]
+    return klasses if klasses is not None else []
 
 
 def get_files() -> list[str]:
@@ -54,7 +56,7 @@ def get_files() -> list[str]:
     return [y for x in os.walk(f".{slash()}") for y in glob(os.path.join(x[0], "*.py"))]
 
 
-def generate_suite(files: list[str], name: str) -> TestSuite:
+def generate_run(files: list[str], arguments: str) -> TestSuite:
     """Generates a TestSuite with the tests pulled from the found modules.
 
     Args:
@@ -66,18 +68,23 @@ def generate_suite(files: list[str], name: str) -> TestSuite:
     """
     from sys import path
 
-    test_suite = TestSuite(name=name)
+    test_run = RunResults(name=arguments["name"])
     curdir = os.getcwd()
 
     for file in files:
         mdir = file.rsplit(slash(), 1)[0]
         mname = file.split(slash())[-1].split(".")[0]
 
+        test_suite = TestSuite(name=mname)
+        test_suite.tests = []
+
         with open(file, "r", encoding="utf-8") as fd:
             file_content = fd.read()
 
         module = ast.parse(file_content)
-        runners = get_test_classes(module) + get_test_functions(module)
+        runners = []
+        runners.extend(get_test_classes(module))
+        runners.extend(get_test_functions(module))
 
         os.chdir(mdir)
         try:
@@ -97,8 +104,9 @@ def generate_suite(files: list[str], name: str) -> TestSuite:
             print(error)
 
         os.chdir(curdir)
+        test_run.append(test_suite.run(display=False, regex=arguments["regex"]))
 
-    return test_suite
+    return test_run
 
 
 def get_args() -> dict:
@@ -179,9 +187,11 @@ def get_args() -> dict:
         variables["name"] = variables["path"].split(slash())[-1]
 
     if args.save_path is not None:
+        if not os.path.isdir(args.save_path):
+            os.mkdir(args.save_path)
+
         variables["save_path"] = args.save_path
 
-    print(variables["save_path"])
     return variables
 
 
@@ -191,11 +201,10 @@ def main():
     arguments = get_args()
 
     files = get_files()
-    suite = generate_suite(files, arguments["name"])
-    if len(suite.tests) > 0:
-        results = suite.run(regex=arguments["regex"])
-        if arguments["save"] is not None:
-            results.save(location=arguments["save_path"], ext=arguments["save"])
+    run = generate_run(files, arguments)
+    run.write()
+    if arguments["save"] is not None:
+        run.save(location=arguments["save_path"], ext=arguments["save"])
 
 
 if __name__ == "__main__":

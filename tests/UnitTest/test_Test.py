@@ -19,7 +19,7 @@ class TestResults(Test):
     def __init__(self):
         super().__init__()
         self.result_class = TestTesting().run(False)
-        self.result_func = run(TestTesting().test_pass)
+        self.result_func = run(TestTesting().test_pass, display=False)
 
     @test
     def result_format(self):

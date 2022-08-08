@@ -1,14 +1,17 @@
-Test Class,Test Case,Result,Info
-TED,Colors,foreground,Passed,''
-TED,Colors,background,Passed,''
-TED,Colors,foreground_and_background,Passed,''
-TED,Colors,predefined_color,Passed,''
-TED,Colors,xterm_color,Passed,''
-TED,Colors,rgb_color,Passed,''
-TED,Colors,hex_color,Passed,''
-TED,Colors,reset_foreground,Passed,''
-TED,Colors,reset_background,Passed,''
-TED,Colors,reset_foreground_and_background,Passed,''
-TED,Colors,assign_both,Passed,''
-TED,Colors,optimizations,Passed,''
-TED,encoding,Passed,''
+Test Suite, Test Class,Test Case,Result,Info
+runner,,test_encoding,Passed,""
+test_colors,Colors,foreground,Passed,""
+test_colors,Colors,background,Passed,""
+test_colors,Colors,foreground_and_background,Passed,""
+test_colors,Colors,predefined_color,Passed,""
+test_colors,Colors,xterm_color,Passed,""
+test_colors,Colors,rgb_color,Passed,""
+test_colors,Colors,hex_color,Passed,""
+test_colors,Colors,reset_foreground,Passed,""
+test_colors,Colors,reset_background,Passed,""
+test_colors,Colors,reset_foreground_and_background,Passed,""
+test_colors,Colors,assign_both,Passed,""
+test_colors,Colors,optimizations,Passed,""
+test_hlinks,HLink,auto_close,Passed,""
+test_hlinks,HLink,manual_close,Passed,""
+test_hlinks,HLink,auto_close_between_links,Passed,""
