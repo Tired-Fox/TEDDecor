@@ -36,8 +36,10 @@ class ColorType:
     BOTH: list = (30, 40)
 
 
-FUNC = {"rainbow": lambda string: __RAINBOW(string),
-        "repr": lambda string: repr(string)}
+FUNC = {
+    "rainbow": lambda string: __RAINBOW(string),
+    "repr": lambda string: repr(string),
+}
 
 PREDEFINED = {
     "black": lambda c: f"{c + 0}",
@@ -142,6 +144,10 @@ def get_color(types: Union[int, list[int]], content: str) -> Union[int, list[int
         else:
             if content in PREDEFINED:
                 results.append(PREDEFINED[content](ctype))
+            else:
+                raise ValueError(
+                    f"The color, \x1b[1;31m{content}\x1b[0m, does not match any valid format"
+                )
 
     return results
 

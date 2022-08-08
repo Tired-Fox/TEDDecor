@@ -8,7 +8,6 @@ Raises:
 from __future__ import annotations
 
 from typing import Iterator, Callable
-from .exception import MacroError
 from .tokens import Token, Color, Text, Bold, Underline, Formatter, HLink, Reset, Func
 from .formatting import BOLD, UNDERLINE, RESET, LINK, FUNC
 
@@ -184,7 +183,7 @@ class TEDParser:
                 macro.append(char)
                 index += 1
                 if index == len(string):
-                    raise MacroError(string, start, "Macro's must be closed")
+                    raise ValueError(f"Macro's must be closed \n {string[start-1:]}")
                 char = string[index]
             output.extend(self.__parse_macro("".join(macro)))
 

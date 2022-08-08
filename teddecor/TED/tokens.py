@@ -1,8 +1,8 @@
 from __future__ import annotations
 from functools import cached_property
+from lib2to3.pytree import Base
 from typing import Union, Callable, Dict
 
-from .exception import MacroError
 from .formatting import build_color, ColorType, LINK, RESET, FUNC
 
 
@@ -33,7 +33,7 @@ class Func(Token):
         if self._func in funcs:
             self._caller = funcs[self._func]
         else:
-            raise MacroError(self._markup, 1, "Invalid function")
+            raise ValueError(f"Invalid Function \x1b[1;31m{self._markup}\x1b[0m")
 
     def exec(self, string: str) -> str:
         return self._caller(string)
@@ -115,7 +115,6 @@ class Color(Token):
     def __init__(
         self, markup: str, colors: list[int] = None, ctype: ColorType = None
     ) -> None:
-        # TODO: Error handling for invalid colors
         self._markup: str = markup
         self._type, self._colors = build_color(markup)
         if colors is not None:
