@@ -1,10 +1,11 @@
 """TEDDecor
-Testing, Examples in Docstring, and Documentation with Decor
+Testing, Exceptions, and Decor
 
-This is a easy to use library with testing, documentation, and docstring example tools. 
+This is a easy to use library with testing, exceptions, and colorful text output. 
 Dive in with minimal effort and get great results.
 """
 
 __version__ = "1.1.0"
 from . import UnitTest
 from .TED import TED
+from .Exceptions import *

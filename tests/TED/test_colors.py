@@ -1,6 +1,5 @@
 from teddecor.UnitTest import *
 from teddecor import TED
-from teddecor.TED.exception import MacroError
 
 
 class Colors(Test):
@@ -68,11 +67,11 @@ class Colors(Test):
         assertThat("\x1b[1;31;47mOptimize format ansi\x1b[0m", eq(result))
 
 
-class ColorExceptions(Test):
-    @test
-    def not_in_predefined(self):
-        assertThat(wrap(TED.parse, "[@F bad]Bad"), raises(MacroError))
+# class ColorExceptions(Test):
+#     @test
+#     def not_in_predefined(self):
+#         assertThat(wrap(TED.parse, "[@F bad]Bad"), raises(MacroError))
 
-    @test
-    def no_specifier(self):
-        assertThat(wrap(TED.parse, "[@ bad]Bad"), raises(MacroError))
+#     @test
+#     def no_specifier(self):
+#         assertThat(wrap(TED.parse, "[@ bad]Bad"), raises(MacroError))

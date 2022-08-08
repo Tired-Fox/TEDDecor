@@ -66,6 +66,7 @@ def generate_suite(files: list[str], name: str) -> TestSuite:
     Returns:
         TestSuite: The TestSuite with all tests added to it.
     """
+    from sys import path
 
     test_suite = TestSuite(name=name)
     curdir = os.getcwd()
@@ -189,7 +190,7 @@ def main():
     arguments = get_args()
 
     files = get_files(arguments["path"])
-    suite = generate_suite(files, arguments)
+    suite = generate_suite(files, arguments["name"])
     if len(suite.tests) > 0:
         results = suite.run(regex=arguments["regex"])
         if arguments["save"] is not None:
