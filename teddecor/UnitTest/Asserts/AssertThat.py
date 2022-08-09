@@ -6,7 +6,7 @@ from ...TED.markup import TED
 from ...Exceptions import RangedException
 
 
-__all__ = ["assertThat", "Matcher", "Raises", "eq", "gt", "lt"]
+__all__ = ["assertThat", "Matcher", "Raises", "eq", "gt", "lt", "empty"]
 
 
 def stringify(value: Union[tuple[Any], list[Any], Dict[str, Any]]) -> str:
@@ -21,9 +21,27 @@ def stringify(value: Union[tuple[Any], list[Any], Dict[str, Any]]) -> str:
     return ", ".join(output)
 
 
+def get_expected(args, kwargs) -> Any:
+    """Gets the expected value from either the first argument or the corresponding
+    `expect` or `expected` keyword arguments.
+
+    Args:
+        args (list[Any]): The list of arguments.
+        kwargs (Dict[str, Any]): Dictionary of keyword arguments.
+
+    Returns:
+        Any: The expected value.
+    """
+    if "expect" in kwargs or "expected" in kwargs:
+        return kwargs["expected"] if "expected" in kwargs else kwargs["expect"]
+    else:
+        return args[0]
+
+
 def check_args(
     args: Union[list[Any], tuple[Any]],
     kwargs: Dict[str, Any],
+    name: str,
     arg_count: int = 1,
     arg_and_kwarg: bool = False,
     vkwargs: list[str] = [],
@@ -34,51 +52,90 @@ def check_args(
     params = ", ".join(params)
     if not arg_and_kwarg and len(args) > 0 and len(kwargs) > 0:
         RangedException(
-            TED.encode(f"_is({params})"),
+            TED.encode(f"{name}({params})"),
             "Too many values to compare",
-            5,
-            5 + len(params),
+            len(name) + 1,
+            len(name) + 1 + len(params),
             "Can not have args and kwargs at the same time",
         ).throw()
     elif len(args) > arg_count:
         RangedException(
-            TED.encode(f"_is({params})"),
+            TED.encode(f"{name}({params})"),
             "Too many values to compare",
-            5,
-            5 + len(params),
+            len(name) + 1,
+            len(name) + 1 + len(params),
             "Too many arguments",
         ).throw()
-    else:
+    elif len(kwargs) > arg_count:
+        RangedException(
+            TED.encode(f"{name}({params})"),
+            "Too many values to compare",
+            len(name) + 1,
+            len(name) + 1 + len(params),
+            "Too many arguments",
+        ).throw()
+    elif len(kwargs.keys()) > 0:
+        argkwargs = [stringify(args)]
         for key, value in kwargs.items():
+            argkwargs.append(f"{key}={value}")
             if key not in vkwargs:
+                if "" in argkwargs:
+                    argkwargs.remove("")
+                start = (
+                    len(name) + 1 + len(", ".join(argkwargs)) - len(f"{key}={value}")
+                )
                 RangedException(
-                    TED.encode(f"{key}={value}"),
+                    TED.encode(f"{name}({', '.join(argkwargs)})"),
                     "Too many values to compare",
-                    0,
-                    len(f"{key}"),
+                    start,
+                    start + len(key),
                     "Invalid keyword argument",
                 ).throw()
 
     return True
 
 
-def Matcher(func: Callable):
-    """Wraps a matcher for assertThat.
+def Matcher(arg_count: int = 1, arg_and_kwarg: bool = False, vkwargs: list[str] = []):
+    """Wraps a matcher function and validates the arguments before returning the matcher function.
 
     Args:
-        func (Callable): The matcher function that will return a callable to match against the actual value in assertThat.
+        arg_count (int, optional): The number of arguments the matcher can take. Defaults to 1.
+        arg_and_kwarg (bool, optional): Whether both args and kwargs can be passed at the same time. Defaults to False.
+        vkwargs (list[str], optional): The valid kwargs that can be passed. Defaults to [].
 
-    Note:
-        Matchers must return functions that raise AssertionError when a condition is not met.
+    Returns:
+        Callable: The matcher function that will be called by assertThat.
     """
 
-    def inner(*args, **kwargs):
-        return func(*args, **kwargs)
+    valid_kwargs = ["expected", "expect"].extend(vkwargs)
 
-    return inner
+    def match_wrapper(func: Callable):
+        """Wrapper that takes the decorated function.
+
+        Args:
+            func (Callable): The function that will generate the matcher function.
+
+        Returns:
+            Callable: The matcher function that will be called by assertThat.
+        """
+
+        def match_inner(*args, **kwargs):
+            """Wrapper that takes the arguments passed to the matcher on initialization and validates them.
+
+            Returns:
+                Callable: The matcher function that will be called by assertThat.
+            """
+            check_args(
+                args, kwargs, func.__name__, arg_count, arg_and_kwarg, valid_kwargs
+            )
+            return func(*args, **kwargs)
+
+        return match_inner
+
+    return match_wrapper
 
 
-def assertThat(actual: Any, matcher: Matcher) -> None:
+def assertThat(actual: Any, matcher: Matcher, cmessage: str = None) -> None:
     """Passes the actual value into the matcher.
 
     Args:
@@ -88,10 +145,17 @@ def assertThat(actual: Any, matcher: Matcher) -> None:
     Raises:
         AssertionError: If the matcher's condition fails
     """
-    matcher(actual)
+
+    result, message = matcher(actual)
+
+    if cmessage is not None:
+        message = cmessage
+
+    if not result:
+        raise AssertionError(message)
 
 
-@Matcher
+@Matcher()
 def eq(*args, **kwargs) -> Callable:
     """Assert that the actual value is equal to the expected value.
 
@@ -99,7 +163,7 @@ def eq(*args, **kwargs) -> Callable:
         Callable: A matcher that checks if the actual is equal to the expected.
     """
 
-    def equal(actual: Any):
+    def equal(actual: Any) -> tuple[bool, str]:
         """Assert that the actual value is the same type and equal to the expected value.
 
         Args:
@@ -108,18 +172,22 @@ def eq(*args, **kwargs) -> Callable:
         Raises:
             AssertionError: If the actual value is the incorrect type.
             AssertionError: If the actual value does not equal the expected.
+
+        Return:
+            tuple[bool, str]: The success and the associated message
         """
 
-        expected: Any = args[0]
+        expected: Any = get_expected(args, kwargs)
         """Expected value that actual should match"""
 
         if not isinstance(actual, type(expected)):
-            raise AssertionError(f"Expected {type(expected)} but found {type(actual)}")
+            return False, f"Expected {type(expected)} but found {type(actual)}"
         elif actual != expected:
-            raise AssertionError("Actual value is not equal to the expected value.")
+            return False, "Actual value is not equal to the expected value."
 
-    if check_args(args=args, kwargs=kwargs):
-        return equal
+        return True, None
+
+    return equal
 
 
 class Raises:
@@ -143,7 +211,7 @@ class Raises:
             raise AssertionError("No exception raised")
 
 
-@Matcher
+@Matcher()
 def gt(*args, **kwargs) -> Callable:
     """Assert that the actual value is greater than the expected value.
 
@@ -151,7 +219,7 @@ def gt(*args, **kwargs) -> Callable:
         Callable: A matcher that checks if the actual is greater than the expected.
     """
 
-    def greater_than(actual: Any):
+    def greater_than(actual: Any) -> tuple[bool, str]:
         """Assert that the actual value is the same type and greater than the expected value.
 
         Args:
@@ -160,21 +228,25 @@ def gt(*args, **kwargs) -> Callable:
         Raises:
             AssertionError: If the actual value is the incorrect type.
             AssertionError: If the actual value is less than the expected.
+
+        Return:
+            tuple[bool, str]: The success and the associated message
         """
 
-        expected: Any = args[0]
+        expected: Any = get_expected(args, kwargs)
         """Expected value that actual should match"""
 
         if not isinstance(actual, type(expected)):
-            raise AssertionError(f"Expected {type(expected)} but found {type(actual)}")
+            return False, f"Expected {type(expected)} but found {type(actual)}"
         elif actual < expected:
-            raise AssertionError("Actual value is less than the expected value.")
+            return False, "Actual value is less than the expected value."
 
-    if check_args(args=args, kwargs=kwargs):
-        return greater_than
+        return True, None
+
+    return greater_than
 
 
-@Matcher
+@Matcher()
 def lt(*args, **kwargs) -> Callable:
     """Assert that the actual value is less than the expected value.
 
@@ -182,7 +254,7 @@ def lt(*args, **kwargs) -> Callable:
         Callable: A matcher that checks if the actual is less than the expected.
     """
 
-    def less_than(actual: Any):
+    def less_than(actual: Any) -> tuple[bool, str]:
         """Assert that the actual value is the same type and less than the expected value.
 
         Args:
@@ -191,15 +263,53 @@ def lt(*args, **kwargs) -> Callable:
         Raises:
             AssertionError: If the actual value is the incorrect type.
             AssertionError: If the actual value is greater than the expected.
+
+        Return:
+            tuple[bool, str]: The success and the associated message
         """
 
-        expected: Any = args[0]
+        expected: Any = get_expected(args, kwargs)
         """Expected value that actual should match"""
 
         if not isinstance(actual, type(expected)):
-            raise AssertionError(f"Expected {type(expected)} but found {type(actual)}")
+            return False, f"Expected {type(expected)} but found {type(actual)}"
         elif actual > expected:
-            raise AssertionError("Actual value is greater than the expected value.")
+            return False, "Actual value is greater than the expected value."
 
-    if check_args(args=args, kwargs=kwargs):
-        return less_than
+        return True, None
+
+    return less_than
+
+
+@Matcher(arg_count=0)
+def empty() -> Callable:
+    """Assert that the actual value is less than the expected value.
+
+    Returns:
+        Callable: A matcher that checks if the actual is less than the expected.
+    """
+
+    def is_empty(actual: Any) -> tuple[bool, str]:
+        """Assert that the actual value is the same type and less than the expected value.
+
+        Args:
+            actual (Any): Any value that is matched against the argument value.
+
+        Raises:
+            AssertionError: If the actual value is the incorrect type.
+            AssertionError: If the actual value is greater than the expected.
+
+        Return:
+            tuple[bool, str]: The success and the associated message
+        """
+
+        if actual is not None:
+            if hasattr(actual, "__len__"):
+                if len(actual) < 1:
+                    return False, "Value is not empty"
+            else:
+                return False, "Value must implement __len__ to check if it is empty"
+
+        return True, None
+
+    return is_empty

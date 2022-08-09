@@ -1,4 +1,6 @@
-[R:64:1:1] tests
+[R:48:1:1] tests
+    [S:1:0:0] General
+        [✓] _12_eq_12
     [S:15:0:0] ExceptionTypes
         [C:3:0:0] BaseType
             [✓] message_default
@@ -39,7 +41,7 @@
             [✓] auto_close
             [✓] manual_close
             [✓] auto_close_between_links
-    [S:30:0:0] test_Asserts
+    [S:13:0:0] test_Asserts
         [C:4:0:0] Assert_Equal
             [✓] assert_equal_pass
             [✓] assert_equal_fail
@@ -52,29 +54,10 @@
             [✓] assert_raise_no_exception
             [✓] assert_raise_fail_any
             [✓] with_raises
-        [C:2:0:0] Assert_Within
-            [✓] assert_within_pass
-            [✓] assert_within_fail
-        [C:4:0:0] Assert_None
-            [✓] assert_none_pass
-            [✓] assert_none_fail
-            [✓] assert_not_none_pass
-            [✓] assert_not_none_fail
-        [C:14:0:0] Assert_That
-            [✓] eq_pass
-            [✓] eq_fail
-            [✓] neq_pass
-            [✓] neq_fail
-            [✓] none_pass
-            [✓] none_fail
-            [✓] not_none_pass
-            [✓] not_none_fail
-            [✓] raises_plass
-            [✓] raises_fail
-            [✓] within_pass
-            [✓] within_fail
-            [✓] has_pass
-            [✓] has_fail
+        [C:3:0:0] Assert_That
+            [✓] eq
+            [✓] gt
+            [✓] lt
     [S:3:1:1] test_Test
         [C:1:1:1] TestTesting
             [✓] test_pass

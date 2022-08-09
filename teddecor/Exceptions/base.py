@@ -38,7 +38,7 @@ class Frame:
         self._module = frame.filename.split(slash())[-1].split(".")[0]
 
     def __str__(self) -> str:
-        return f"<[@F blue ~{self._path}]{TED.encode(self._module)}[~ @F]:[@F yellow]{self._line}[@F]> in {TED.encode(self._func)}"
+        return f"│[@F blue ~{self._path}]{TED.encode(self._module)}[~ @F]:[@F yellow]{self._line}[@F]├─ {TED.encode(self._func)}"
 
 
 class BaseException(Exception):
@@ -95,11 +95,13 @@ class BaseException(Exception):
         if exits:
             from sys import exit
 
+            TED.print("*BaseException:*")
             TED.print("*" + stack)
             TED.print("[@ red]*" + self.message)
             exit(2)
         else:
             output = [
+                TED.parse("*BaseException:*"),
                 TED.parse(stack),
                 TED.parse(self.message),
             ]
@@ -182,13 +184,13 @@ class HintedException(BaseException):
         if exits:
             from sys import exit
 
-            TED.print("*Hinted Error:*")
+            TED.print("*HintedException:*")
             TED.print("*" + stack, "\n")
             TED.print("*[@F red]" + self.message + "*:*")
             TED.print("*" + self.error)
             exit(3)
         else:
-            output = [TED.parse("*Hinted Error:*")]
+            output = [TED.parse("*HintedException:*")]
             output.append(TED.parse("*" + stack))
             output.append(TED.parse("*[@F red]" + self.message + "*:*"))
             output.append(TED.parse("*" + self.error))
@@ -251,14 +253,14 @@ class MissingValueException(BaseException):
         if exits:
             from sys import exit
 
-            TED.print("*Missing Value Error:*")
+            TED.print("*MissingValueException:*")
             TED.print("*" + stack + "\n")
             TED.print("*[@F red]" + self.message + "*:*")
             TED.print("*" + self.error)
 
             exit(4)
         else:
-            output = [TED.parse("*Missing Value Error:*")]
+            output = [TED.parse("*MissingValueException:*")]
             output.append(TED.parse("*" + stack + "\n"))
             output.append(TED.parse("*[@F red]" + self.message + "*:*"))
             output.append(TED.parse("*" + self.error))
@@ -334,14 +336,14 @@ class RangedException(BaseException):
         if exits:
             from sys import exit
 
-            TED.print("*Ranged Error:*")
+            TED.print("*RangedException:*")
             TED.print("*" + stack + "\n")
             TED.print("*[@F red]" + self.message + "*:*")
             TED.print("*" + self.error)
 
-            exit(4)
+            exit(5)
         else:
-            output = [TED.parse("*Ranged Error:*")]
+            output = [TED.parse("*RangedException:*")]
             output.append(TED.parse("*" + stack + "\n"))
             output.append(TED.parse("*[@F red]" + self.message + "*:*"))
             output.append(TED.parse("*" + self.error))
