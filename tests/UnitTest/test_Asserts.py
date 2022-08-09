@@ -115,168 +115,36 @@ class Assert_Raises(Test):
             assert "No exception raised" in str(error)
 
 
-class Assert_Within(Test):
-    def __init__(self):
-        super().__init__()
-        self.content = "Hello World!"
-
-    @test
-    def assert_within_pass(self):
-        Asserts.assertWithin("Hello", self.content)
-
-    @test
-    def assert_within_fail(self):
-        try:
-            Asserts.assertWithin("universe", self.content)
-        except AssertionError as error:
-            assert "'universe' is not within the given object" in str(error)
-
-        try:
-            Asserts.assertWithin("universe", self.content, "Custom Message")
-        except AssertionError as error:
-            assert "Custom Message" in str(error)
-
-
-class Assert_None(Test):
-    @test
-    def assert_none_pass(self):
-        assert Asserts.assertNone(None)
-
-    @test
-    def assert_none_fail(self):
-        try:
-            Asserts.assertNone("dog")
-        except AssertionError as error:
-            assert "<class 'str'> is not NoneType" in str(error)
-
-        try:
-            Asserts.assertNone("universe", "Custom Message")
-        except AssertionError as error:
-            Asserts.assertWithin("Custom Message", str(error))
-
-    @test
-    def assert_not_none_pass(self):
-        assert Asserts.assertNotNone("dog")
-
-    @test
-    def assert_not_none_fail(self):
-        try:
-            Asserts.assertNotNone(None)
-        except AssertionError as error:
-            assert "None is NoneType" in str(error)
-
-        try:
-            Asserts.assertNotNone("universe", "Custom Message")
-        except AssertionError as error:
-            Asserts.assertWithin("Custom Message", str(error))
-
-
 from typing import Callable
 
 
 class Assert_That(Test):
-    def raises_lookup(self):
-        raise LookupError
-
-    def raises_nothing(self):
-        return True
-
     @test
-    def eq_pass(self):
+    def eq(self):
         assert isinstance(eq(12), Callable)
-        assert assertThat(12, eq(12))
-
-    @test
-    def eq_fail(self):
+        assertThat(12, eq(12))
         try:
-            assertThat(12, eq(10))
+            assertThat(12, eq(11))
         except AssertionError as error:
-            Asserts.assertWithin("Values are not equal", str(error))
+            assert "Actual value is not equal to the expected value." in str(error)
 
+    @test
+    def gt(self):
+        assert isinstance(gt(12), Callable)
+        assertThat(12, gt(10))
         try:
-            assertThat(12, eq(10), "Numbers are not equal")
+            assertThat(12, gt(15))
         except AssertionError as error:
-            Asserts.assertWithin("Numbers are not equal", str(error))
+            assert "Actual value is less than the expected value." in str(error)
 
     @test
-    def neq_pass(self):
-        assert isinstance(neq(12), Callable)
-        assert assertThat(12, neq(10))
-
-    @test
-    def neq_fail(self):
+    def lt(self):
+        assert isinstance(lt(12), Callable)
+        assertThat(12, lt(15))
         try:
-            assertThat(12, eq(12), "Numbers are equal")
+            assertThat(12, lt(15))
         except AssertionError as error:
-            Asserts.assertWithin("Numbers are equal", str(error))
-
-    @test
-    def none_pass(self):
-        assert isinstance(none(), Callable)
-        assert assertThat(None, none())
-
-    @test
-    def none_fail(self):
-        try:
-            assertThat(12, none(), "Custom Message")
-        except AssertionError as error:
-            Asserts.assertWithin("Custom Message", str(error))
-
-    @test
-    def not_none_pass(self):
-        assert isinstance(notNone(), Callable)
-        assert assertThat(12, notNone())
-
-    @test
-    def not_none_fail(self):
-        try:
-            assertThat(12, notNone(), "Custom Message")
-        except AssertionError as error:
-            Asserts.assertWithin("Custom Message", str(error))
-
-    @test
-    def raises_plass(self):
-        assert isinstance(raises(), Callable)
-        assert assertThat(self.raises_lookup, raises(LookupError))
-        assert assertThat(self.raises_lookup, raises())
-
-    @test
-    def raises_fail(self):
-        try:
-            assertThat(self.raises_lookup, raises(AssertionError), "Custom Message")
-        except AssertionError as error:
-            Asserts.assertWithin("Custom Message", str(error))
-
-        try:
-            assertThat(self.raises_nothing, raises(), "Custom Message")
-        except AssertionError as error:
-            Asserts.assertWithin("Custom Message", str(error))
-
-    @test
-    def within_pass(self):
-        assert isinstance(within(None), Callable)
-        assert assertThat("dog", within(["dog", "cat"]))
-        assert assertThat("dog", within("Can you play with the dog?"))
-
-    @test
-    def within_fail(self):
-        try:
-            assertThat("dog", within(None), "Custom Message")
-        except AssertionError as error:
-            Asserts.assertWithin("Custom Message", str(error))
-
-    @test
-    def has_pass(self):
-        assert isinstance(has(None), Callable)
-        assert assertThat(["dog", "cat"], has("dog"))
-        assert assertThat("Can you play with the dog?", has("dog"))
-
-    @test
-    def has_fail(self):
-        try:
-            assertThat([], has("dog"), "Custom Message")
-        except AssertionError as error:
-            Asserts.assertWithin("Custom Message", str(error))
+            assert "Actual value is greater than the expected value." in str(error)
 
 
 if __name__ == "__main__":
@@ -285,11 +153,6 @@ if __name__ == "__main__":
         tests=[
             Assert_Equal,
             Assert_Raises,
-            Assert_Within,
-            Assert_None,
             Assert_That,
-            is_true,
         ],
     ).run().save(location="./Outputs", ext=SaveType.TXT)
-
-    run(is_fail)

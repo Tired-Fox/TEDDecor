@@ -5,7 +5,12 @@ from os import get_terminal_size
 from ..TED.markup import TED
 from ..Util import slash
 
-__all__ = ["BaseException", "HintedException", "MissingValueException"]
+__all__ = [
+    "BaseException",
+    "HintedException",
+    "MissingValueException",
+    "RangedException",
+]
 
 
 def get_len(string: str) -> int:
@@ -33,7 +38,7 @@ class Frame:
         self._module = frame.filename.split(slash())[-1].split(".")[0]
 
     def __str__(self) -> str:
-        return f"<[@F blue ~{self._path}]{self._module}[~ @F]:[@F yellow]{self._line}[@F]> in {self._func}"
+        return f"<[@F blue ~{self._path}]{TED.encode(self._module)}[~ @F]:[@F yellow]{self._line}[@F]> in {TED.encode(self._func)}"
 
 
 class BaseException(Exception):
@@ -86,15 +91,16 @@ class BaseException(Exception):
         Returns:
             str: The output that would be to the screen if exits, else None
         """
+        stack = "\n".join("  " + st for st in self.stack)
         if exits:
             from sys import exit
 
-            TED.print("*" + "\n".join("  " + st for st in self.stack))
+            TED.print("*" + stack)
             TED.print("[@ red]*" + self.message)
             exit(2)
         else:
             output = [
-                TED.parse("\n".join("  " + st for st in self.stack)),
+                TED.parse(stack),
                 TED.parse(self.message),
             ]
             return "\n".join(output)
@@ -172,17 +178,18 @@ class HintedException(BaseException):
         Returns:
             str: The output that would be to the screen if exits, else None
         """
+        stack = "\n".join("  " + st for st in self.stack)
         if exits:
             from sys import exit
 
             TED.print("*Hinted Error:*")
-            TED.print("*" + "\n".join("  " + st for st in self.stack), "\n")
+            TED.print("*" + stack, "\n")
             TED.print("*[@F red]" + self.message + "*:*")
             TED.print("*" + self.error)
             exit(3)
         else:
             output = [TED.parse("*Hinted Error:*")]
-            output.append(TED.parse("*" + "\n".join("  " + st for st in self.stack)))
+            output.append(TED.parse("*" + stack))
             output.append(TED.parse("*[@F red]" + self.message + "*:*"))
             output.append(TED.parse("*" + self.error))
             return "\n".join(output)
@@ -240,20 +247,102 @@ class MissingValueException(BaseException):
         Returns:
             str: The output that would be to the screen if exits, else None
         """
+        stack = "\n".join("  " + st for st in self.stack)
         if exits:
             from sys import exit
 
             TED.print("*Missing Value Error:*")
-            TED.print("*" + "\n".join("  " + st for st in self.stack) + "\n")
+            TED.print("*" + stack + "\n")
             TED.print("*[@F red]" + self.message + "*:*")
             TED.print("*" + self.error)
 
             exit(4)
         else:
             output = [TED.parse("*Missing Value Error:*")]
-            output.append(
-                TED.parse("*" + "\n".join("  " + st for st in self.stack) + "\n")
-            )
+            output.append(TED.parse("*" + stack + "\n"))
+            output.append(TED.parse("*[@F red]" + self.message + "*:*"))
+            output.append(TED.parse("*" + self.error))
+            return "\n".join(output)
+
+
+class RangedException(BaseException):
+    """This exception has a hint that applies to a range of a value. In this case this means that the exception points to a part of a string and describes the problem.
+
+    Example:
+        Hint Exception:
+          Are you having a good day
+                                ---
+                                 Day must be `week`
+    """
+
+    def __init__(
+        self,
+        value: str,
+        hint: str,
+        start: int = 0,
+        end: int = -1,
+        message: str = "Error with specific value",
+    ):
+        super().__init__(message)
+        self.slice_stack()
+
+        self._value = value
+        self._hint = hint
+        self._start = start
+        self._end = end
+
+    @cached_property
+    def error(self) -> str:
+        """The value with the injected missing value."""
+        return (
+            f"  {self.value[:self._start]}_[@F red]{self.value[self._start:self._end]}[@F]_{self._value[self._end:]}\n"
+            # + "  "
+            # + " " * (self._end - (self._end - self._start) // 2)
+            # + self._hint
+        )
+
+    @property
+    def value(self) -> str:
+        """The value that is missing something."""
+        return self._value
+
+    @property
+    def hint(self) -> str:
+        """What is missing from the value."""
+        return self._hint
+
+    @property
+    def start(self) -> int:
+        """The index where the hint starts."""
+        return self._start
+
+    @property
+    def end(self) -> int:
+        """The index where the value hint ends."""
+        return self._end
+
+    def throw(self, exits: bool = True) -> str:
+        """Custom throw method that allows for more custom output.
+
+        Args:
+            exits (bool, optional): Whether the throw method should exit like raise would. Defaults to True.
+
+        Returns:
+            str: The output that would be to the screen if exits, else None
+        """
+        stack = "\n".join("  " + st for st in self.stack)
+        if exits:
+            from sys import exit
+
+            TED.print("*Ranged Error:*")
+            TED.print("*" + stack + "\n")
+            TED.print("*[@F red]" + self.message + "*:*")
+            TED.print("*" + self.error)
+
+            exit(4)
+        else:
+            output = [TED.parse("*Ranged Error:*")]
+            output.append(TED.parse("*" + stack + "\n"))
             output.append(TED.parse("*[@F red]" + self.message + "*:*"))
             output.append(TED.parse("*" + self.error))
             return "\n".join(output)
