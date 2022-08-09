@@ -3,7 +3,11 @@ import ast
 import argparse
 import os
 
+from click import argument
+
 from teddecor.UnitTest import RunResults, TestSuite, SaveType
+from teddecor.UnitTest.Objects import TestFilter
+from teddecor.UnitTest.Testing import Test
 from teddecor.Util import slash
 
 
@@ -146,6 +150,12 @@ def get_args() -> dict:
         "--save_path",
         help="Relative path on where to save the results.",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        metavar="[overall,total,passed,failed,skipped]",
+        help="Specify the verbosity type; overall, totals, passed, failed, skipped. You may mix and match but the `overall` option trumps all others. This entry is a comma seperated string",
+    )
 
     args = parser.parse_args()
     variables = {
@@ -154,6 +164,7 @@ def get_args() -> dict:
         "regex": None,
         "save_path": "." + slash(),
         "name": None,
+        "verbose": [TestFilter.OVERALL],
     }
 
     if args.entry is None:
@@ -192,17 +203,24 @@ def get_args() -> dict:
 
         variables["save_path"] = args.save_path
 
+    if args.verbose is not None:
+        variables["verbose"] = [TestFilter.TOTALS]
+        verbose = args.verbose.split(",")
+        for v in verbose:
+            if v.lower() in TestFilter.saslist():
+                val = TestFilter.iaslist()[TestFilter.saslist().index(v.lower())]
+                if val not in variables["verbose"]:
+                    variables["verbose"].append(val)
+
     return variables
 
 
 def main():
-    # TODO: display type
-
     arguments = get_args()
 
     files = get_files()
     run = generate_run(files, arguments)
-    run.write()
+    run.write(filter=arguments["verbose"])
     if arguments["save"] is not None:
         run.save(location=arguments["save_path"], ext=arguments["save"])
 

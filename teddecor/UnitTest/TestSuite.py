@@ -7,6 +7,8 @@ from __future__ import annotations
 from inspect import isclass
 from typing import Callable, Pattern, Union
 
+from teddecor.UnitTest.Objects import TestFilter
+
 from .Results import SuiteResult
 from .Testing import Test, test, run
 
@@ -62,12 +64,14 @@ class TestSuite:
         self,
         display: bool = True,
         regex: Pattern = None,
+        filter: list[TestFilter] = [TestFilter.OVERALL],
     ) -> SuiteResult:
         """Run all the provided test classes and cases.q
 
         Args:
             display (bool, optional): Whether to display anything. Defaults to True
             regex (Pattern, optional): Pattern of which tests should be run
+            filter (list[TestFilter], optional): Specify what to show in the verbose output.
 
         Returns:
             SuiteResult: Results object that can save and print the results
@@ -75,6 +79,9 @@ class TestSuite:
         from re import match
 
         _results = SuiteResult(self.name)
+
+        if TestFilter.TOTALS not in filter:
+            filter.append(TestFilter.TOTALS)
 
         for test in self.tests:
             if isclass(test):
@@ -87,6 +94,6 @@ class TestSuite:
                     _results.append(result)
 
         if display:
-            _results.write()
+            _results.write(filter)
 
         return _results

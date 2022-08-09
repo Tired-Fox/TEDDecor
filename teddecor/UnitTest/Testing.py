@@ -7,7 +7,9 @@ from __future__ import annotations
 
 from typing import Callable, Pattern
 
-from .Results import TestResult, ClassResult, ResultType
+from teddecor.UnitTest.Objects import TestFilter
+
+from .Results import TestResult, ClassResult, ResultTypes
 from ..Util import slash
 from ..TED.markup import TED
 
@@ -18,19 +20,19 @@ def run(test: Callable, display: bool = True) -> TestResult:
     """Runs a single test case, function decorated with `@test` and constructs it's results.
 
     Args:
-        test (Callable): @test function to run
+        test (Callable): @test function to run.
 
     Returns:
-        dict: Formated results from running the test
+        dict: Formated results from running the test.
 
     Raises:
-        TypeError: When the callable test is not decorated with `@test`
+        TypeError: When the callable test is not decorated with `@test`.
     """
 
     if test.__name__ == "test_wrapper":
         _result = TestResult(test())
         if display:
-            _result.write()
+            _result.write(filter=TestFilter.OVERALL)
         return _result
     else:
         raise TypeError("Test function must have @test decorator")
@@ -38,13 +40,13 @@ def run(test: Callable, display: bool = True) -> TestResult:
 
 def wrap(func: Callable, *args, **kwargs) -> Callable:
     """Used to return a lambda that runs the function with the given args.
-    This is so that the function can be run later with provided parameters
+    This is so that the function can be run later with provided parameters.
 
     Args:
-        func (Callable): Function to run
+        func (Callable): Function to run.
 
     Returns:
-        Callable: Lambda of the funciton to be run later
+        Callable: Lambda of the funciton to be run later.
     """
     return lambda: func(*args, **kwargs)
 
@@ -53,10 +55,10 @@ def __getTracback(error: Exception) -> list:
     """Generate a fromatted traceback from an error.
 
     Args:
-        error (Exception): Raised exception to extract the traceback from
+        error (Exception): Raised exception to extract the traceback from.
 
     Returns:
-        list: The formatted traceback
+        list: The formatted traceback.
     """
     import traceback
 
@@ -94,11 +96,11 @@ def test(func):
         try:
             func(*args, **kwargs)
         except AssertionError as error:
-            return (func.__name__, ResultType.FAILED, __getTracback(error))
+            return (func.__name__, ResultTypes.FAILED, __getTracback(error))
         except NotImplementedError:
-            return (func.__name__, ResultType.SKIPPED, "")
+            return (func.__name__, ResultTypes.SKIPPED, "")
 
-        return (func.__name__, ResultType.SUCCESS, "")
+        return (func.__name__, ResultTypes.PASSED, "")
 
     return test_wrapper
 
@@ -107,13 +109,13 @@ class Test:
     """Class used to indentify and run tests. It will also print the results to the screen."""
 
     def getNodeValue(self, node) -> bool:
-        """Gets the decorator value from node
+        """Gets the decorator value from node.
 
         Args:
-            node (Any): Any ast node type
+            node (Any): Any ast node type.
 
         Returns:
-            str: id of ast.Name node
+            str: id of ast.Name node.
         """
         import ast
 
@@ -131,7 +133,7 @@ class Test:
         """Gets all function names in the current class decorated with `@test`self.
 
         Returns:
-            list: Function names decorated with `@test`
+            list: Function names decorated with `@test`.
         """
         import ast
         import inspect
@@ -160,10 +162,10 @@ class Test:
         return result
 
     def executeTests(self, regex: Pattern) -> ClassResult:
-        """Will execute all functions decorated with `@test`"""
+        """Will execute all functions decorated with `@test`."""
 
         fnames: list = self.getTests(regex)
-        """Function names decorated with `@test`"""
+        """Function names decorated with `@test`."""
 
         results = ClassResult(name=self.__class__.__name__)
 
@@ -172,21 +174,29 @@ class Test:
 
         return results
 
-    def run(self, display: bool = True, regex: Pattern = None) -> ClassResult:
+    def run(
+        self,
+        display: bool = True,
+        regex: Pattern = None,
+        filter: TestFilter = [TestFilter.OVERALL],
+    ) -> ClassResult:
 
         """Will find and execute all tests in class. Prints results when done.
 
         Args:
-            display (bool, optional): Whether to display the results
-            regex (Pattern, optional): Pattern of which tests should be run
+            display (bool, optional): Whether to display the results.
+            regex (Pattern, optional): Pattern of which tests should be run.
+            filter (list[TestFilter], optional): Specify what to show in the verbose output.
 
         Returns:
-            ClassResult: Results object that can save and print the results
+            ClassResult: Results object that can save and print the results.
         """
+        if TestFilter.TOTALS not in filter:
+            filter.append(TestFilter.TOTALS)
 
         results = self.executeTests(regex=regex)
 
         if display:
-            results.write()
+            results.write(filter)
 
         return results

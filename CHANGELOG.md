@@ -4,6 +4,11 @@
 + Pretty Exceptions
 + Colored and clickable tracebacks
   * For both exceptions and failed tests
++ Test now have verbosity filtering.
+  * This means by default running tests will show the overall score
+  * Additional filters can be added to add additional information
+    * This information includes, passed, failed, skipped, and only totals.
+    * The filters can be mixed an matched to meet a users needs
 
 
 #### Modified

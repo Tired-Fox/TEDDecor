@@ -16,13 +16,101 @@ __all__ = [
     "ClassResult",
     "SuiteResult",
     "SaveType",
-    "ResultType",
+    "ResultTypes",
     "RunResults",
 ]
 
 
-@dataclass
+class Count:
+    def __init__(self, result: ResultType = None):
+        if result == ResultTypes.PASSED:
+            self._count = [1, 0, 0]
+        elif result == ResultTypes.FAILED:
+            self._count = [0, 1, 0]
+        elif result == ResultTypes.SKIPPED:
+            self._count = [0, 0, 1]
+        else:
+            self._count = [0, 0, 0]
+
+    @property
+    def total(self) -> list[int, int, int]:
+        return self._count
+
+    def __add__(self, obj: Count) -> Count:
+        if isinstance(obj, Count):
+            for i in range(len(self._count)):
+                self._count[i] += obj.total[i]
+            return self
+        else:
+            raise TypeError(f"Invalid type {type(obj)}")
+
+    def __iadd__(self, obj: Count) -> Count:
+        if isinstance(obj, Count):
+            for i in range(len(self._count)):
+                self._count[i] += obj.total[i]
+            return self
+        else:
+            raise TypeError(f"Invalid type {type(obj)}")
+
+
 class ResultType:
+    def __init__(
+        self,
+        name: str,
+        symbol: str,
+        color: str,
+        filter: list[TestFilter] = [TestFilter.OVERALL],
+    ):
+        self._color = color
+        self._symbol = symbol
+        self._name = name
+        self._filter = filter
+
+    @property
+    def color(self) -> str:
+        """Color of the result."""
+        return self._color
+
+    @property
+    def symbol(self) -> str:
+        """Results associated symbol."""
+        return self._symbol
+
+    @property
+    def name(self) -> str:
+        """Results name."""
+        return self._name
+
+    @property
+    def filter(self) -> str:
+        """Results filter."""
+        return self._filter
+
+    def __eq__(self, obj: ResultType) -> bool:
+        if not isinstance(obj, type(self)):
+            return False
+
+        return (
+            self.color == obj.color
+            and self.symbol == obj.symbol
+            and self.color == obj.color
+            and self.name == obj.name
+            and self.filter == obj.filter
+        )
+
+    def __str__(self) -> str:
+        return self.color + self.symbol
+
+    def __repr__(self) -> str:
+        return f"""{self.name} (
+  symbol: {self.symbol},
+  color: {self.color},
+  filter: {self.filter}
+)"""
+
+
+@dataclass
+class ResultTypes:
     """Enum/Dataclass that describes the test run result.
 
     Attributes:
@@ -31,9 +119,9 @@ class ResultType:
         SKIPPED (tuple[str, str]): Message and color for a skipped test run
     """
 
-    SUCCESS: tuple[str, str, int] = ("Passed", "[@F green]", "✓")
-    FAILED: tuple[str, str, int] = ("Failed", "[@F red]", "x")
-    SKIPPED: tuple[str, str, int] = ("Skipped", "[@F yellow]", "↻")
+    PASSED: ResultType = ResultType("Passed", "✓", "[@F green]", TestFilter.PASSED)
+    FAILED: ResultType = ResultType("Failed", "x", "[@F red]", TestFilter.FAILED)
+    SKIPPED: ResultType = ResultType("Skipped", "↻", "[@F yellow]", TestFilter.SKIPPED)
 
 
 @dataclass
@@ -56,31 +144,31 @@ class Result:
     """Base class for result types"""
 
     def __init__(self):
-        self._counts = [0, 0, 0]
+        self._counts = Count()
 
     @property
-    def counts(self) -> tuple[int, int, int]:
+    def count(self) -> Count:
         """Get counts for passed, failed, skipped.
 
         Returns:
             tuple: The values for passed, failed, skipped respectively
         """
-        return tuple(self._counts)
+        return self._counts
 
     @property
     def name(self) -> str:
         return self._name
 
-    def write(self, indent: int = 0):
+    def write(self, filter: TestFilter, indent: int = 0):
         """Output the result(s) to the screen
 
         Args:
             indent (int, optional): The amount to indent the values. Defaults to 0.
         """
-        for line in self.pretty(indent):
+        for line in self.pretty(filter, indent):
             TED.print(line)
 
-    def pretty(self, indent: int) -> list:
+    def pretty(self, filter: TestFilter, indent: int) -> list:
         """Format the result(s) into a formatted list
 
         Returns:
@@ -133,7 +221,7 @@ class Result:
 
 
 class TestResult(Result):
-    def __init__(self, result: tuple[str, ResultType, Union[str, list]] = None):
+    def __init__(self, result: tuple[str, ResultTypes, Union[str, list]] = None):
         super().__init__()
 
         if result is not None:
@@ -142,33 +230,34 @@ class TestResult(Result):
             self._info = result[2]
         else:
             self._name = "Unknown"
-            self._result = ResultType.SKIPPED
+            self._result = ResultTypes.SKIPPED
             self._info = "Unkown test"
 
-        if result[1] == ResultType.SUCCESS:
-            self._counts[0] += 1
-        elif result[1] == ResultType.FAILED:
-            self._counts[1] += 1
-        elif result[1] == ResultType.SKIPPED:
-            self._counts[2] += 1
+        self._counts = Count(self._result)
 
     @property
     def result(self) -> str:
-        return self._result[0]
+        return self._result
+
+    @property
+    def filter(self) -> str:
+        return self._result.filter
 
     @property
     def color(self) -> str:
-        return self._result[1]
+        return self._result.color
 
     @property
-    def icon(self) -> str:
-        return self._result[2]
+    def symbol(self) -> str:
+        return self._result.symbol
 
     @property
     def info(self) -> Union[str, list]:
         return self._info
 
-    def pretty(self, indent: int = 0) -> list:
+    def pretty(
+        self, filter: list[TestFilter] = [TestFilter.OVERALL], indent: int = 0
+    ) -> list:
         """Used to convert results into a list of strings. Allows for additional indentation to be added.
 
         Args:
@@ -178,16 +267,17 @@ class TestResult(Result):
             list: The formatted results as a list of string with indents
         """
         out = []
-        out.append(
-            "".ljust(indent, " ")
-            + f"\[{self.color}{self.icon}[@F]] {TED.encode(self.name)}"
-        )
-        if isinstance(self.info, list):
-            for trace in self.info:
-                out.append("".ljust(indent + 4, " ") + trace)
-        else:
-            if self.info != "":
-                out.append("".ljust(indent + 4, " ") + self.info)
+        if TestFilter.OVERALL in filter or self.result.filter in filter:
+            out.append(
+                "".ljust(indent, " ")
+                + f"\[{self.color}{self.symbol}[@F]] {TED.encode(self.name)}"
+            )
+            if isinstance(self.info, list):
+                for trace in self.info:
+                    out.append("".ljust(indent + 4, " ") + trace)
+            else:
+                if self.info != "":
+                    out.append("".ljust(indent + 4, " ") + self.info)
 
         return out
 
@@ -201,7 +291,7 @@ class TestResult(Result):
             list: The results as lines
         """
         out = []
-        out.append(" " * indent + f"[{self.icon}] {self.name}")
+        out.append(" " * indent + f"[{self.symbol}] {self.name}")
         if isinstance(self.info, list):
             for trace in self.info:
                 out.append(" " * (indent + 4) + TED.strip(trace))
@@ -222,7 +312,7 @@ class TestResult(Result):
             if isinstance(self.info, list)
             else [TED.strip(self.info)]
         )
-        return {self.name: {"result": self._result[0], "info": info, "type": "Case"}}
+        return {self.name: {"result": self._result.name, "info": info, "type": "Case"}}
 
     def csv(self) -> str:
         """The results formatted as CSV
@@ -307,14 +397,10 @@ class ClassResult(Result):
         Args:
             result (Union[TestResult, ClassResult]): The result to add to the colleciton of results
         """
-        passed, failed, skipped = result.counts
-        self._counts[0] += passed
-        self._counts[1] += failed
-        self._counts[2] += skipped
-
+        self._counts += result.count
         self._results.append(result)
 
-    def pretty(self, indent: int = 0) -> list:
+    def pretty(self, filter: list[TestFilter], indent: int = 0) -> list:
         """Used to convert results into a list of strings. Allows for additional indentation to be added.
 
         Args:
@@ -326,19 +412,22 @@ class ClassResult(Result):
 
         out = []
 
-        passed, failed, skipped = self.counts
-        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
-:{ResultType.FAILED[1]}{failed}[@F]]"
-        out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
+        if TestFilter.OVERALL in filter or TestFilter.TOTALS in filter:
+            passed, failed, skipped = self.count.total
+            totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
+:{ResultTypes.FAILED.color}{failed}[@F]]"
+            out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
 
-        if len(self.results):
-            for result in self.results:
-                out.extend(result.pretty(indent + 4))
-        else:
-            out.append(
-                " " * (indent + 4)
-                + f"[@F yellow]No Tests Found for {TED.encode(self.name)}"
-            )
+        if TestFilter.OVERALL not in filter:
+            if len(self.results) > 0:
+                for result in self.results:
+                    if result.filter in filter:
+                        out.extend(result.pretty(indent=indent + 4))
+            else:
+                out.append(
+                    " " * (indent + 4)
+                    + f"[@F yellow]No Tests Found for {TED.encode(self.name)}"
+                )
 
         return out
 
@@ -353,7 +442,7 @@ class ClassResult(Result):
         """
         out = []
 
-        passed, failed, skipped = self.counts
+        passed, failed, skipped = self.count.total
         out.append(" " * indent + f"[C:{passed}:{skipped}:{failed}] {self.name}")
 
         if len(self.results):
@@ -459,14 +548,10 @@ class SuiteResult(Result):
         Args:
             result (Union[TestResult, ClassResult]): The result to add to the colleciton of results
         """
-        passed, failed, skipped = result.counts
-        self._counts[0] += passed
-        self._counts[1] += failed
-        self._counts[2] += skipped
-
+        self._counts += result.count
         self._results.append(result)
 
-    def pretty(self, indent: int = 0) -> list:
+    def pretty(self, filter: list[TestFilter], indent: int = 0) -> list:
         """Used to convert results into a list of strings. Allows for additional indentation to be added.
 
         Args:
@@ -478,19 +563,21 @@ class SuiteResult(Result):
 
         out = []
 
-        passed, failed, skipped = self.counts
-        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
-:{ResultType.FAILED[1]}{failed}[@F]]"
-        out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
+        if TestFilter.TOTALS in filter or TestFilter.OVERALL in filter:
+            passed, failed, skipped = self.count.total
+            totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
+:{ResultTypes.FAILED.color}{failed}[@F]]"
+            out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
 
-        if len(self.results):
-            for result in self.results:
-                out.extend(result.pretty(indent + 4))
-        else:
-            out.append(
-                " " * (indent + 4)
-                + f"[@Fyellow]No tests found for {TED.encode(self.name)}"
-            )
+        if TestFilter.OVERALL not in filter:
+            if len(self.results):
+                for result in self.results:
+                    out.extend(result.pretty(filter=filter, indent=indent + 4))
+            else:
+                out.append(
+                    " " * (indent + 4)
+                    + f"[@Fyellow]No tests found for {TED.encode(self.name)}"
+                )
 
         return out
 
@@ -505,7 +592,7 @@ class SuiteResult(Result):
         """
         out = []
 
-        passed, failed, skipped = self.counts
+        passed, failed, skipped = self.count.total
         out.append(" " * indent + f"[S:{passed}:{skipped}:{failed}] {self.name}")
 
         if len(self.results):
@@ -599,7 +686,7 @@ class SuiteResult(Result):
             return False
 
     def __str__(self):
-        return "\n".join(self.pretty())
+        return "\n".join(self.pretty(filter=[TestFilter.OVERALL]))
 
     def __repr__(self):
         return "\n".join(self.str())
@@ -622,14 +709,11 @@ class RunResults(Result):
         Args:
             result (Union[TestResult, ClassResult]): The result to add to the colleciton of results
         """
-        passed, failed, skipped = result.counts
-        self._counts[0] += passed
-        self._counts[1] += failed
-        self._counts[2] += skipped
+        self._counts += result.count
 
         self._results.append(result)
 
-    def pretty(self, indent: int = 0) -> list:
+    def pretty(self, filter: list[TestFilter], indent: int = 0) -> list:
         """Used to convert results into a list of strings. Allows for additional indentation to be added.
 
         Args:
@@ -641,16 +725,20 @@ class RunResults(Result):
 
         out = []
 
-        passed, failed, skipped = self.counts
-        totals = f"\[{ResultType.SUCCESS[1]}{passed}[@F]:{ResultType.SKIPPED[1]}{skipped}[@F]\
-:{ResultType.FAILED[1]}{failed}[@F]]"
-        out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
+        if TestFilter.OVERALL in filter or TestFilter.TOTALS in filter:
+            passed, failed, skipped = self.count.total
+            totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
+:{ResultTypes.FAILED.color}{failed}[@F]]"
+            out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
 
-        if len(self.results):
-            for result in self.results:
-                out.extend(result.pretty(indent + 4))
-        else:
-            out.append(" " * (indent + 4) + f"[@Fyellow]No tests found for current run")
+        if TestFilter.OVERALL not in filter:
+            if len(self.results):
+                for result in self.results:
+                    out.extend(result.pretty(filter=filter, indent=indent + 4))
+            else:
+                out.append(
+                    " " * (indent + 4) + f"[@Fyellow]No tests found for current run"
+                )
 
         return out
 
@@ -665,7 +753,7 @@ class RunResults(Result):
         """
         out = []
 
-        passed, failed, skipped = self.counts
+        passed, failed, skipped = self.count.total
         out.append(" " * indent + f"[R:{passed}:{skipped}:{failed}] {self.name}")
 
         if len(self.results):
