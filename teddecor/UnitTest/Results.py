@@ -217,7 +217,12 @@ class TestResult(Result):
         Returns:
             dict: Dictionary format of the test result
         """
-        return {self.name: {"result": self._result[0], "info": self.info}}
+        info = (
+            [TED.strip(elem) for elem in self.info]
+            if isinstance(self.info, list)
+            else [TED.strip(self.info)]
+        )
+        return {self.name: {"result": self._result[0], "info": info, "type": "Case"}}
 
     def csv(self) -> str:
         """The results formatted as CSV
@@ -225,7 +230,11 @@ class TestResult(Result):
         Returns:
             str: CSV format of the result
         """
-        info = "\n".join(self.info) if isinstance(self.info, list) else self.info
+        info = (
+            "\n".join(TED.strip(elem) for elem in self.info)
+            if isinstance(self.info, list)
+            else TED.strip(self.info)
+        )
         return f'{self.name},{self.result},"{info}"'
 
     def save(
@@ -362,10 +371,10 @@ class ClassResult(Result):
             dict: Dictionary format of the test result
         """
 
-        out = {self.name: {}}
+        out = {self.name: {"type": "Class", "results": []}}
 
         for result in self.results:
-            out[self.name].update(result.dict())
+            out[self.name]["results"].append(result.dict())
 
         return out
 
@@ -514,10 +523,10 @@ class SuiteResult(Result):
             dict: Dictionary format of the test result
         """
 
-        out = {self.name: {}}
+        out = {self.name: {"type": "Suite", "results": []}}
 
         for result in self.results:
-            out[self.name].update(result.dict())
+            out[self.name]["results"].append(result.dict())
 
         return out
 
@@ -674,10 +683,10 @@ class RunResults(Result):
             dict: Dictionary format of the test result
         """
 
-        out = {self.name: {}}
+        out = {self.name: {"type": "Run", "results": []}}
 
         for result in self.results:
-            out[self.name].update(result.dict())
+            out[self.name]["results"].append(result.dict())
 
         return out
 
