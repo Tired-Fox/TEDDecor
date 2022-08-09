@@ -129,6 +129,12 @@ This library also includes a CLI tool to run your tests, `TEDTest`. By default, 
   To see more testing features like, mocking, setup, result save file types, etc... see the <a href="https://tired-fox.github.io/TEDDecor/teddecor.html" title="Docs" target="_blank">documentation</a>.
 <p>
 
+**Example from testing the module itself**
+<p align="center">
+  <img src="images/TED_example_7.png" alt="Example Test Results">
+</p>
+
+> NOTE: The dotted underline shows that the error traceback has links to those files.
 ___
 
 ## TED

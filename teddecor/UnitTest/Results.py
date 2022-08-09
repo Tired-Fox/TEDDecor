@@ -9,7 +9,7 @@ from typing import Union
 
 from ..Util import slash
 from ..TED.markup import TED
-
+from .Objects import TestFilter
 
 __all__ = [
     "TestResult",
@@ -204,7 +204,7 @@ class TestResult(Result):
         out.append(" " * indent + f"[{self.icon}] {self.name}")
         if isinstance(self.info, list):
             for trace in self.info:
-                out.append(" " * (indent + 4) + trace)
+                out.append(" " * (indent + 4) + TED.strip(trace))
         else:
             if self.info != "":
                 out.append(" " * (indent + 4) + self.info)

@@ -104,3 +104,4 @@ from .Asserts import *
 from .Testing import *
 from .TestSuite import *
 from .Results import *
+from .Objects import *

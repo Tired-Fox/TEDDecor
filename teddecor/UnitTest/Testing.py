@@ -6,9 +6,10 @@ In a sense, this module is the brains of teddecor's unit testing.
 from __future__ import annotations
 
 from typing import Callable, Pattern
- 
+
 from .Results import TestResult, ClassResult, ResultType
-from ..Util import *
+from ..Util import slash
+from ..TED.markup import TED
 
 __all__ = ["test", "Test", "run", "TestResult", "wrap"]
 
@@ -63,7 +64,7 @@ def __getTracback(error: Exception) -> list:
     for frame in traceback.extract_tb(error.__traceback__):
         if "test_wrapper" not in frame.name:
             stack.append(
-                f"[{frame.filename.split(slash())[-1]}:{frame.lineno}] {frame.name}"
+                f"\[[@F magenta ~{frame.filename}]{TED.encode(frame.filename.split(slash())[-1])}[~ @F]:[@F yellow]{frame.lineno}[@F]] {TED.encode(frame.name)}"
             )
 
     if str(error) == "":
@@ -74,8 +75,7 @@ def __getTracback(error: Exception) -> list:
     else:
         message = str(error)
 
-    stack.append(f"[Error Message] {message}")
-
+    stack.append(f"\[[@F red]Error Message[@F]] {message}")
     return stack
 
 

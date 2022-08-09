@@ -12,8 +12,7 @@ from .Testing import Test, test, run
 
 __all__ = ["TestSuite"]
 
-# TODO: Change manual formatting to TED formatter
-# PERF: Add Graph SVG output
+
 class TestSuite:
     """Run the given test classes or filter with regex."""
 
