@@ -273,5 +273,23 @@ class TEDParser:
             text = f"\{char}".join(text.split(char))
         return text
 
+    @staticmethod
+    def strip(text: str) -> str:
+        """Removes TED specific markup.
+
+        Args:
+            text (str): String to strip markup from.
+
+        Returns:
+            str: Version of text free from markup.S
+        """
+        from re import sub
+
+        return sub(
+            r"\x1b\[(\d{0,2};?)*m|(?<!\\)\*|(?<!\\)_|(?<!\\)\[[^\[\]]+\]|\\",
+            "",
+            text,
+        )
+
 
 TED = TEDParser()
