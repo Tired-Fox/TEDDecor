@@ -4,13 +4,19 @@ A collection of tests that are to be run.
 Can be either test classes or individual test cases.
 """
 from __future__ import annotations
+
 from inspect import isclass
 from typing import Callable, Pattern, Union
 
-from teddecor.UnitTest.Objects import TestFilter
+from ..Diagram.objects import Config, Entries, Entry
+from ..Diagram.graph import InlineGraph
 
-from .Results import SuiteResult
-from .Testing import Test, test, run
+from .Objects import TestFilter
+
+from .Results import ResultTypes, SuiteResult
+from .Testing import Test, test, run, graph
+
+from shutil import get_terminal_size
 
 __all__ = ["TestSuite"]
 
@@ -64,7 +70,7 @@ class TestSuite:
         self,
         display: bool = True,
         regex: Pattern = None,
-        filter: list[TestFilter] = [TestFilter.OVERALL],
+        filter: list[TestFilter] = [TestFilter.NONE],
     ) -> SuiteResult:
         """Run all the provided test classes and cases.q
 
@@ -94,6 +100,9 @@ class TestSuite:
                     _results.append(result)
 
         if display:
-            _results.write(filter)
+            graph(_results)
+            if TestFilter.NONE not in filter:
+                print("".ljust(get_terminal_size()[0], "─"))
+                _results.write(filter)
 
         return _results

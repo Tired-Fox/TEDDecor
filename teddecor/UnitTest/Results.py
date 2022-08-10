@@ -256,7 +256,7 @@ class TestResult(Result):
         return self._info
 
     def pretty(
-        self, filter: list[TestFilter] = [TestFilter.OVERALL], indent: int = 0
+        self, filter: list[TestFilter] = [TestFilter.NONE], indent: int = 0
     ) -> list:
         """Used to convert results into a list of strings. Allows for additional indentation to be added.
 
@@ -267,17 +267,18 @@ class TestResult(Result):
             list: The formatted results as a list of string with indents
         """
         out = []
-        if TestFilter.OVERALL in filter or self.result.filter in filter:
-            out.append(
-                "".ljust(indent, " ")
-                + f"\[{self.color}{self.symbol}[@F]] {TED.encode(self.name)}"
-            )
-            if isinstance(self.info, list):
-                for trace in self.info:
-                    out.append("".ljust(indent + 4, " ") + trace)
-            else:
-                if self.info != "":
-                    out.append("".ljust(indent + 4, " ") + self.info)
+        if TestFilter.NONE not in filter:
+            if TestFilter.OVERALL in filter or self.result.filter in filter:
+                out.append(
+                    "".ljust(indent, " ")
+                    + f"\[{self.color}{self.symbol}[@F]] {TED.encode(self.name)}"
+                )
+                if isinstance(self.info, list):
+                    for trace in self.info:
+                        out.append("".ljust(indent + 4, " ") + trace)
+                else:
+                    if self.info != "":
+                        out.append("".ljust(indent + 4, " ") + self.info)
 
         return out
 
@@ -412,22 +413,23 @@ class ClassResult(Result):
 
         out = []
 
-        if TestFilter.OVERALL in filter or TestFilter.TOTALS in filter:
-            passed, failed, skipped = self.count.total
-            totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
+        if TestFilter.NONE not in filter:
+            if TestFilter.OVERALL in filter or TestFilter.TOTALS in filter:
+                passed, failed, skipped = self.count.total
+                totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
 :{ResultTypes.FAILED.color}{failed}[@F]]"
-            out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
+                out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
 
-        if TestFilter.OVERALL not in filter:
-            if len(self.results) > 0:
-                for result in self.results:
-                    if result.filter in filter:
-                        out.extend(result.pretty(indent=indent + 4))
-            else:
-                out.append(
-                    " " * (indent + 4)
-                    + f"[@F yellow]No Tests Found for {TED.encode(self.name)}"
-                )
+            if TestFilter.OVERALL not in filter:
+                if len(self.results) > 0:
+                    for result in self.results:
+                        if result.filter in filter:
+                            out.extend(result.pretty(indent=indent + 4))
+                else:
+                    out.append(
+                        " " * (indent + 4)
+                        + f"[@F yellow]No Tests Found for {TED.encode(self.name)}"
+                    )
 
         return out
 
@@ -563,21 +565,22 @@ class SuiteResult(Result):
 
         out = []
 
-        if TestFilter.TOTALS in filter or TestFilter.OVERALL in filter:
-            passed, failed, skipped = self.count.total
-            totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
+        if TestFilter.NONE not in filter:
+            if TestFilter.TOTALS in filter or TestFilter.OVERALL in filter:
+                passed, failed, skipped = self.count.total
+                totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
 :{ResultTypes.FAILED.color}{failed}[@F]]"
-            out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
+                out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
 
-        if TestFilter.OVERALL not in filter:
-            if len(self.results):
-                for result in self.results:
-                    out.extend(result.pretty(filter=filter, indent=indent + 4))
-            else:
-                out.append(
-                    " " * (indent + 4)
-                    + f"[@Fyellow]No tests found for {TED.encode(self.name)}"
-                )
+            if TestFilter.OVERALL not in filter:
+                if len(self.results):
+                    for result in self.results:
+                        out.extend(result.pretty(filter=filter, indent=indent + 4))
+                else:
+                    out.append(
+                        " " * (indent + 4)
+                        + f"[@Fyellow]No tests found for {TED.encode(self.name)}"
+                    )
 
         return out
 
@@ -725,20 +728,21 @@ class RunResults(Result):
 
         out = []
 
-        if TestFilter.OVERALL in filter or TestFilter.TOTALS in filter:
-            passed, failed, skipped = self.count.total
-            totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
+        if TestFilter.NONE not in filter:
+            if TestFilter.OVERALL in filter or TestFilter.TOTALS in filter:
+                passed, failed, skipped = self.count.total
+                totals = f"\[{ResultTypes.PASSED.color}{passed}[@F]:{ResultTypes.SKIPPED.color}{skipped}[@F]\
 :{ResultTypes.FAILED.color}{failed}[@F]]"
-            out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
+                out.append(" " * indent + f"*{totals} {TED.encode(self.name)}")
 
-        if TestFilter.OVERALL not in filter:
-            if len(self.results):
-                for result in self.results:
-                    out.extend(result.pretty(filter=filter, indent=indent + 4))
-            else:
-                out.append(
-                    " " * (indent + 4) + f"[@Fyellow]No tests found for current run"
-                )
+            if TestFilter.OVERALL not in filter:
+                if len(self.results):
+                    for result in self.results:
+                        out.extend(result.pretty(filter=filter, indent=indent + 4))
+                else:
+                    out.append(
+                        " " * (indent + 4) + f"[@Fyellow]No tests found for current run"
+                    )
 
         return out
 
@@ -843,7 +847,7 @@ class RunResults(Result):
             return False
 
     def __str__(self):
-        return "\n".join(self.pretty())
+        return "\n".join(self.pretty([TestFilter.OVERALL]))
 
     def __repr__(self):
         return "\n".join(self.str())

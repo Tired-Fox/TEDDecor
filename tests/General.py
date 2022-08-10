@@ -8,5 +8,6 @@ class Testing(Test):
 
 
 if __name__ == "__main__":
-    TestSuite("Suite Filtering", tests=[Testing]).run(filter=[TestFilter.TOTALS])
-    # Testing().run(filter=[TestFilter.TOTALS, TestFilter.SKIPPED])
+    TestSuite("Suite Filtering", tests=[Testing]).run()
+    Testing().run()
+    run(Testing()._12_eq_12)

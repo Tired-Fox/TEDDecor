@@ -2,12 +2,10 @@ from __future__ import annotations
 import ast
 import argparse
 import os
+from shutil import get_terminal_size
 
-from click import argument
+from teddecor.UnitTest import RunResults, TestSuite, SaveType, graph, TestFilter
 
-from teddecor.UnitTest import RunResults, TestSuite, SaveType
-from teddecor.UnitTest.Objects import TestFilter
-from teddecor.UnitTest.Testing import Test
 from teddecor.Util import slash
 
 
@@ -60,7 +58,7 @@ def get_files() -> list[str]:
     return [y for x in os.walk(f".{slash()}") for y in glob(os.path.join(x[0], "*.py"))]
 
 
-def generate_run(files: list[str], arguments: str) -> TestSuite:
+def generate_run(files: list[str], arguments: str) -> RunResults:
     """Generates a TestSuite with the tests pulled from the found modules.
 
     Args:
@@ -68,7 +66,7 @@ def generate_run(files: list[str], arguments: str) -> TestSuite:
         name (str): The name of the test suite.
 
     Returns:
-        TestSuite: The TestSuite with all tests added to it.
+        RunResults: The RunResults with all tests results added to it.
     """
     from sys import path
 
@@ -164,7 +162,7 @@ def get_args() -> dict:
         "regex": None,
         "save_path": "." + slash(),
         "name": None,
-        "verbose": [TestFilter.OVERALL],
+        "verbose": [TestFilter.NONE],
     }
 
     if args.entry is None:
@@ -220,7 +218,11 @@ def main():
 
     files = get_files()
     run = generate_run(files, arguments)
-    run.write(filter=arguments["verbose"])
+    graph(run)
+
+    if TestFilter.NONE not in arguments["verbose"]:
+        print("".ljust(get_terminal_size()[0], "─"))
+        run.write(filter=arguments["verbose"])
     if arguments["save"] is not None:
         run.save(location=arguments["save_path"], ext=arguments["save"])
 

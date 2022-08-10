@@ -4,19 +4,49 @@ This module contains the base class and decorator for running tests.
 In a sense, this module is the brains of teddecor's unit testing.
 """
 from __future__ import annotations
-
 from typing import Callable, Pattern
 
-from teddecor.UnitTest.Objects import TestFilter
+from ..Diagram.graph import InlineGraph
+from ..Diagram.objects import Config, Entry, Entries
 
-from .Results import TestResult, ClassResult, ResultTypes
+from .Objects import TestFilter
+from .Results import Result, TestResult, ClassResult, ResultTypes
+
 from ..Util import slash
+
 from ..TED.markup import TED
 
-__all__ = ["test", "Test", "run", "TestResult", "wrap"]
+from shutil import get_terminal_size
+
+__all__ = ["test", "Test", "run", "TestResult", "wrap", "graph"]
 
 
-def run(test: Callable, display: bool = True) -> TestResult:
+def graph(result: Result) -> None:
+    entries = Entries(
+        [
+            Entry(
+                ResultTypes.PASSED.name,
+                result.count.total[0],
+                ResultTypes.PASSED.color,
+            ),
+            Entry(
+                ResultTypes.FAILED.name,
+                result.count.total[1],
+                ResultTypes.FAILED.color,
+            ),
+            Entry(
+                ResultTypes.SKIPPED.name,
+                result.count.total[2],
+                ResultTypes.SKIPPED.color,
+            ),
+        ]
+    )
+    print(InlineGraph(entries, Config(name=result.name)))
+
+
+def run(
+    test: Callable, display: bool = True, filter: list[TestFilter] = [TestFilter.NONE]
+) -> TestResult:
     """Runs a single test case, function decorated with `@test` and constructs it's results.
 
     Args:
@@ -32,7 +62,10 @@ def run(test: Callable, display: bool = True) -> TestResult:
     if test.__name__ == "test_wrapper":
         _result = TestResult(test())
         if display:
-            _result.write(filter=TestFilter.OVERALL)
+            graph(_result)
+            if TestFilter.NONE not in filter:
+                print("".ljust(get_terminal_size()[0], "─"))
+                _result.write(filter=filter)
         return _result
     else:
         raise TypeError("Test function must have @test decorator")
@@ -178,7 +211,7 @@ class Test:
         self,
         display: bool = True,
         regex: Pattern = None,
-        filter: TestFilter = [TestFilter.OVERALL],
+        filter: TestFilter = [TestFilter.NONE],
     ) -> ClassResult:
 
         """Will find and execute all tests in class. Prints results when done.
@@ -197,6 +230,9 @@ class Test:
         results = self.executeTests(regex=regex)
 
         if display:
-            results.write(filter)
+            graph(results)
+            if TestFilter.NONE not in filter:
+                print("".ljust(get_terminal_size()[0], "─"))
+                results.write(filter)
 
         return results
