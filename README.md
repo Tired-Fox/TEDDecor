@@ -160,7 +160,8 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
         * It can be a XTerm code 0-256. `[@F 9]`.
         * Lastely, it can be an rgb color where the 3 numbers can be seperated by a `,` or a `;`. `[@F 114;12,212]`.
     * Colors can be reset with `[@F]` or `[@B]` to reset foreground or background respectively or `[@]` can be use to reset both.
-    * Foreground and background can be specified in the same macro `[@F 1 @B 2], but they can not be reset in the same macro `[@F @B]`, use `[@]` instead.
+    * Foreground and background can be specified in the same macro `[@F 1 @B 2]`, but they can not be reset in the same macro `[@F @B]`, 
+    * When wanting to change foreground and background to the same value or reset them at the same time, use the `[@]` shorthand.
     * While the macro will ignore white space and you can do something like `[@F#005f00@B7]` it is preferred to use whitespace for readability `[@F #005f00 @B 7]`.
   
 <p align="center">
@@ -213,5 +214,5 @@ To reset all attributes, color and formatting, use the empty brackets `[]`.
 </p>
 
 <p align="center" style="bold">
-  See <a href="./examples/TED/basics.py" title="Docs" target="_blank">examples/TED/basics.py</a> to see how TED could be used along with seeing theoutputs.
+  See <a href="./examples/TED/basics.py" title="Docs" target="_blank">examples/TED/basics.py</a> to see how TED could be used along with seeing the outputs.
 <p>
