@@ -39,7 +39,7 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
     * While the macro will ignore white space and you can do something like `[@F#005f00@B7]` it is preferred to use whitespace for readability `[@F #005f00 @B 7]`.
   
 <p align="center">
-  <img src="https://github.com/Tired-Fox/TEDDecor/tree/main/images/TED_example_0.png" alt="Example Test Results">
+  <img src="https://raw.githubusercontent.com/Tired-Fox/TEDDecor/main/images/TED_example_0.png" alt="Example Test Results">
 </p>
 
 
@@ -50,10 +50,10 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
             * `[~https://example.com]Example[~] Not part of the link`
             * `[~https://example.com]Link1 [~https://example.com]Link2`
 <p align="center">
-  <img src="https://github.com/Tired-Fox/TEDDecor/tree/main/images/TED_example_1.png" alt="Example Test Results">
+  <img src="https://raw.githubusercontent.com/Tired-Fox/TEDDecor/main/images/TED_example_1.png" alt="Example Test Results">
 </p>
 <p align="center">
-  <img src="https://github.com/Tired-Fox/TEDDecor/tree/main/images/TED_example_2.png" alt="Example Test Results">
+  <img src="https://raw.githubusercontent.com/Tired-Fox/TEDDecor/main/images/TED_example_2.png" alt="Example Test Results">
 </p>
 
 
@@ -75,18 +75,18 @@ create a hyperlink, and call a builtin function. All macros will ignore extra wh
         * `[^rainbow]Rainbow Text` will return the string with a rainbow foreground color.
 
 <p align="center">
-  <img src="https://github.com/Tired-Fox/TEDDecor/tree/main/images/TED_example_3.png" alt="Example Test Results">
+  <img src="https://raw.githubusercontent.com/Tired-Fox/TEDDecor/main/images/TED_example_3.png" alt="Example Test Results">
 </p>
 <p align="center">
-  <img src="https://github.com/Tired-Fox/TEDDecor/tree/main/images/TED_example_4.png" alt="Example Test Results">
+  <img src="https://raw.githubusercontent.com/Tired-Fox/TEDDecor/main/images/TED_example_4.png" alt="Example Test Results">
 </p>
 TED also follows some inspiration from markdown where `*` means toggle bold and `_` means to toggle underline.
 To reset all attributes, color and formatting, use the empty brackets `[]`.
 
 <p align="center">
-  <img src="https://github.com/Tired-Fox/TEDDecor/tree/main/images/TED_example_6.png" alt="Example Test Results">
+  <img src="https://raw.githubusercontent.com/Tired-Fox/TEDDecor/main/images/TED_example_6.png" alt="Example Test Results">
 </p>
 
 <p align="center" style="bold">
-  See <a href="https://github.com/Tired-Fox/TEDDecor/tree/main/examples/TED/basics.py" title="Docs" target="_blank">examples/TED/basics.py</a> to see how TED could be used along with seeing the outputs.
+  See <a href="https://raw.githubusercontent.com/Tired-Fox/TEDDecor/main/images/TED/basics.py" title="Docs" target="_blank">examples/TED/basics.py</a> to see how TED could be used along with seeing the outputs.
 <p>
