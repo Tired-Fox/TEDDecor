@@ -1,11 +1,9 @@
 """TEDDecor
-Testing, Exceptions, and Decor
+Inline markown parsing and printing
 
-This is a easy to use library with testing, exceptions, and colorful text output. 
-Dive in with minimal effort and get great results.
+This is a easy to use library that gives a user access to colored text, bold text,
+underlined text, hyperlinks and much more.
 """
 
-__version__ = "1.1.0"
-from . import Exceptions
-from . import UnitTest
+__version__ = "1.0.2"
 from .TED import TED
