@@ -1,5 +1,0 @@
-[0:0:1] <class> TestResults
-    [x] <case> result_format
-        [test_Test.py:25] result_format
-        [Asserts.py:37] assertEqual
-        [Error Message] Values are not equal

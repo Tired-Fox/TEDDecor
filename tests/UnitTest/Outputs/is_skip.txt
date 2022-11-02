@@ -1,2 +1,0 @@
-[↻] <case> is_skip
-    Not Implemented

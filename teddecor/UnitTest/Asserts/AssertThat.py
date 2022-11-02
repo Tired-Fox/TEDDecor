@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Union, Dict
+from typing import Any, Callable, Optional, Union
 
 from ...TED.markup import TED
 from ...Exceptions import RangedException
 
 
-__all__ = ["assertThat", "Matcher", "Raises", "eq", "gt", "lt", "empty"]
+__all__ = ["assertThat", "Matcher", "Raises", "eq", "gt", "lt", "empty", "exists"]
 
 
-def stringify(value: Union[tuple[Any], list[Any], Dict[str, Any]]) -> str:
+def stringify(value: tuple[Any] | list[Any] | dict[str, Any]) -> str:
     output = []
     if type(value) in (tuple, list):
         for elem in value:
@@ -38,9 +38,17 @@ def get_expected(args, kwargs) -> Any:
         return args[0]
 
 
+def get_value(value: str, kwargs) -> Optional[Any]:
+    """Get a value from kwargs or return none if it doesn't exist"""
+    if value in kwargs:
+        return kwargs[value]
+    else:
+        return None
+
+
 def check_args(
     args: Union[list[Any], tuple[Any]],
-    kwargs: Dict[str, Any],
+    kwargs: dict[str, Any],
     name: str,
     arg_count: int = 1,
     arg_and_kwarg: bool = False,
@@ -74,7 +82,7 @@ def check_args(
             len(name) + 1 + len(params),
             "Too many arguments",
         ).throw()
-    elif len(kwargs.keys()) > 0:
+    elif len(kwargs.keys()) > 0 and vkwargs is not None and len(vkwargs) > 0:
         argkwargs = [stringify(args)]
         for key, value in kwargs.items():
             argkwargs.append(f"{key}={value}")
@@ -313,3 +321,44 @@ def empty() -> Callable:
         return True, None
 
     return is_empty
+
+
+@Matcher()
+def exists(*args, **kwargs):
+    """Assert that a file or directory exists.
+
+    Returns:
+        Callable: A matcher that checks if a file or directory exists.
+    """
+
+    def exist(path: str) -> tuple[bool, str]:
+        """Assert that the actual value is the same type and less than the expected value.
+
+        Args:
+            actual (Any): Any value that is matched against the argument value.
+
+        Raises:
+            AssertionError: If the provided path does not exist.
+            AssertionError: If the path does not exist.
+
+        Return:
+            tuple[bool, str]: The success and the associated message
+        """
+        from pathlib import Path
+
+        does_exist = (
+            False
+            if get_value("invert", kwargs) is not None
+            and get_value("invert", kwargs) == True
+            else True
+        )
+        """The value to compare against for exist."""
+
+        if not isinstance(path, str):
+            return False, f"Expected {type(str)} but found {type(path)}"
+        elif not Path(path).exists() == does_exist:
+            return False, f"Expected path to {'exist' if does_exist else 'not exist'}"
+
+        return True, None
+
+    return exist

@@ -1,18 +1,23 @@
-[tool.poetry]
-authors = ["Tired-Fox <zboehm104@gmail.com>"]
-description = "This is a easy to use library with testing, documentation, and docstring example tools. Dive in with minimal effort and get great results."
-license = "MIT"
-name = "TEDDecor"
-version = "1.1.0"
-
-[tool.poetry.dependencies]
-python = ">=3.7"
-
-[tool.poetry.dev-dependencies]
-
-[tool.poetry.scripts]
-TEDTest = "teddecor.UnitTest.TEDTest:main"
-
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1.0.0"]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "teddecor"
+version = "1.0.1"
+authors = [
+    { name="Tired Fox", email="zboehm104@gmail.com"}
+]
+description="Simple python testing framework"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Tired-Fox/TEDDecor"
+"Documentation" = "https://tired-fox.github.io/TEDDecor/teddecor.html"
+

@@ -1,3 +1,0 @@
-[x] <case> is_fail
-    [test_Test.py:58] is_fail
-    [Error Message] Assertion Failed

@@ -4,8 +4,7 @@ This module provides more descriptive and usefull asserts for things like equal,
 """
 
 from __future__ import annotations
-from shutil import ExecError
-from typing import Any, Callable, Union
+from typing import Any, Callable, Optional, Union
 
 __all__ = [
     "assertEqual",
@@ -17,7 +16,7 @@ __all__ = [
 ]
 
 # PERF: Replace errors with lested/grouped errors if python 3.11
-def assertEqual(left: Any, right: Any, message: str = "") -> Union[bool, None]:
+def assertEqual(left: Any, right: Any, message: str = "") -> Optional[bool]:
     """Assert that the left operand (First parameter) is equal to the right operand (Second Parameter).
 
     Args:
@@ -39,7 +38,7 @@ def assertEqual(left: Any, right: Any, message: str = "") -> Union[bool, None]:
     return True
 
 
-def assertGreaterThan(left: Any, right: Any, message: str = "") -> Union[bool, None]:
+def assertGreaterThan(left: Any, right: Any, message: str = "") -> Optional[bool]:
     """Assert that the left operand (First parameter) is greater than the right operand (Second Parameter).
 
     Args:
@@ -60,7 +59,7 @@ def assertGreaterThan(left: Any, right: Any, message: str = "") -> Union[bool, N
     return True
 
 
-def assertLessThan(left: Any, right: Any, message: str = "") -> Union[bool, None]:
+def assertLessThan(left: Any, right: Any, message: str = "") -> Optional[bool]:
     """Assert that the left operand (First parameter) is less than the right operand (Second Parameter).
 
     Args:
@@ -81,7 +80,7 @@ def assertLessThan(left: Any, right: Any, message: str = "") -> Union[bool, None
     return True
 
 
-def assertNotEqual(left: Any, right: Any, message: str = "") -> Union[bool, None]:
+def assertNotEqual(left: Any, right: Any, message: str = "") -> Optional[bool]:
     """Assert that the left operand (First parameter) is not equal to the right operand (Second Parameter).
 
     Args:
@@ -104,8 +103,10 @@ def assertNotEqual(left: Any, right: Any, message: str = "") -> Union[bool, None
 
 
 def assertRaises(
-    function: Callable, exception: Exception = None, message: str = ""
-) -> Union[bool, None]:
+    function: Callable,
+    exception: Exception = None,
+    message: str = "",
+) -> Optional[bool]:
     """Assert that a exceptions is raised within a callable piece of code
 
     Args:
@@ -142,7 +143,7 @@ def assertRaises(
     raise AssertionError(message)
 
 
-def assertWithin(search: Any, obj: Any, message: str = "") -> Union[bool, None]:
+def assertWithin(search: Any, obj: Any, message: str = "") -> Optional[bool]:
     """Assert that a search value is contained within a certain string.
 
     Args:
@@ -170,7 +171,7 @@ def assertWithin(search: Any, obj: Any, message: str = "") -> Union[bool, None]:
     return True
 
 
-def assertNone(value: Any, message: str = "") -> Union[bool, None]:
+def assertNone(value: Any, message: str = "") -> Optional[bool]:
     """Assert that a value is None.
 
     Args:
@@ -190,7 +191,7 @@ def assertNone(value: Any, message: str = "") -> Union[bool, None]:
     return True
 
 
-def assertNotNone(value: Any, message: str = "") -> Union[bool, None]:
+def assertNotNone(value: Any, message: str = "") -> Optional[bool]:
     """Assert that a value is not None.
 
     Args:
@@ -208,3 +209,25 @@ def assertNotNone(value: Any, message: str = "") -> Union[bool, None]:
         raise AssertionError(message)
 
     return True
+
+
+def file_exists(
+    file_path: Any, message: str = "", toggle: bool = True
+) -> Optional[bool]:
+    """Assert that a file exists.
+
+    Args:
+        file_path (str): The path to check for the file.
+        message (str, optional): the message to return with the AssertionError. Defaults to "".
+        toggle (bool, optional): Whether to invert the assert. Defaults to path exists the
+            inverted version will check for file doesn't exist.
+
+    Returns:
+        Optional[bool]: _description_
+    """
+    from pathlib import PosixPath
+
+    if PosixPath(file_path).exists() == toggle:
+        return True
+
+    raise AssertionError(message)
