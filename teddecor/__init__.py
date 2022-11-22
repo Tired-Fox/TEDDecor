@@ -5,5 +5,6 @@ This is a easy to use library that gives a user access to colored text, bold tex
 underlined text, hyperlinks and much more.
 """
 
-__version__ = "1.0.2"
+__version__ = "1.1.2"
 from .TED import TED
+from .Logger import LL, Log, Logger

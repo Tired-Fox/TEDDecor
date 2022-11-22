@@ -1,52 +1,38 @@
-### 1.2.0
-#### New
+### 1.1.1
 
-+ Pretty Exceptions
-+ Colored and clickable tracebacks
-  * For both exceptions and failed tests
-+ Test now have verbosity filtering.
-  * This means by default running tests will show the overall score
-  * Additional filters can be added to add additional information
-    * This information includes, passed, failed, skipped, and only totals.
-    * The filters can be mixed an matched to meet a users needs
+#### Logger
 
++ Fixed method chaining
 
-#### Modified
+___
 
-+ Optimized readability
-  * Includes json, verbose terminal out, exceptions, etc...
-+ Rewrote assertThat module
-  * Now uses a `Matcher` decorator for the second argument.
-  * Can customize what the matcher accepts
-  * Return the result and the message for checking the match/condition
-  * assertThat will throw an AssertionError if matcher fails
+### 1.1.1
 
-#### Removed
-- Testing and Temporary files
+#### Logger
+
++ Fixed flushing to file removing ansi and TED markup
 
 ___
 
 ### 1.1.0
 
-#### New
+#### Logger
 
-+ Add TEDTest CLI tool
-  * Auto detects tests and runs them
-  * Has same functionality as a TestSuite
++ Add custom logging
+  * This allows for logging to file and to stdout
+  * Custom labels
+  * Custom messages
+  * Custom logging levels
+  * Method chaining
+  * Global instance
+  * Buffers until flushed
 
 ___
 
 ### 1.0.0
 
-#### New
+#### TED
 
-+ Add Testing
-  * Test Suite
-  * Test Classes
-  * Test Cases
-  * Save results to file
-  * Display results to terminal
-  * Filter tests with regex
 + Add TED markup parser
   * Parse
     * Hyperlinks
