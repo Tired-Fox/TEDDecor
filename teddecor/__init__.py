@@ -7,4 +7,5 @@ underlined text, hyperlinks and much more.
 
 __version__ = "1.1.2"
 from .TED import TED
-from .Logger import LL, Log, Logger
+from .logger import LL, Log, Logger
+from .pprint import p_value

@@ -268,9 +268,9 @@ class TEDParser:
         Returns:
             str: The escaped/encoded version of the given string
         """
-        schars = ["*", "_", "["]
+        schars = ["\\", "*", "_", "["]
         for char in schars:
-            text = f"\{char}".join(text.split(char))
+            text = f"\\{char}".join(text.split(char))
         return text
 
     @staticmethod

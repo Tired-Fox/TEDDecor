@@ -147,7 +147,7 @@ class Log:
         """
         return f"{spr}".join([TED.parse(f"[@F {clr}]{arg}[@F] ") for arg in args])
 
-    def __out(self, *args: str, label: str, clr: str, gaps: Optional[list[bool]] = None):
+    def __out(self, *args: str, label: str, clr: Optional[str] = None, gaps: Optional[list[bool]] = None):
         """Base function for formatting a log output.
 
         Args:
@@ -175,8 +175,11 @@ class Log:
 
         message = " ".join(message)
         message += "\n" if not message.endswith("\n") else ""
-
-        self.buffer.append(TED.parse(f"*\[[@F{clr}]{label}[@F]\]* ") + message)
+        
+        if clr is not None:
+            self.buffer.append(TED.parse(f"*\[[@F{clr}]{label}[@F]\]* ") + message)
+        else:
+            self.buffer.append(TED.parse(f"*\[{label}\]* ") + message)
 
         if len(gaps) == 2 and gaps[1]:
             self.buffer.append("\n")
@@ -229,7 +232,7 @@ class Log:
         self,
         *args: Any,
         label: str = LL.CUSTOM,
-        clr: str = "blue",
+        clr: Optional[str] = None,
         gaps: list[bool] = [False],
     ):
         """Custom log event. This gives control over label, color, message, and gaps, individually.
