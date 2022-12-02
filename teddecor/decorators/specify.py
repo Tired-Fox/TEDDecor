@@ -7,11 +7,10 @@ to give more context information to methods and classes.
 """
 
 from typing import Callable
-from sys import stderr
-from inspect import signature
 from teddecor.TED import TED
-from utility import parse_signature
 from teddecor.logger import Logger
+
+from .utility import parse_signature
 
 __all__ = ["not_implemented", "deprecated"]
 
@@ -87,9 +86,7 @@ def deprecated(obj: Callable | type):
 
             def __init__(self, *args, **kwargs):
                 Logger.custom(
-                    TED.parse(
-                        f"[@F #f5a97f]*{obj.__name__}*[@F]{parse_bases(obj)}"
-                    ),
+                    TED.parse(f"[@F #f5a97f]*{obj.__name__}*[@F]{parse_bases(obj)}"),
                     label="Deprecated[@F].[@F #ed8796]class",
                     clr="#eed49f",
                 )
