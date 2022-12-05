@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from io import TextIOWrapper
+from io import StringIO, TextIOWrapper
 from typing import Any, Callable, Optional, TextIO
 
 from teddecor import TED
@@ -36,7 +36,7 @@ class Log:
         self.comparator(compare)
         self.encode(encoding)
 
-    def output(self, output: TextIO | TextIOWrapper):
+    def output(self, output: TextIO | TextIOWrapper | StringIO):
         """Set where logging should be printed/outputed to.
 
         Args:
@@ -45,7 +45,7 @@ class Log:
         Raises:
             TypeError: Raised when output is not a TextIO object.
         """
-        if isinstance(output, TextIO) or isinstance(output, TextIOWrapper):
+        if isinstance(output, (TextIO, TextIOWrapper, StringIO)):
             self._output = output
         else:
             raise TypeError(

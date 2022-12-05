@@ -1,3 +1,0 @@
-- [ ] Add custom logging
-  - [ ] Global logger
-  - [ ] Instance logger

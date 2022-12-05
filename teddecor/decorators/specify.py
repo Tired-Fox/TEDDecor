@@ -20,16 +20,16 @@ def parse_qual_name(qual_name: str) -> str:
     if len(qual_name) > 1:
         return (
             "*"
-            + ".".join([f"[@F #f5a97f]{val}[@F]" for val in qual_name[:-1]])
-            + f".[@F #8aadf4]{qual_name[-1]}[@F]*"
+            + ".".join([f"[@F #f5a97f]{TED.encode(val)}[@F]" for val in qual_name[:-1]])
+            + f".[@F #8aadf4]{TED.encode(qual_name[-1])}[@F]*"
         )
     else:
-        return f"*[@F #8aadf4]{qual_name[0]}[@F]*"
+        return f"*[@F #8aadf4]{TED.encode(qual_name[0])}[@F]*"
 
 
 def parse_bases(cls) -> str:
     bases = [base.__name__ for base in cls.__bases__ if base.__name__ != "object"]
-    return f"[@F #ee99a0]([@F]{', '.join([f'[@F #f5a97f]{val}[@F]'] for val in bases)}[@F #ee99a0])[@F]"
+    return f"[@F #ee99a0]([@F]{', '.join([f'[@F #f5a97f]{TED.encode(val)}[@F]'] for val in bases)}[@F #ee99a0])[@F]"
 
 
 def not_implemented(obj: Callable | type):
@@ -40,7 +40,7 @@ def not_implemented(obj: Callable | type):
         def inner(*args, **kwargs):
             raise NotImplementedError(
                 TED.parse(
-                    f"*[@F #8aadf4]{obj.__name__}[@F]{parse_signature(obj)} is not yet implemented"
+                    f"*[@F #8aadf4]{TED.encode(obj.__name__)}[@F]{parse_signature(obj)} is not yet implemented"
                 )
             )
 

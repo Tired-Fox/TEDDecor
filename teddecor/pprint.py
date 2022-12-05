@@ -3,7 +3,7 @@ from teddecor.TED import TED
     
 def pprint(
     *values: Any,
-    depth: int = 1,
+    depth: int = 2,
     end: str = "\n",
     seperator: str = " ",
     handler: Optional[Callable] = None,
@@ -86,7 +86,7 @@ def p_type(value: bool, indent: int = 0, decode: bool = True) -> str:
     from re import match
     
     if match(r"^<([a-zA-Z_-]+\.)*Info.*at\s0x.*>$", str(value)):
-        val = f"<[@F #f5a97f]class [@F #8aadf4]{type(value).__name__}[@F]>"
+        val = f"[@F #f5a97f]{TED.encode(type(value).__name__)}[@F]"
     else:
         val = TED.encode(str(value))
 
